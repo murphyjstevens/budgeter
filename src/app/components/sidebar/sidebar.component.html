@@ -1,0 +1,10 @@
+<div class="sidebar">
+  <a routerLink="/" class="sidebar-item">Budget</a>
+  <a routerLink="/accounts/" class="sidebar-item">All Accounts</a>
+  <div class="sidebar-section">
+    <h4 class="sidebar-section-header">Accounts</h4>
+    <a *ngFor="let account of accounts"
+      [routerLink]="['/accounts', account.url]"
+      class="sidebar-item">{{ account.name }}</a>
+  </div>
+</div>

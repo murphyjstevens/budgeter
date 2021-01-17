@@ -1,0 +1,11 @@
+.sidebar-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 15em;
+}
+.content {
+  margin-left: 15em;
+  padding: 5em;
+}

@@ -1,0 +1,27 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #4f1244;
+  padding: 1em 0;
+}
+.sidebar-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 18px;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  color: white;
+}
+.sidebar-item:hover {
+  background-color: #300b29;
+}
+.sidebar-section {
+  margin-top: 2em;
+}
+.sidebar-section-header {
+  color: rgba(245, 245, 245, 0.8);
+  text-align: left;
+  font-size: 1em;
+}
