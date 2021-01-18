@@ -1,17 +1,51 @@
 <div class="flex-column">
   <h2>{{ account.name }}</h2>
-  <!-- <DataTable :value="transactions" class="p-datatable-sm">
-    <Column field="date" header="Date">
-      <template #body="accountProps">
-          <span>{{ formatDate(accountProps.data.date) }}</span>
-      </template>
-    </Column>
-    <Column field="to" header="To"></Column>
-    <Column field="categoryId" header="Category"></Column>
-    <Column field="cost" header="Cost">
-      <template #body="accountProps">
-          <span class="flex-justify-content-end">{{ formatCurrency(accountProps.data.cost) }}</span>
-      </template>
-    </Column>
-  </DataTable> -->
+  <p-table [value]="transactions" styleClass="p-datatable-sm">
+    <ng-template pTemplate="caption">
+      Small Table
+    </ng-template>
+    <ng-template pTemplate="colgroup">
+        <colgroup>
+            <col style="width:15%">
+            <col style="width:30%">
+            <col style="width:30%">
+            <col style="width:25%">
+        </colgroup>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Date</th>
+        <th>To</th>
+        <th>Category</th>
+        <th>Cost</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-transaction>
+      <tr>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-calendar inputId="basic" [(ngModel)]="transaction.date"></p-calendar>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ transaction.date | date:'shortDate' }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td pEditableColumn>{{ transaction.to }}</td>
+        <td pEditableColumn>{{ transaction.categoryId }}</td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-inputNumber [(ngModel)]="transaction.cost" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
+              <!-- <input pInputText type="number" [(ngModel)]="transaction.cost"> -->
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ transaction.cost | currency: 'USD' }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
