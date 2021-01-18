@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { CalendarModule } from 'primeng/calendar';
+import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
@@ -27,6 +28,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     AppRoutingModule,
     FormsModule,
     CalendarModule,
+    DropdownModule,
     InputNumberModule,
     InputTextModule,
     TableModule

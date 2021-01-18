@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Account } from 'src/app/models/account';
+import { BudgetCategory } from 'src/app/models/budget-category';
 import { Transaction } from 'src/app/models/transaction';
 import { AccountDataService } from 'src/app/services/account-data.service';
+import { CategoryDataService } from 'src/app/services/category-data.service';
 import { TransactionDataService } from 'src/app/services/transaction-data.service';
 
 @Component({
@@ -13,6 +15,7 @@ import { TransactionDataService } from 'src/app/services/transaction-data.servic
 export class AccountComponent implements OnInit {
   account: Account = {} as Account;
   transactions: Array<Transaction> = [];
+  categories: Array<BudgetCategory> = [];
 
   constructor(private route: ActivatedRoute) { }
 
@@ -22,18 +25,20 @@ export class AccountComponent implements OnInit {
         this.account = account;
         TransactionDataService.get(this.account.id).subscribe(transactions => {
           this.transactions = transactions;
-        })
+        });
       });
+    });
+    CategoryDataService.get().subscribe(categories => {
+      this.categories = categories;
     });
   }
 
-  formatDate(value: Date) {
-    if(!value) return;
-    return `${value.getMonth()+1}/${value.getDate()}/${value.getFullYear()}`;
-  }
-
-  formatCurrency(value: number) {
-    if(!value) return '';
-    return value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
+  getCategoryName(id: number): string {
+    const category = this.categories.find(cat => cat.id === id);
+    if(category){
+      return category.name;
+    } else {
+      return '';
+    }
   }
 }

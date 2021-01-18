@@ -32,13 +32,30 @@
             </ng-template>
           </p-cellEditor>
         </td>
-        <td pEditableColumn>{{ transaction.to }}</td>
-        <td pEditableColumn>{{ transaction.categoryId }}</td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="transaction.to">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ transaction.to }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-dropdown [options]="categories" [(ngModel)]="transaction.categoryId" optionLabel="name" optionValue="id"></p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ getCategoryName(transaction.categoryId) }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
         <td pEditableColumn>
           <p-cellEditor>
             <ng-template pTemplate="input">
               <p-inputNumber [(ngModel)]="transaction.cost" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
-              <!-- <input pInputText type="number" [(ngModel)]="transaction.cost"> -->
             </ng-template>
             <ng-template pTemplate="output">
               {{ transaction.cost | currency: 'USD' }}

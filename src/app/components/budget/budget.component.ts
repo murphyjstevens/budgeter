@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BudgetCategory } from 'src/app/models/budget-category';
+import { CategoryDataService } from 'src/app/services/category-data.service';
 
 @Component({
   selector: 'app-budget',
@@ -11,18 +12,9 @@ export class BudgetComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.categories = [{
-        id: 1,
-        name: 'Groceries',
-        budget: 500.52,
-        spent: 25.22
-      } as BudgetCategory, {
-        id: 2,
-        name: 'Mortage',
-        budget: 2000.00,
-        spent: 0.00
-      } as BudgetCategory
-    ];
+    CategoryDataService.get().subscribe(categories => {
+      this.categories = categories;
+    });
   }
 
   getAvailable(category: BudgetCategory) {
