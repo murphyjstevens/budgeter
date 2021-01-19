@@ -10,10 +10,10 @@ import { Account } from '../../models/account';
 export class SidebarComponent implements OnInit {
   accounts: Array<Account> = [];
 
-  constructor() { }
+  constructor(private accountDataService: AccountDataService) { }
 
   ngOnInit(): void {
-    AccountDataService.getAccounts().subscribe(accounts => {
+    this.accountDataService.getAccounts().subscribe(accounts => {
       this.accounts = accounts;
     });
   }

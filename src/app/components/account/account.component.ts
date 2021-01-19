@@ -17,18 +17,21 @@ export class AccountComponent implements OnInit {
   transactions: Array<Transaction> = [];
   categories: Array<Category> = [];
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute,
+    private categoryDataService: CategoryDataService,
+    private accountDataService: AccountDataService,
+    private transactionDataService: TransactionDataService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      AccountDataService.getAccount(params.account).subscribe(account => {
+      this.accountDataService.getAccount(params.account).subscribe(account => {
         this.account = account;
-        TransactionDataService.get(this.account.id).subscribe(transactions => {
+        this.transactionDataService.get(this.account.id).subscribe(transactions => {
           this.transactions = transactions;
         });
       });
     });
-    CategoryDataService.get().subscribe(categories => {
+    this.categoryDataService.get().subscribe(categories => {
       this.categories = categories;
     });
   }

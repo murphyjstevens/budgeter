@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { of } from 'rxjs/internal/observable/of';
 import { Category } from '../models/category';
@@ -29,17 +30,15 @@ export class CategoryDataService {
       groupId: 2
     } as Category
   ];
+  apiUrl = 'https://localhost:5001';
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
-  static get(): Observable<Array<Category>> {
-    return of(CategoryDataService.budgetCategories as Array<Category>);
+  get(): Observable<Array<Category>> {
+    return this.httpClient.get<Array<Category>>(`${this.apiUrl}/Categories`);
   }
 
-  static getGroups(): Observable<Array<CategoryGroup>> {
-    return of([
-      { id: 1, name: 'Necessary' },
-      { id: 2, name: 'Fun Stuff' }
-    ]);
+  getGroups(): Observable<Array<CategoryGroup>> {
+    return this.httpClient.get<Array<CategoryGroup>>(`${this.apiUrl}/CategoryGroups`);
   }
 }

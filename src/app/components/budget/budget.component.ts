@@ -15,11 +15,11 @@ export class BudgetComponent implements OnInit {
   budgets: Array<TreeNode> = [];
   month = 'Jan 2021';
 
-  constructor() { }
+  constructor(private categoryDataService: CategoryDataService) { }
 
   ngOnInit(): void {
-    const categorySub =  CategoryDataService.get();
-    const groupSub = CategoryDataService.getGroups();
+    const categorySub = this.categoryDataService.get();
+    const groupSub = this.categoryDataService.getGroups();
     zip(categorySub, groupSub).subscribe(([categories, categoryGroups]) => {
       this.budgets = categoryGroups.map(group => {
         return {
