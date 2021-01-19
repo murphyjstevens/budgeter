@@ -13,6 +13,26 @@
   flex-grow: 1;
 }
 
+.flex-justify-content-end {
+  justify-content: flex-end;
+}
+
 .text-align-right {
-  text-align: right;
+  text-align: right !important;
+}
+
+.text-align-center {
+  text-align: center !important;
+}
+
+.small-margin-left {
+  margin-left: 1em;
+}
+
+.tree-header-row {
+  background-color: #F8F9FA !important;
+}
+
+.float-right {
+  float: right;
 }

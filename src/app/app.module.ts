@@ -8,12 +8,14 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
+import { TreeTableModule } from 'primeng/treetable';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BudgetComponent } from './components/budget/budget.component';
 import { AccountComponent } from './components/account/account.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     DropdownModule,
     InputNumberModule,
     InputTextModule,
-    TableModule
+    TableModule,
+    TreeTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

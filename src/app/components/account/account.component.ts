@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Account } from 'src/app/models/account';
-import { BudgetCategory } from 'src/app/models/budget-category';
+import { Category } from 'src/app/models/category';
 import { Transaction } from 'src/app/models/transaction';
 import { AccountDataService } from 'src/app/services/account-data.service';
 import { CategoryDataService } from 'src/app/services/category-data.service';
@@ -15,7 +15,7 @@ import { TransactionDataService } from 'src/app/services/transaction-data.servic
 export class AccountComponent implements OnInit {
   account: Account = {} as Account;
   transactions: Array<Transaction> = [];
-  categories: Array<BudgetCategory> = [];
+  categories: Array<Category> = [];
 
   constructor(private route: ActivatedRoute) { }
 

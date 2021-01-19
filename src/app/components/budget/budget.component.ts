@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { BudgetCategory } from 'src/app/models/budget-category';
+import { Category } from 'src/app/models/category';
 import { CategoryDataService } from 'src/app/services/category-data.service';
+
+import { TreeNode } from 'primeng/api';
+import { zip } from 'rxjs/internal/observable/zip';
+import { CategoryGroup } from 'src/app/models/category-group';
 
 @Component({
   selector: 'app-budget',
@@ -8,16 +12,31 @@ import { CategoryDataService } from 'src/app/services/category-data.service';
   styleUrls: ['./budget.component.css']
 })
 export class BudgetComponent implements OnInit {
-  categories: Array<BudgetCategory> = [];
+  budgets: Array<TreeNode> = [];
+  month: string = 'Jan 2021';
+
   constructor() { }
 
   ngOnInit(): void {
-    CategoryDataService.get().subscribe(categories => {
-      this.categories = categories;
+    const categorySub =  CategoryDataService.get();
+    const groupSub = CategoryDataService.getGroups();
+    zip(categorySub, groupSub).subscribe(([categories, categoryGroups]) => {
+      this.budgets = categoryGroups.map(group => {
+        return { 
+          data: group, 
+          children: categories.filter(category => category.groupId === group.id).map(category => {
+            return { data: category } as TreeNode
+          }),
+          expanded: true
+        } as TreeNode
+      });
     });
   }
 
-  getAvailable(category: BudgetCategory) {
+  getAvailable(data: Category | CategoryGroup) {
+    const category = data as Category;
+    if (category.budget === undefined || category.spent === undefined) { return undefined; }
+
     return (category.budget - category.spent).toFixed(2);
   }
 }
