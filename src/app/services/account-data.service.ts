@@ -8,7 +8,7 @@ import { Account } from '../models/account';
 })
 export class AccountDataService {
   static accounts: Array<Account> = [
-    { id: 1, name: 'Checking', url: 'checking' } as Account, 
+    { id: 1, name: 'Checking', url: 'checking' } as Account,
     { id: 2, name: 'Credit Card', url: 'credit-card' } as Account
   ];
   constructor() { }
@@ -18,10 +18,11 @@ export class AccountDataService {
   }
 
   static getAccount(url: string): Observable<Account> {
-    const account = AccountDataService.accounts.find(account => account.url === url);
-    if (account)
+    const account = AccountDataService.accounts.find(acc => acc.url === url);
+    if (account) {
       return of(account);
-    else
+    } else {
       return of({} as Account);
+    }
   }
 }

@@ -21,7 +21,7 @@ export class AccountComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      AccountDataService.getAccount(params['account']).subscribe(account => {
+      AccountDataService.getAccount(params.account).subscribe(account => {
         this.account = account;
         TransactionDataService.get(this.account.id).subscribe(transactions => {
           this.transactions = transactions;
@@ -35,7 +35,7 @@ export class AccountComponent implements OnInit {
 
   getCategoryName(id: number): string {
     const category = this.categories.find(cat => cat.id === id);
-    if(category){
+    if (category) {
       return category.name;
     } else {
       return '';

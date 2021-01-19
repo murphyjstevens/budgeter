@@ -33,7 +33,7 @@ export class CategoryDataService {
   constructor() { }
 
   static get(): Observable<Array<Category>> {
-    return of(CategoryDataService.budgetCategories as Array<Category>)
+    return of(CategoryDataService.budgetCategories as Array<Category>);
   }
 
   static getGroups(): Observable<Array<CategoryGroup>> {

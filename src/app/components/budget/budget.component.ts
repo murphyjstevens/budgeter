@@ -13,7 +13,7 @@ import { CategoryGroup } from 'src/app/models/category-group';
 })
 export class BudgetComponent implements OnInit {
   budgets: Array<TreeNode> = [];
-  month: string = 'Jan 2021';
+  month = 'Jan 2021';
 
   constructor() { }
 
@@ -22,18 +22,18 @@ export class BudgetComponent implements OnInit {
     const groupSub = CategoryDataService.getGroups();
     zip(categorySub, groupSub).subscribe(([categories, categoryGroups]) => {
       this.budgets = categoryGroups.map(group => {
-        return { 
-          data: group, 
+        return {
+          data: group,
           children: categories.filter(category => category.groupId === group.id).map(category => {
-            return { data: category } as TreeNode
+            return { data: category } as TreeNode;
           }),
           expanded: true
-        } as TreeNode
+        } as TreeNode;
       });
     });
   }
 
-  getAvailable(data: Category | CategoryGroup) {
+  getAvailable(data: Category | CategoryGroup): string | undefined {
     const category = data as Category;
     if (category.budget === undefined || category.spent === undefined) { return undefined; }
 

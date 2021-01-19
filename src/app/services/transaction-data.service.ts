@@ -11,7 +11,7 @@ export class TransactionDataService {
   constructor() { }
 
   static get(accountId: number): Observable<Array<Transaction>> {
-    switch(accountId) {
+    switch (accountId) {
       case 1:
         return of([
           { id: 1, accountId: 1, date: new Date(), cost: 40.00, to: 'McDonalds', categoryId: 1 },
