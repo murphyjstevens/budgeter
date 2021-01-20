@@ -24,7 +24,7 @@ export class BudgetComponent implements OnInit {
       this.budgets = categoryGroups.map(group => {
         return {
           data: group,
-          children: categories.filter(category => category.groupId === group.id).map(category => {
+          children: categories.filter(category => category.categoryGroupId === group.id).map(category => {
             return { data: category } as TreeNode;
           }),
           expanded: true

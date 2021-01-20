@@ -3,5 +3,5 @@ export interface Category {
   name: string;
   budget: number;
   spent: number;
-  groupId: number;
+  categoryGroupId: number;
 }

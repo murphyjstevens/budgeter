@@ -15,19 +15,19 @@ export class CategoryDataService {
       name: 'Groceries',
       budget: 500.52,
       spent: 25.22,
-      groupId: 1
+      categoryGroupId: 1
     } as Category, {
       id: 2,
       name: 'Mortage',
       budget: 2000.00,
       spent: 0.00,
-      groupId: 1
+      categoryGroupId: 1
     } as Category, {
       id: 3,
       name: 'Dining Out',
       budget: 111.00,
       spent: 10.00,
-      groupId: 2
+      categoryGroupId: 2
     } as Category
   ];
   apiUrl = 'https://localhost:5001';
