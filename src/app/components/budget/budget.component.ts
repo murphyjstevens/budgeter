@@ -39,4 +39,10 @@ export class BudgetComponent implements OnInit {
 
     return (category.budget - category.spent).toFixed(2);
   }
+
+  onEditComplete(event: any) {
+    console.log(event);
+    console.log(event.data);
+    console.log(event.originalEvent);
+  }
 }

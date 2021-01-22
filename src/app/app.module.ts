@@ -4,7 +4,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { CalendarModule } from 'primeng/calendar';
+import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
@@ -16,6 +18,7 @@ import { AppComponent } from './app.component';
 import { BudgetComponent } from './components/budget/budget.component';
 import { AccountComponent } from './components/account/account.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { AddTransactionDialogComponent } from './components/account/add-transaction-dialog/add-transaction-dialog.component';
 
 
 @NgModule({
@@ -23,7 +26,8 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     AppComponent,
     BudgetComponent,
     AccountComponent,
-    SidebarComponent
+    SidebarComponent,
+    AddTransactionDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +35,9 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    AutoCompleteModule,
     CalendarModule,
+    DialogModule,
     DropdownModule,
     InputNumberModule,
     InputTextModule,

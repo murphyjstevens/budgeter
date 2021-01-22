@@ -1,6 +1,6 @@
 <div class="flex-column">
   <h1>{{ month }}</h1>
-  <p-treeTable [value]="budgets" styleClass="p-treetable-sm">
+  <p-treeTable [value]="budgets" styleClass="p-treetable-sm" (onEditComplete)="onEditComplete($event)" dataKey="id">
     <ng-template pTemplate="colgroup">
         <colgroup>
             <col style="width:55%">

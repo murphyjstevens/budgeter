@@ -1,0 +1,8 @@
+.transaction-header-row {
+  justify-content: space-between;
+}
+
+.add-transaction-button {
+  align-self: center;
+  margin: 0.5em 2em;
+}

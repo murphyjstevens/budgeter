@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Account } from 'src/app/models/account';
 import { Category } from 'src/app/models/category';
@@ -6,6 +6,7 @@ import { Transaction } from 'src/app/models/transaction';
 import { AccountDataService } from 'src/app/services/account-data.service';
 import { CategoryDataService } from 'src/app/services/category-data.service';
 import { TransactionDataService } from 'src/app/services/transaction-data.service';
+import { AddTransactionDialogComponent } from './add-transaction-dialog/add-transaction-dialog.component';
 
 @Component({
   selector: 'app-account',
@@ -13,9 +14,11 @@ import { TransactionDataService } from 'src/app/services/transaction-data.servic
   styleUrls: ['./account.component.css']
 })
 export class AccountComponent implements OnInit {
+  @ViewChild('addTransactionDialog') addTransactionDialog!: AddTransactionDialogComponent;
   account: Account = {} as Account;
   transactions: Array<Transaction> = [];
   categories: Array<Category> = [];
+  isAddDialogVisible: boolean = false;
 
   constructor(private route: ActivatedRoute,
     private categoryDataService: CategoryDataService,
@@ -27,7 +30,7 @@ export class AccountComponent implements OnInit {
       this.accountDataService.getAccount(params.account).subscribe(account => {
         this.account = account;
         this.transactionDataService.get(this.account.id).subscribe(transactions => {
-          this.transactions = transactions;
+          this.transactions = transactions.map(transaction => ({ ...transaction, date: new Date(transaction.date)}));
         });
       });
     });
@@ -43,5 +46,15 @@ export class AccountComponent implements OnInit {
     } else {
       return '';
     }
+  }
+
+  save(transaction: Transaction) {
+    this.transactionDataService.update(transaction).subscribe(transaction => {
+      console.log(transaction);
+    });
+  }
+
+  delete(transaction: Transaction) {
+    this.transactionDataService.delete(transaction.id).subscribe();
   }
 }

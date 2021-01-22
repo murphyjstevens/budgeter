@@ -1,0 +1,56 @@
+<form (ngSubmit)="add()" #transactionForm="ngForm">
+  <p-dialog [(visible)]="isDialogVisible" [style]="{width: '450px'}" header="Add Transaction" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content" class="form-group">
+      <div class="p-field">
+        <label for="date">Date</label>
+        <p-calendar inputId="date" [(ngModel)]="transaction.date" [showIcon]="true" inputId="icon" #date="ngModel" name="date" ariaRequired="true" autofocus></p-calendar>
+        <div [hidden]="date.valid || date.pristine"
+             class="alert alert-danger">
+          Date is required
+        </div>
+      </div>
+
+      <div class="p-field">
+        <label for="account">Account</label>
+        <p-dropdown inputId="account" [options]="accounts" [(ngModel)]="transaction.accountId" optionLabel="name" optionValue="id" #account="ngModel" name="account" ariaRequired="true"></p-dropdown>
+        <div [hidden]="account.valid || account.pristine"
+             class="alert alert-danger">
+          Account is required
+        </div>
+      </div>
+
+      <div class="p-field">
+        <label for="category">Category</label>
+        <p-dropdown inputId="category" [options]="categories" [(ngModel)]="transaction.categoryId" optionLabel="name" optionValue="id" #category="ngModel" name="category" ariaRequired="true"></p-dropdown>
+        <div [hidden]="category.valid || category.pristine"
+             class="alert alert-danger">
+          Category is required
+        </div>
+      </div>
+
+      <div class="p-field">
+        <label for="cost">Cost</label>
+        <p-inputNumber inputId="cost" [(ngModel)]="transaction.cost" mode="currency" currency="USD" locale="en-US" #cost="ngModel" name="cost"></p-inputNumber>
+        <div [hidden]="cost.valid || cost.pristine"
+             class="alert alert-danger">
+          Cost is required
+        </div>
+      </div>
+
+      <div class="p-field">
+        <label for="recipient">Recipient</label>
+        <input id="recipient" pInputText type="text" [(ngModel)]="transaction.recipient" #recipient="ngModel" name="recipient" required>
+        <div [hidden]="recipient.valid || recipient.pristine"
+             class="alert alert-danger">
+          Recipient is required
+        </div>
+        <!-- <p-autoComplete inputId="recipient" [(ngModel)]="transaction.recipient" [suggestions]="results" (completeMethod)="search($event)" field="name" [dropdown]="true"></p-autoComplete> -->
+      </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+      <button pButton type="button" label="Cancel" class="p-button-outlined" (click)="hide()"></button>
+      <button pButton type="submit" label="Save" [disabled]="!transactionForm.form.valid"></button>
+    </ng-template>
+  </p-dialog>
+</form>

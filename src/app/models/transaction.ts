@@ -4,5 +4,5 @@ export interface Transaction {
   categoryId: number;
   date: Date;
   cost: number;
-  to: string;
+  recipient: string;
 }
