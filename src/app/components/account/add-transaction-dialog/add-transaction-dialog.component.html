@@ -1,40 +1,54 @@
 <form (ngSubmit)="add()" #transactionForm="ngForm">
   <p-dialog [(visible)]="isDialogVisible" [style]="{width: '450px'}" header="Add Transaction" [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content" class="form-group">
-      <div class="p-field">
-        <label for="date">Date</label>
-        <p-calendar inputId="date" [(ngModel)]="transaction.date" [showIcon]="true" inputId="icon" #date="ngModel" name="date" ariaRequired="true" autofocus></p-calendar>
-        <div [hidden]="date.valid || date.pristine"
+      <div class="form-group required-field">
+        <label for="date">Date</label>    
+        <div class="input-group">
+          <input ngbDatepicker id="date" name="date" class="form-control" placeholder="MM/dd/yyyy"
+                 [(ngModel)]="transaction.date" #datePicker="ngbDatepicker" required>
+          <div class="input-group-append">
+            <button class="btn btn-dark bi-calendar-day" (click)="datePicker.toggle()" type="button"></button>
+          </div>
+        </div>
+        <!-- <p-calendar inputId="date" [(ngModel)]="transaction.date" [showIcon]="true" inputId="icon" #date="ngModel" name="date" ariaRequired="true" autofocus></p-calendar> -->
+        <!-- <div [hidden]="date.valid || date.pristine"
              class="alert alert-danger">
           Date is required
-        </div>
+        </div> -->
       </div>
 
-      <div class="p-field">
+      <div class="form-group">
         <label for="account">Account</label>
-        <p-dropdown inputId="account" [options]="accounts" [(ngModel)]="transaction.accountId" optionLabel="name" optionValue="id" #account="ngModel" name="account" ariaRequired="true"></p-dropdown>
-        <div [hidden]="account.valid || account.pristine"
+        <select id="account" [(ngModel)]="transaction.accountId" name="account" class="form-control" aria-label="Default select example" required>
+          <option *ngFor="let account of accounts" [value]="account.id">{{ account.name }}</option>
+        </select>
+        <!-- <p-dropdown inputId="account" [options]="accounts" [(ngModel)]="transaction.accountId" optionLabel="name" optionValue="id" #account="ngModel" name="account" ariaRequired="true"></p-dropdown> -->
+        <!-- <div [hidden]="account.valid || account.pristine"
              class="alert alert-danger">
           Account is required
-        </div>
+        </div> -->
       </div>
 
       <div class="p-field">
         <label for="category">Category</label>
-        <p-dropdown inputId="category" [options]="categories" [(ngModel)]="transaction.categoryId" optionLabel="name" optionValue="id" #category="ngModel" name="category" ariaRequired="true"></p-dropdown>
-        <div [hidden]="category.valid || category.pristine"
+        <select id="category" [(ngModel)]="transaction.categoryId" name="category" class="form-control" aria-label="Default select example" required>
+          <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+        </select>
+        <!-- <p-dropdown inputId="category" [options]="categories" [(ngModel)]="transaction.categoryId" optionLabel="name" optionValue="id" #category="ngModel" name="category" ariaRequired="true"></p-dropdown> -->
+        <!-- <div [hidden]="category.valid || category.pristine"
              class="alert alert-danger">
           Category is required
-        </div>
+        </div> -->
       </div>
 
       <div class="p-field">
         <label for="cost">Cost</label>
-        <p-inputNumber inputId="cost" [(ngModel)]="transaction.cost" mode="currency" currency="USD" locale="en-US" #cost="ngModel" name="cost"></p-inputNumber>
-        <div [hidden]="cost.valid || cost.pristine"
+        <input id="cost" [(ngModel)]="transaction.cost" data-inputmask="'alias': 'currency'" name="cost" class="form-control" style="text-align: right;" required>
+        <!-- <p-inputNumber inputId="cost" [(ngModel)]="transaction.cost" mode="currency" currency="USD" locale="en-US" #cost="ngModel" name="cost"></p-inputNumber> -->
+        <!-- <div [hidden]="cost.valid || cost.pristine"
              class="alert alert-danger">
           Cost is required
-        </div>
+        </div> -->
       </div>
 
       <div class="p-field">

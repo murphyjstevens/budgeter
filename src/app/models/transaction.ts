@@ -5,4 +5,5 @@ export interface Transaction {
   date: Date;
   cost: number;
   recipient: string;
+  isEditing: boolean;
 }

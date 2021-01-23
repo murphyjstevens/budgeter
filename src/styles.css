@@ -36,3 +36,56 @@
 .float-right {
   float: right;
 }
+
+.button-icon {
+  padding: 0 0.1rem;
+}
+
+.icon-button {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.icons-cell {
+  padding: 0 !important;
+  vertical-align: middle !important;
+}
+
+.icons-container {
+  display: flex;
+  justify-content: center;
+  padding: 0 0.5rem;
+}
+
+.cell-button-icon {
+  background: none;
+  border: none;
+  margin: 0 0.1rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 50%;
+}
+
+.cell-button-icon:hover {
+  background: whitesmoke;
+}
+
+.cell-button-icon-primary:active {
+  background: rgba(0, 123, 255, 0.15);
+}
+
+.cell-button-icon-secondary:active {
+  background: rgba(108, 117, 125, 0.15)
+}
+
+.cell-button-icon-warning:active {
+  background: rgba(255, 193, 7, 0.15);
+}
+
+.cell-button-icon-danger:active {
+  background: rgba(220, 53, 69, 0.15);
+}
+
+.required-field label:after {
+  content: "*";
+  color: red;
+}

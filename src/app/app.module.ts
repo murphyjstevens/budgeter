@@ -19,6 +19,7 @@ import { BudgetComponent } from './components/budget/budget.component';
 import { AccountComponent } from './components/account/account.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { AddTransactionDialogComponent } from './components/account/add-transaction-dialog/add-transaction-dialog.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { AddTransactionDialogComponent } from './components/account/add-transact
     InputNumberModule,
     InputTextModule,
     TableModule,
-    TreeTableModule
+    TreeTableModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

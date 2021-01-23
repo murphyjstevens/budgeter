@@ -1,78 +1,52 @@
 <div class="flex-column">
   <span class="flex-row transaction-header-row">
     <h2>{{ account.name }}</h2>
-    <button pButton type="button" icon="pi pi-plus" class="add-transaction-button" (click)="addTransactionDialog.show()"></button>
+    <button type="button" class="btn btn-primary button-icon add-transaction-button" (click)="addTransactionDialog.show()"><i class="bi bi-plus icon-button"></i></button>
   </span>
-  <p-table [value]="transactions" styleClass="p-datatable-sm" editMode="row" dataKey="id">
-    <ng-template pTemplate="colgroup">
-        <colgroup>
-            <col style="width:15%">
-            <col style="width:25%">
-            <col style="width:25%">
-            <col style="width:25%">
-            <col style="width:10%">
-        </colgroup>
-    </ng-template>
-    <ng-template pTemplate="header">
+  <table class="table">
+    <colgroup>
+      <col style="width: 10%">
+      <col style="width: 30%">
+      <col style="width: 25%">
+      <col style="width: 10%">
+      <col style="width: 25%">
+      <col style="width: 50px">
+    </colgroup>
+    <thead class="thead-dark">
       <tr>
         <th>Date</th>
         <th>Recipient</th>
         <th>Category</th>
-        <th>Cost</th>
+        <th class="text-align-right">Cost</th>
+        <th>Tags</th>
         <th></th>
       </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-transaction let-editing="editing">
-      <tr [pEditableRow]="transaction">
-        <td pEditableColumn>
-          <p-cellEditor>
-            <ng-template pTemplate="input">
-              <p-calendar inputId="basic" [(ngModel)]="transaction.date"></p-calendar>
-            </ng-template>
-            <ng-template pTemplate="output">
-              {{ transaction.date | date:'shortDate' }}
-            </ng-template>
-          </p-cellEditor>
+    </thead>
+    <tbody>
+      <tr *ngFor="let transaction of transactions">
+        <td>
+          {{ transaction.date | date:'shortDate' }}
         </td>
-        <td pEditableColumn>
-          <p-cellEditor>
-            <ng-template pTemplate="input">
-              <input pInputText type="text" [(ngModel)]="transaction.recipient">
-            </ng-template>
-            <ng-template pTemplate="output">
-              {{ transaction.recipient }}
-            </ng-template>
-          </p-cellEditor>
+        <td>
+          {{ transaction.recipient }}
         </td>
-        <td pEditableColumn>
-          <p-cellEditor>
-            <ng-template pTemplate="input">
-              <p-dropdown [options]="categories" [(ngModel)]="transaction.categoryId" optionLabel="name" optionValue="id"></p-dropdown>
-            </ng-template>
-            <ng-template pTemplate="output">
-              {{ getCategoryName(transaction.categoryId) }}
-            </ng-template>
-          </p-cellEditor>
+        <td>
+          {{ getCategoryName(transaction.categoryId) }}
         </td>
-        <td pEditableColumn>
-          <p-cellEditor>
-            <ng-template pTemplate="input">
-              <p-inputNumber [(ngModel)]="transaction.cost" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
-            </ng-template>
-            <ng-template pTemplate="output">
-              {{ transaction.cost | currency: 'USD' }}
-            </ng-template>
-          </p-cellEditor>
+        <td class="text-align-right">
+          {{ transaction.cost | currency: 'USD' }}
         </td>
-        <td style="text-align:center">
-            <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-text" style="margin-right: .5em"></button>
-            <button *ngIf="!editing" pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text" (click)="delete(transaction)"></button>
-            <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check" class="p-button-rounded p-button-success p-button-text" style="margin-right: .5em" (click)="save(transaction)"></button>
-            <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="p-button-rounded p-button-warning p-button-text"></button>
+        <td>
+        </td>
+        <td class="icons-cell">
+          <div class="icons-container">
+            <button type="button" class="cell-button-icon cell-button-icon-primary"><i class="bi-pencil text-primary"></i></button>
+            <button type="button" class="cell-button-icon cell-button-icon-danger"><i class="bi-trash text-danger"></i></button>
+          </div>
         </td>
       </tr>
-    </ng-template>
-  </p-table>
+    </tbody>
+  </table>
 </div>
 
 <app-add-transaction-dialog #addTransactionDialog></app-add-transaction-dialog>
