@@ -7,7 +7,7 @@
       <i class="bi bi-plus icon-button"></i>
     </button>
   </span>
-  <table class="table">
+  <table class="table outer-border-table">
     <colgroup>
       <col style="width: 15%; min-width: 175px;">
       <col style="width: 25%">
@@ -35,7 +35,7 @@
                     id="date"
                     type="text"
                     placeholder="yyyy/MM/dd"
-                    [(ngModel)]="transaction.date"
+                    [(ngModel)]="editTransaction.date"
                     #datePicker="ngbDatepicker"
                     name="date"
                     class="form-control"
@@ -55,7 +55,7 @@
           <div *ngIf="transaction.isEditing">
             <input id="recipient"
                   type="text"
-                  [(ngModel)]="transaction.recipient"
+                  [(ngModel)]="editTransaction.recipient"
                   #recipient="ngModel"
                   name="recipient"
                   class="form-control"
@@ -68,7 +68,7 @@
         <td>
           <div *ngIf="transaction.isEditing">
             <select id="category"
-                    [(ngModel)]="transaction.categoryId"
+                    [(ngModel)]="editTransaction.categoryId"
                     name="category"
                     class="form-control"
                     required>
@@ -83,9 +83,9 @@
         <td>
           <div *ngIf="transaction.isEditing">
             <input id="cost"
-                  [ngModel]="transaction.cost"
-                  (blur)="convertToMoney($event, transaction)"
-                  (keyup.enter)="convertToMoney($event, transaction)"
+                  [ngModel]="editTransaction.cost"
+                  (blur)="convertToMoney($event, editTransaction)"
+                  (keyup.enter)="convertToMoney($event, editTransaction)"
                   name="cost"
                   class="form-control"
                   style="text-align: right;"
@@ -102,7 +102,7 @@
             <button *ngIf="!transaction.isEditing" 
                     type="button" 
                     class="cell-button-icon cell-button-icon-primary" 
-                    (click)="transaction.isEditing = true; isEditingRow = true;">
+                    (click)="startEditing(transaction)">
               <i class="bi-pencil text-primary"></i>
             </button>
             <button *ngIf="!transaction.isEditing" 
@@ -114,14 +114,14 @@
             <button *ngIf="transaction.isEditing" 
                     type="button" 
                     class="cell-button-icon cell-button-icon-success" 
-                    (click)="save(transaction)">
-              <i class="bi-check text-success"></i>
+                    (click)="save(editTransaction)">
+              <i class="bi-check-circle text-success"></i>
             </button>
             <button *ngIf="transaction.isEditing" 
                     type="button" 
                     class="cell-button-icon cell-button-icon-secondary" 
-                    (click)="transaction.isEditing = false; isEditingRow = false;">
-              <i class="bi-x text-secondary"></i>
+                    (click)="cancelEditing(transaction)">
+              <i class="bi-x-circle text-secondary"></i>
             </button>
           </div>
         </td>

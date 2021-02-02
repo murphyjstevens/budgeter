@@ -21,6 +21,7 @@ export class AccountComponent implements OnInit {
   account: Account = {} as Account;
   transactions: Array<Transaction> = [];
   categories: Array<Category> = [];
+  editTransaction: Transaction = {} as Transaction;
   isAddDialogVisible: boolean = false;
   isEditingRow: boolean = false;
 
@@ -35,7 +36,9 @@ export class AccountComponent implements OnInit {
       this.accountDataService.getAccount(params.account).subscribe(account => {
         this.account = account;
         this.transactionDataService.get(this.account.id).subscribe(transactions => {
-          this.transactions = transactions.map(transaction => ({ ...transaction, date: new Date(transaction.date)}));
+          this.transactions = transactions
+            .map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
+            .sort((a,b) => b.date.getTime() - a.date.getTime());
         });
       });
     });
@@ -56,13 +59,29 @@ export class AccountComponent implements OnInit {
   convertToMoney(event: any, transaction: Transaction) {
     if(!event.target.value) return;
 
-    transaction.cost = Math.floor(parseFloat(event.target.value) * 100) / 100;
+    transaction.cost = Math.round(event.target.value * 100) / 100;
 
     event.target.value = transaction.cost;
   }
 
+  startEditing(transaction: Transaction) {
+    const unsavedTransaction = this.transactions.find(t => t.isEditing);
+    if (unsavedTransaction) {
+      this.cancelEditing(unsavedTransaction);
+    }
+    this.editTransaction = { ...transaction } as Transaction;
+    transaction.isEditing = true;
+  }
+
+  cancelEditing(transaction: Transaction) {
+    transaction.isEditing = false;
+  }
+
   save(transaction: Transaction) {
     this.transactionDataService.update(transaction).subscribe(updatedTransaction => {
+      const transactionIndex = this.transactions.findIndex(t => t.id === updatedTransaction.id);
+      this.transactions[transactionIndex] = updatedTransaction;
+      this.transactions.sort((a,b) => b.date.getTime() - a.date.getTime());
       transaction.isEditing = false;
       this.isEditingRow = false;
     });

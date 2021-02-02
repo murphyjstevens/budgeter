@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { of } from 'rxjs/internal/observable/of';
+import { map, tap } from 'rxjs/operators';
 import { Transaction } from '../models/transaction';
 
 @Injectable({
@@ -13,15 +13,21 @@ export class TransactionDataService {
   constructor(private httpClient: HttpClient) { }
 
   get(accountId: number): Observable<Array<Transaction>> {
-    return this.httpClient.get<Array<Transaction>>(`${this.apiUrl}/Account/${accountId}`);
+    return this.httpClient.get<Array<Transaction>>(`${this.apiUrl}/Account/${accountId}`).pipe(
+      tap(transactions => transactions.map(transaction => ({ ...transaction, date: new Date(transaction.date)})))
+    );
   }
 
   insert(transaction: Transaction): Observable<Transaction> {
-    return this.httpClient.post<Transaction>(this.apiUrl, transaction);
+    return this.httpClient.post<Transaction>(this.apiUrl, transaction).pipe(
+      map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
+    );
   }
 
   update(transaction: Transaction): Observable<Transaction> {
-    return this.httpClient.put<Transaction>(this.apiUrl, transaction);
+    return this.httpClient.put<Transaction>(this.apiUrl, transaction).pipe(
+      map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
+    );
   }
 
   delete(id: number): Observable<void> {
