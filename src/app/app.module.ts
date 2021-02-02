@@ -20,6 +20,7 @@ import { AccountComponent } from './components/account/account.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { AddTransactionDialogComponent } from './components/account/add-transaction-dialog/add-transaction-dialog.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DeleteConfirmationModalComponent } from './shared/delete-confirmation-modal/delete-confirmation-modal.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     BudgetComponent,
     AccountComponent,
     SidebarComponent,
-    AddTransactionDialogComponent
+    AddTransactionDialogComponent,
+    DeleteConfirmationModalComponent
   ],
   imports: [
     BrowserModule,

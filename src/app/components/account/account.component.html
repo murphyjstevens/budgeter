@@ -1,14 +1,18 @@
 <div class="flex-column">
   <span class="flex-row transaction-header-row">
     <h2>{{ account.name }}</h2>
-    <button type="button" class="btn btn-primary button-icon add-transaction-button" (click)="addTransactionDialog.show()"><i class="bi bi-plus icon-button"></i></button>
+    <button type="button"
+            class="btn btn-primary button-icon add-transaction-button"
+            (click)="addTransactionDialog.show()">
+      <i class="bi bi-plus icon-button"></i>
+    </button>
   </span>
   <table class="table">
     <colgroup>
-      <col style="width: 10%">
-      <col style="width: 30%">
+      <col style="width: 15%; min-width: 175px;">
       <col style="width: 25%">
-      <col style="width: 10%">
+      <col style="width: 20%">
+      <col style="width: 15%; min-width: 110px;">
       <col style="width: 25%">
       <col style="width: 50px">
     </colgroup>
@@ -25,23 +29,100 @@
     <tbody>
       <tr *ngFor="let transaction of transactions">
         <td>
-          {{ transaction.date | date:'shortDate' }}
+          <div *ngIf="transaction.isEditing">
+            <div class="input-group">
+              <input ngbDatepicker
+                    id="date"
+                    type="text"
+                    placeholder="yyyy/MM/dd"
+                    [(ngModel)]="transaction.date"
+                    #datePicker="ngbDatepicker"
+                    name="date"
+                    class="form-control"
+                    required>
+              <div class="input-group-append">
+                <button class="btn btn-dark bi-calendar-day"
+                        (click)="datePicker.toggle()"
+                        type="button"></button>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!transaction.isEditing">
+            {{ transaction.date | date:'yyyy-MM-dd' }}
+          </div>
         </td>
         <td>
-          {{ transaction.recipient }}
+          <div *ngIf="transaction.isEditing">
+            <input id="recipient"
+                  type="text"
+                  [(ngModel)]="transaction.recipient"
+                  #recipient="ngModel"
+                  name="recipient"
+                  class="form-control"
+                  required>
+          </div>
+          <div *ngIf="!transaction.isEditing">
+            {{ transaction.recipient }}
+          </div>
         </td>
         <td>
-          {{ getCategoryName(transaction.categoryId) }}
+          <div *ngIf="transaction.isEditing">
+            <select id="category"
+                    [(ngModel)]="transaction.categoryId"
+                    name="category"
+                    class="form-control"
+                    required>
+              <option *ngFor="let category of categories" 
+                      [value]="category.id">{{ category.name }}</option>
+            </select>
+          </div>
+          <div *ngIf="!transaction.isEditing">
+            {{ getCategoryName(transaction.categoryId) }}
+          </div>
         </td>
-        <td class="text-align-right">
-          {{ transaction.cost | currency: 'USD' }}
+        <td>
+          <div *ngIf="transaction.isEditing">
+            <input id="cost"
+                  [ngModel]="transaction.cost"
+                  (blur)="convertToMoney($event, transaction)"
+                  (keyup.enter)="convertToMoney($event, transaction)"
+                  name="cost"
+                  class="form-control"
+                  style="text-align: right;"
+                  required>
+          </div>
+          <div *ngIf="!transaction.isEditing" class="text-align-right">
+            {{ transaction.cost | currency: 'USD' }}
+          </div>
         </td>
         <td>
         </td>
         <td class="icons-cell">
           <div class="icons-container">
-            <button type="button" class="cell-button-icon cell-button-icon-primary"><i class="bi-pencil text-primary"></i></button>
-            <button type="button" class="cell-button-icon cell-button-icon-danger"><i class="bi-trash text-danger"></i></button>
+            <button *ngIf="!transaction.isEditing" 
+                    type="button" 
+                    class="cell-button-icon cell-button-icon-primary" 
+                    (click)="transaction.isEditing = true; isEditingRow = true;">
+              <i class="bi-pencil text-primary"></i>
+            </button>
+            <button *ngIf="!transaction.isEditing" 
+                    type="button" 
+                    class="cell-button-icon cell-button-icon-danger"
+                    (click)="confirmDelete(transaction)">
+              <i class="bi-trash text-danger"></i>
+            </button>
+            <button *ngIf="transaction.isEditing" 
+                    type="button" 
+                    class="cell-button-icon cell-button-icon-success" 
+                    (click)="save(transaction)">
+              <i class="bi-check text-success"></i>
+            </button>
+            <button *ngIf="transaction.isEditing" 
+                    type="button" 
+                    class="cell-button-icon cell-button-icon-secondary" 
+                    (click)="transaction.isEditing = false; isEditingRow = false;">
+              <i class="bi-x text-secondary"></i>
+            </button>
           </div>
         </td>
       </tr>
@@ -49,4 +130,5 @@
   </table>
 </div>
 
-<app-add-transaction-dialog #addTransactionDialog></app-add-transaction-dialog>
+<app-add-transaction-dialog #addTransactionDialog
+                            [defaultAccount]="account"></app-add-transaction-dialog>

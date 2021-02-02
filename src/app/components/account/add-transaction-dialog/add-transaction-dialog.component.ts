@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Account } from 'src/app/models/account';
 import { Category } from 'src/app/models/category';
 import { Transaction } from 'src/app/models/transaction';
@@ -12,6 +12,7 @@ import { TransactionDataService } from 'src/app/services/transaction-data.servic
   styleUrls: ['./add-transaction-dialog.component.css']
 })
 export class AddTransactionDialogComponent implements OnInit {
+  @Input() defaultAccount: Account = {} as Account;
   isDialogVisible: boolean = false;
   transaction: Transaction = {} as Transaction;
   accounts: Array<Account> = [];
@@ -32,7 +33,7 @@ export class AddTransactionDialogComponent implements OnInit {
 
   show() {
     this.isDialogVisible = true;
-    this.transaction = {} as Transaction;
+    this.transaction = { date: new Date(), accountId: this.defaultAccount?.id } as Transaction;
   }
 
   hide() {

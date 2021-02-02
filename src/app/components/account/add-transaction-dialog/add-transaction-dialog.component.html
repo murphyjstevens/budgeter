@@ -43,7 +43,7 @@
 
       <div class="p-field">
         <label for="cost">Cost</label>
-        <input id="cost" [(ngModel)]="transaction.cost" data-inputmask="'alias': 'currency'" name="cost" class="form-control" style="text-align: right;" required>
+        <input id="cost" [(ngModel)]="transaction.cost" name="cost" class="form-control" style="text-align: right;" required>
         <!-- <p-inputNumber inputId="cost" [(ngModel)]="transaction.cost" mode="currency" currency="USD" locale="en-US" #cost="ngModel" name="cost"></p-inputNumber> -->
         <!-- <div [hidden]="cost.valid || cost.pristine"
              class="alert alert-danger">
@@ -53,7 +53,7 @@
 
       <div class="p-field">
         <label for="recipient">Recipient</label>
-        <input id="recipient" pInputText type="text" [(ngModel)]="transaction.recipient" #recipient="ngModel" name="recipient" required>
+        <input id="recipient" pInputText type="text" [(ngModel)]="transaction.recipient" #recipient="ngModel" name="recipient" class="form-control" required>
         <div [hidden]="recipient.valid || recipient.pristine"
              class="alert alert-danger">
           Recipient is required
