@@ -12,7 +12,7 @@ import { TransactionDataService } from 'src/app/services/transaction-data.servic
   styleUrls: ['./add-transaction-dialog.component.css']
 })
 export class AddTransactionDialogComponent implements OnInit {
-  @Input() defaultAccount: Account = {} as Account;
+  @Input() defaultAccount: Account | null = null;
   isDialogVisible: boolean = false;
   transaction: Transaction = {} as Transaction;
   accounts: Array<Account> = [];

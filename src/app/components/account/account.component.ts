@@ -18,7 +18,8 @@ import { AddTransactionDialogComponent } from './add-transaction-dialog/add-tran
 })
 export class AccountComponent implements OnInit {
   @ViewChild('addTransactionDialog') addTransactionDialog!: AddTransactionDialogComponent;
-  account: Account = {} as Account;
+  account: Account | null = null;
+  accounts: Array<Account> | null = null;
   transactions: Array<Transaction> = [];
   categories: Array<Category> = [];
   editTransaction: Transaction = {} as Transaction;
@@ -33,14 +34,26 @@ export class AccountComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.accountDataService.getAccount(params.account).subscribe(account => {
-        this.account = account;
-        this.transactionDataService.get(this.account.id).subscribe(transactions => {
+      if (params.account) {
+        this.accountDataService.getAccount(params.account).subscribe(account => {
+          this.account = account;
+          this.transactionDataService.getByAccount(this.account.id).subscribe(transactions => {
+            this.transactions = transactions
+              .map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
+              .sort((a,b) => b.date.getTime() - a.date.getTime());
+          });
+        });
+      } else {
+        this.account = null;
+        this.accountDataService.getAccounts().subscribe(accounts => {
+          this.accounts = accounts;
+        });
+        this.transactionDataService.get().subscribe(transactions => {
           this.transactions = transactions
             .map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
             .sort((a,b) => b.date.getTime() - a.date.getTime());
         });
-      });
+      }
     });
     this.categoryDataService.get().subscribe(categories => {
       this.categories = categories;
@@ -48,12 +61,13 @@ export class AccountComponent implements OnInit {
   }
 
   getCategoryName(id: number): string {
-    const category = this.categories.find(cat => cat.id === id);
-    if (category) {
-      return category.name;
-    } else {
-      return '';
-    }
+    const category = this.categories.find(c => c.id === id);
+    return category ? category.name : '';
+  }
+
+  getAccountName(id: number): string {
+    const account = this.accounts?.find(a => a.id === id);
+    return account ? account.name : '';
   }
 
   convertToMoney(event: any, transaction: Transaction) {

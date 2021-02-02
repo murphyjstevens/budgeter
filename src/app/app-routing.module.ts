@@ -5,7 +5,8 @@ import { BudgetComponent } from './components/budget/budget.component';
 
 const routes: Routes = [
   { path: '', component: BudgetComponent },
-  { path: 'accounts/:account', component: AccountComponent }
+  { path: 'accounts/:account', component: AccountComponent },
+  { path: 'accounts', component: AccountComponent }
 ];
 
 @NgModule({

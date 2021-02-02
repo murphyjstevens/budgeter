@@ -12,7 +12,13 @@ export class TransactionDataService {
 
   constructor(private httpClient: HttpClient) { }
 
-  get(accountId: number): Observable<Array<Transaction>> {
+  get(): Observable<Array<Transaction>> {
+    return this.httpClient.get<Array<Transaction>>(this.apiUrl).pipe(
+      tap(transactions => transactions.map(transaction => ({ ...transaction, date: new Date(transaction.date)})))
+    );
+  }
+
+  getByAccount(accountId: number): Observable<Array<Transaction>> {
     return this.httpClient.get<Array<Transaction>>(`${this.apiUrl}/Account/${accountId}`).pipe(
       tap(transactions => transactions.map(transaction => ({ ...transaction, date: new Date(transaction.date)})))
     );

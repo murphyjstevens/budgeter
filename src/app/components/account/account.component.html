@@ -1,6 +1,6 @@
 <div class="flex-column">
   <span class="flex-row transaction-header-row">
-    <h2>{{ account.name }}</h2>
+    <h2>{{ account ? account.name : "All Accounts" }}</h2>
     <button type="button"
             class="btn btn-primary button-icon add-transaction-button"
             (click)="addTransactionDialog.show()">
@@ -10,6 +10,7 @@
   <table class="table outer-border-table">
     <colgroup>
       <col style="width: 15%; min-width: 175px;">
+      <col *ngIf="!account" style="width: 20%">
       <col style="width: 25%">
       <col style="width: 20%">
       <col style="width: 15%; min-width: 110px;">
@@ -19,6 +20,7 @@
     <thead class="thead-dark">
       <tr>
         <th>Date</th>
+        <th *ngIf="!account">Account</th>
         <th>Recipient</th>
         <th>Category</th>
         <th class="text-align-right">Cost</th>
@@ -49,6 +51,21 @@
           </div>
           <div *ngIf="!transaction.isEditing">
             {{ transaction.date | date:'yyyy-MM-dd' }}
+          </div>
+        </td>
+        <td *ngIf="!account">
+          <div *ngIf="transaction.isEditing">
+            <select id="account"
+                    [(ngModel)]="editTransaction.accountId"
+                    name="account"
+                    class="form-control"
+                    required>
+              <option *ngFor="let acc of accounts" 
+                      [value]="acc.id">{{ acc.name }}</option>
+            </select>
+          </div>
+          <div *ngIf="!transaction.isEditing">
+            {{ getAccountName(transaction.accountId) }}
           </div>
         </td>
         <td>
