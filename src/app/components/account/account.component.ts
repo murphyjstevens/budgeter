@@ -24,14 +24,14 @@ export class AccountComponent implements OnInit {
   transactions: Array<Transaction> = [];
   categories: Array<Category> = [];
   editTransaction: Transaction = {} as Transaction;
-  isAddDialogVisible: boolean = false;
-  isEditingRow: boolean = false;
+  isAddDialogVisible = false;
+  isEditingRow = false;
 
   constructor(private route: ActivatedRoute,
-    private modalService: NgbModal,
-    private categoryDataService: CategoryDataService,
-    private accountDataService: AccountDataService,
-    private transactionDataService: TransactionDataService) { }
+              private modalService: NgbModal,
+              private categoryDataService: CategoryDataService,
+              private accountDataService: AccountDataService,
+              private transactionDataService: TransactionDataService) { }
 
   ngOnInit(): void {
     // this.modalService.open(LoadingModalComponent, { backdrop: 'static', keyboard: false, centered: true, size: 'sm' });
@@ -42,7 +42,7 @@ export class AccountComponent implements OnInit {
           this.transactionDataService.getByAccount(this.account.id).subscribe(transactions => {
             this.transactions = transactions
               .map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
-              .sort((a,b) => b.date.getTime() - a.date.getTime());
+              .sort((a, b) => b.date.getTime() - a.date.getTime());
           });
         });
       } else {
@@ -53,7 +53,7 @@ export class AccountComponent implements OnInit {
         this.transactionDataService.get().subscribe(transactions => {
           this.transactions = transactions
             .map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
-            .sort((a,b) => b.date.getTime() - a.date.getTime());
+            .sort((a, b) => b.date.getTime() - a.date.getTime());
         });
       }
     });
@@ -72,15 +72,15 @@ export class AccountComponent implements OnInit {
     return account ? account.name : '';
   }
 
-  convertToMoney(event: any, transaction: Transaction) {
-    if(!event.target.value) return;
+  convertToMoney(event: any, transaction: Transaction): void {
+    if (!event.target.value) { return; }
 
     transaction.cost = Math.round(event.target.value * 100) / 100;
 
     event.target.value = transaction.cost;
   }
 
-  startEditing(transaction: Transaction) {
+  startEditing(transaction: Transaction): any {
     const unsavedTransaction = this.transactions.find(t => t.isEditing);
     if (unsavedTransaction) {
       this.cancelEditing(unsavedTransaction);
@@ -89,11 +89,11 @@ export class AccountComponent implements OnInit {
     transaction.isEditing = true;
   }
 
-  cancelEditing(transaction: Transaction) {
+  cancelEditing(transaction: Transaction): void {
     transaction.isEditing = false;
   }
 
-  save(transaction: Transaction) {
+  save(transaction: Transaction): void {
     this.transactionDataService.update(transaction).subscribe(updatedTransaction => {
       const transactionIndex = this.transactions.findIndex(t => t.id === updatedTransaction.id);
       this.transactions[transactionIndex] = updatedTransaction;
@@ -103,29 +103,29 @@ export class AccountComponent implements OnInit {
     });
   }
 
-  confirmDelete(transaction: Transaction) {
-    const modal = this.modalService.open(DeleteConfirmationModalComponent)
+  confirmDelete(transaction: Transaction): void {
+    const modal = this.modalService.open(DeleteConfirmationModalComponent);
     modal.componentInstance.title = 'Delete Transaction';
     modal.componentInstance.message = 'Would you like to delete this Transaction?';
     modal.result.then(result => {
-      if(result) {
+      if (result) {
         this.delete(transaction);
       }
     }, () => { });
   }
 
-  delete(transaction: Transaction) {
+  delete(transaction: Transaction): void {
     this.transactionDataService.delete(transaction.id).subscribe(() => {
       this.transactions.splice(this.transactions.findIndex(t => t.id === transaction.id), 1);
     });
   }
 
-  onNewTransaction(transaction: Transaction) {
+  onNewTransaction(transaction: Transaction): void {
     this.transactions.push(transaction);
     this.sortTransactions();
   }
 
-  sortTransactions() {
-    this.transactions.sort((a,b) => b.date.getTime() - a.date.getTime());
+  sortTransactions(): void {
+    this.transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 }

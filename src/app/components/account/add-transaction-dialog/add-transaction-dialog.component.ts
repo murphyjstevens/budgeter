@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Account } from 'src/app/models/account';
 import { Category } from 'src/app/models/category';
 import { Transaction } from 'src/app/models/transaction';
@@ -15,8 +15,8 @@ import { NumberValidator } from 'src/app/shared/validators/number.validator';
 })
 export class AddTransactionDialogComponent implements OnInit {
   @Input() defaultAccount: Account | null = null;
-  @Output() onAdd: EventEmitter<Transaction> = new EventEmitter();
-  isDialogVisible: boolean = false;
+  @Output() save: EventEmitter<Transaction> = new EventEmitter();
+  isDialogVisible = false;
   accounts: Array<Account> = [];
   categories: Array<Category> = [];
 
@@ -28,16 +28,16 @@ export class AddTransactionDialogComponent implements OnInit {
     recipient: ['', Validators.required]
   });
 
-  get date() { return this.addTransactionForm.get('date'); }
-  get accountId() { return this.addTransactionForm.get('accountId'); }
-  get categoryId() { return this.addTransactionForm.get('categoryId'); }
-  get cost() { return this.addTransactionForm.get('cost'); }
-  get recipient() { return this.addTransactionForm.get('recipient'); }
+  get date(): AbstractControl | null { return this.addTransactionForm.get('date'); }
+  get accountId(): AbstractControl | null { return this.addTransactionForm.get('accountId'); }
+  get categoryId(): AbstractControl | null { return this.addTransactionForm.get('categoryId'); }
+  get cost(): AbstractControl | null { return this.addTransactionForm.get('cost'); }
+  get recipient(): AbstractControl | null { return this.addTransactionForm.get('recipient'); }
 
   constructor(private formBuilder: FormBuilder,
-    private transactionDataService: TransactionDataService,
-    private accountDataService: AccountDataService,
-    private categoryDataService: CategoryDataService) { }
+              private transactionDataService: TransactionDataService,
+              private accountDataService: AccountDataService,
+              private categoryDataService: CategoryDataService) { }
 
   ngOnInit(): void {
     this.accountDataService.getAccounts().subscribe(accounts => {
@@ -48,30 +48,30 @@ export class AddTransactionDialogComponent implements OnInit {
     });
   }
 
-  convertToMoney(event: any) {
-    if(!event.target.value) return;
+  convertToMoney(event: any): void {
+    if (!event.target.value) { return; }
 
-    let cost = Math.round(event.target.value * 100) / 100;
+    const cost = Math.round(event.target.value * 100) / 100;
     this.addTransactionForm.get('cost')?.setValue(cost);
   }
 
-  show() {
+  show(): void {
     this.isDialogVisible = true;
-    let today = new Date();
-    this.addTransactionForm.patchValue({ 
-      date: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0), 
+    const today = new Date();
+    this.addTransactionForm.patchValue({
+      date: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0),
       accountId: this.defaultAccount?.id
     } as Transaction);
   }
 
-  hide() {
+  hide(): void {
     this.isDialogVisible = false;
   }
 
-  add() {
-    let transaction = this.addTransactionForm.getRawValue() as Transaction;
+  add(): void {
+    const transaction = this.addTransactionForm.getRawValue() as Transaction;
     this.transactionDataService.insert(transaction).subscribe(updatedTransaction => {
-      this.onAdd.emit(updatedTransaction);
+      this.save.emit(updatedTransaction);
       this.hide();
     });
   }

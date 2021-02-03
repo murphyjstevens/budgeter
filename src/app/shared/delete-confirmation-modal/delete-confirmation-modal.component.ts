@@ -6,15 +6,15 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './delete-confirmation-modal.component.html'
 })
 export class DeleteConfirmationModalComponent implements OnInit {
-  @Input() message: string = 'Would you like to delete the item?';
-  @Input() title: string = 'Delete Item';
+  @Input() message = 'Would you like to delete the item?';
+  @Input() title = 'Delete Item';
 
   constructor(public modal: NgbActiveModal) { }
 
   ngOnInit(): void {
   }
 
-  delete() {
+  delete(): void {
     this.modal.close(true);
   }
 }

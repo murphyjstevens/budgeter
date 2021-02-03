@@ -26,13 +26,13 @@ export class TransactionDataService {
 
   insert(transaction: Transaction): Observable<Transaction> {
     return this.httpClient.post<Transaction>(this.apiUrl, transaction).pipe(
-      map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
+      map(t => ({ ...t, date: new Date(t.date)}))
     );
   }
 
   update(transaction: Transaction): Observable<Transaction> {
     return this.httpClient.put<Transaction>(this.apiUrl, transaction).pipe(
-      map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
+      map(t => ({ ...t, date: new Date(t.date)}))
     );
   }
 
