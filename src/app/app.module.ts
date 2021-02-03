@@ -21,6 +21,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { AddTransactionDialogComponent } from './components/account/add-transaction-dialog/add-transaction-dialog.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteConfirmationModalComponent } from './shared/delete-confirmation-modal/delete-confirmation-modal.component';
+import { LoadingModalComponent } from './shared/loading-modal/loading-modal.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { DeleteConfirmationModalComponent } from './shared/delete-confirmation-m
     AccountComponent,
     SidebarComponent,
     AddTransactionDialogComponent,
-    DeleteConfirmationModalComponent
+    DeleteConfirmationModalComponent,
+    LoadingModalComponent
   ],
   imports: [
     BrowserModule,

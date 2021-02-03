@@ -8,6 +8,7 @@ import { AccountDataService } from 'src/app/services/account-data.service';
 import { CategoryDataService } from 'src/app/services/category-data.service';
 import { TransactionDataService } from 'src/app/services/transaction-data.service';
 import { DeleteConfirmationModalComponent } from 'src/app/shared/delete-confirmation-modal/delete-confirmation-modal.component';
+import { LoadingModalComponent } from 'src/app/shared/loading-modal/loading-modal.component';
 import { AddTransactionDialogComponent } from './add-transaction-dialog/add-transaction-dialog.component';
 
 @Component({
@@ -33,6 +34,7 @@ export class AccountComponent implements OnInit {
     private transactionDataService: TransactionDataService) { }
 
   ngOnInit(): void {
+    // this.modalService.open(LoadingModalComponent, { backdrop: 'static', keyboard: false, centered: true, size: 'sm' });
     this.route.params.subscribe(params => {
       if (params.account) {
         this.accountDataService.getAccount(params.account).subscribe(account => {
