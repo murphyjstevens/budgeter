@@ -95,7 +95,7 @@ export class AccountComponent implements OnInit {
     this.transactionDataService.update(transaction).subscribe(updatedTransaction => {
       const transactionIndex = this.transactions.findIndex(t => t.id === updatedTransaction.id);
       this.transactions[transactionIndex] = updatedTransaction;
-      this.transactions.sort((a,b) => b.date.getTime() - a.date.getTime());
+      this.sortTransactions();
       transaction.isEditing = false;
       this.isEditingRow = false;
     });
@@ -113,6 +113,17 @@ export class AccountComponent implements OnInit {
   }
 
   delete(transaction: Transaction) {
-    this.transactionDataService.delete(transaction.id).subscribe();
+    this.transactionDataService.delete(transaction.id).subscribe(() => {
+      this.transactions.splice(this.transactions.findIndex(t => t.id === transaction.id), 1);
+    });
+  }
+
+  onNewTransaction(transaction: Transaction) {
+    this.transactions.push(transaction);
+    this.sortTransactions();
+  }
+
+  sortTransactions() {
+    this.transactions.sort((a,b) => b.date.getTime() - a.date.getTime());
   }
 }

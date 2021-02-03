@@ -93,3 +93,7 @@
   content: "*";
   color: red;
 }
+
+.btn:disabled {
+  cursor: not-allowed;
+}

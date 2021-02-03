@@ -148,4 +148,5 @@
 </div>
 
 <app-add-transaction-dialog #addTransactionDialog
-                            [defaultAccount]="account"></app-add-transaction-dialog>
+                            [defaultAccount]="account"
+                            (onAdd)="onNewTransaction($event)"></app-add-transaction-dialog>

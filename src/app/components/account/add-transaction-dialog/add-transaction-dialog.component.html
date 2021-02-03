@@ -1,70 +1,95 @@
-<form (ngSubmit)="add()" #transactionForm="ngForm">
+<form [formGroup]="addTransactionForm" (ngSubmit)="add()">
   <p-dialog [(visible)]="isDialogVisible" [style]="{width: '450px'}" header="Add Transaction" [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content" class="form-group">
       <div class="form-group required-field">
         <label for="date">Date</label>    
         <div class="input-group">
-          <input ngbDatepicker id="date" name="date" class="form-control" placeholder="MM/dd/yyyy"
-                 [(ngModel)]="transaction.date" #datePicker="ngbDatepicker" required>
+          <input ngbDatepicker 
+                 id="date"
+                 formControlName="date"
+                 placeholder="MM/dd/yyyy"
+                 name="date" 
+                 #datePicker="ngbDatepicker"
+                 class="form-control"
+                 required>
           <div class="input-group-append">
-            <button class="btn btn-dark bi-calendar-day" (click)="datePicker.toggle()" type="button"></button>
+            <button type="button" 
+                    (click)="datePicker.toggle()"
+                    class="btn btn-dark bi-calendar-day"></button>
           </div>
         </div>
-        <!-- <p-calendar inputId="date" [(ngModel)]="transaction.date" [showIcon]="true" inputId="icon" #date="ngModel" name="date" ariaRequired="true" autofocus></p-calendar> -->
-        <!-- <div [hidden]="date.valid || date.pristine"
-             class="alert alert-danger">
+        <div *ngIf="date?.invalid && (date?.dirty || date?.touched)"
+            class="alert alert-danger">
           Date is required
-        </div> -->
+        </div>
       </div>
 
       <div class="form-group">
         <label for="account">Account</label>
-        <select id="account" [(ngModel)]="transaction.accountId" name="account" class="form-control" aria-label="Default select example" required>
-          <option *ngFor="let account of accounts" [value]="account.id">{{ account.name }}</option>
+        <select id="account" 
+                formControlName="accountId"
+                name="account" 
+                class="form-control" 
+                required>
+          <option *ngFor="let account of accounts" 
+                  [value]="account.id">{{ account.name }}</option>
         </select>
-        <!-- <p-dropdown inputId="account" [options]="accounts" [(ngModel)]="transaction.accountId" optionLabel="name" optionValue="id" #account="ngModel" name="account" ariaRequired="true"></p-dropdown> -->
-        <!-- <div [hidden]="account.valid || account.pristine"
-             class="alert alert-danger">
+        <div *ngIf="accountId?.invalid && (accountId?.dirty || accountId?.touched)"
+            class="alert alert-danger">
           Account is required
-        </div> -->
+        </div>
       </div>
 
       <div class="p-field">
         <label for="category">Category</label>
-        <select id="category" [(ngModel)]="transaction.categoryId" name="category" class="form-control" aria-label="Default select example" required>
-          <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+        <select id="category"
+                formControlName="categoryId"
+                name="category"
+                class="form-control"
+                required>
+          <option *ngFor="let category of categories"
+                  [value]="category.id">{{ category.name }}</option>
         </select>
-        <!-- <p-dropdown inputId="category" [options]="categories" [(ngModel)]="transaction.categoryId" optionLabel="name" optionValue="id" #category="ngModel" name="category" ariaRequired="true"></p-dropdown> -->
-        <!-- <div [hidden]="category.valid || category.pristine"
-             class="alert alert-danger">
+        <div *ngIf="categoryId?.invalid && (categoryId?.dirty || categoryId?.touched)"
+            class="alert alert-danger">
           Category is required
-        </div> -->
+        </div>
       </div>
 
       <div class="p-field">
         <label for="cost">Cost</label>
-        <input id="cost" [(ngModel)]="transaction.cost" name="cost" class="form-control" style="text-align: right;" required>
-        <!-- <p-inputNumber inputId="cost" [(ngModel)]="transaction.cost" mode="currency" currency="USD" locale="en-US" #cost="ngModel" name="cost"></p-inputNumber> -->
-        <!-- <div [hidden]="cost.valid || cost.pristine"
-             class="alert alert-danger">
+        <input id="cost"
+               formControlName="cost"
+               (blur)="convertToMoney($event)"
+               (keyup.enter)="convertToMoney($event)"
+               name="cost"
+               class="form-control"
+               style="text-align: right;"
+               required>
+        <div *ngIf="cost?.invalid && (cost?.dirty || cost?.touched)"
+            class="alert alert-danger">
           Cost is required
-        </div> -->
+        </div>
       </div>
 
       <div class="p-field">
         <label for="recipient">Recipient</label>
-        <input id="recipient" pInputText type="text" [(ngModel)]="transaction.recipient" #recipient="ngModel" name="recipient" class="form-control" required>
-        <div [hidden]="recipient.valid || recipient.pristine"
+        <input id="recipient"
+               type="text"
+               formControlName="recipient"
+               name="recipient"
+               class="form-control"
+               required>
+        <div *ngIf="recipient?.invalid && (recipient?.dirty || recipient?.touched)"
              class="alert alert-danger">
           Recipient is required
         </div>
-        <!-- <p-autoComplete inputId="recipient" [(ngModel)]="transaction.recipient" [suggestions]="results" (completeMethod)="search($event)" field="name" [dropdown]="true"></p-autoComplete> -->
       </div>
     </ng-template>
     
     <ng-template pTemplate="footer">
-      <button pButton type="button" label="Cancel" class="p-button-outlined" (click)="hide()"></button>
-      <button pButton type="submit" label="Save" [disabled]="!transactionForm.form.valid"></button>
+      <button type="button" (click)="hide()" class="btn btn-outline-secondary">Cancel</button>
+      <button type="submit" [disabled]="!addTransactionForm.valid" class="btn btn-success">Save</button>
     </ng-template>
   </p-dialog>
 </form>
