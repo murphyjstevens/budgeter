@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbDateAdapter, NgbDateNativeAdapter, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Store } from '@ngrx/store';
 import { Account } from 'src/app/models/account';
 import { Category } from 'src/app/models/category';
 import { Transaction } from 'src/app/models/transaction';
@@ -8,8 +9,12 @@ import { AccountDataService } from 'src/app/services/account-data.service';
 import { CategoryDataService } from 'src/app/services/category-data.service';
 import { TransactionDataService } from 'src/app/services/transaction-data.service';
 import { DeleteConfirmationModalComponent } from 'src/app/shared/delete-confirmation-modal/delete-confirmation-modal.component';
-import { LoadingModalComponent } from 'src/app/shared/loading-modal/loading-modal.component';
 import { AddTransactionDialogComponent } from './add-transaction-dialog/add-transaction-dialog.component';
+import { accounts, State } from 'src/app/state';
+import { Observable } from 'rxjs/internal/Observable';
+import { of } from 'rxjs/internal/observable/of';
+import { tap } from 'rxjs/internal/operators/tap';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-account',
@@ -17,7 +22,7 @@ import { AddTransactionDialogComponent } from './add-transaction-dialog/add-tran
   styleUrls: ['./account.component.css'],
   providers: [{provide: NgbDateAdapter, useClass: NgbDateNativeAdapter}]
 })
-export class AccountComponent implements OnInit {
+export class AccountComponent implements OnInit, OnDestroy {
   @ViewChild('addTransactionDialog') addTransactionDialog!: AddTransactionDialogComponent;
   account: Account | null = null;
   accounts: Array<Account> | null = null;
@@ -27,39 +32,47 @@ export class AccountComponent implements OnInit {
   isAddDialogVisible = false;
   isEditingRow = false;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(private route: ActivatedRoute,
+              private store: Store<State>,
               private modalService: NgbModal,
               private categoryDataService: CategoryDataService,
               private accountDataService: AccountDataService,
               private transactionDataService: TransactionDataService) { }
 
   ngOnInit(): void {
+    // this.store.dispatch(AppActions.setIsLoading({ isLoading: true }));
     // this.modalService.open(LoadingModalComponent, { backdrop: 'static', keyboard: false, centered: true, size: 'sm' });
-    this.route.params.subscribe(params => {
-      if (params.account) {
-        this.accountDataService.getAccount(params.account).subscribe(account => {
-          this.account = account;
-          this.transactionDataService.getByAccount(this.account.id).subscribe(transactions => {
+    this.subscriptions.push(this.store.select(accounts).subscribe(accounts => {
+      this.accounts = accounts;
+      this.route.params.subscribe(params => {
+        if (params.account) {
+          this.account = accounts.find(account => account.url === params.account) ?? null;
+          if(this.account) {
+            this.transactionDataService.getByAccount(this.account.id).subscribe(transactions => {
+              this.transactions = transactions
+                .map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
+                .sort((a, b) => b.date.getTime() - a.date.getTime());
+            });
+          }
+        } else {
+          this.account = null;
+          this.transactionDataService.get().subscribe(transactions => {
             this.transactions = transactions
               .map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
               .sort((a, b) => b.date.getTime() - a.date.getTime());
           });
-        });
-      } else {
-        this.account = null;
-        this.accountDataService.getAccounts().subscribe(accounts => {
-          this.accounts = accounts;
-        });
-        this.transactionDataService.get().subscribe(transactions => {
-          this.transactions = transactions
-            .map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
-            .sort((a, b) => b.date.getTime() - a.date.getTime());
-        });
-      }
-    });
+        }
+      });
+    }));
     this.categoryDataService.get().subscribe(categories => {
       this.categories = categories;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   getCategoryName(id: number): string {

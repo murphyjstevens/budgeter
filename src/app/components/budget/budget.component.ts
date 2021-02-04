@@ -3,8 +3,8 @@ import { Category } from 'src/app/models/category';
 import { CategoryDataService } from 'src/app/services/category-data.service';
 
 import { TreeNode } from 'primeng/api';
-import { zip } from 'rxjs/internal/observable/zip';
 import { CategoryGroup } from 'src/app/models/category-group';
+import { zip } from 'rxjs';
 
 @Component({
   selector: 'app-budget',

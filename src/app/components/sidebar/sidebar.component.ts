@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AccountDataService } from 'src/app/services/account-data.service';
+import { Store } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
+import { accounts, State } from 'src/app/state';
+import { AppActions } from 'src/app/state/actions';
 import { Account } from '../../models/account';
 
 @Component({
@@ -8,13 +11,13 @@ import { Account } from '../../models/account';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
-  accounts: Array<Account> = [];
+  accounts$: Observable<Array<Account>> = of();
 
-  constructor(private accountDataService: AccountDataService) { }
+  constructor(private store: Store<State>) { }
 
   ngOnInit(): void {
-    this.accountDataService.getAccounts().subscribe(accounts => {
-      this.accounts = accounts;
-    });
+    this.accounts$ = this.store.select(accounts);
+
+    this.store.dispatch(AppActions.loadAccounts());
   }
 }

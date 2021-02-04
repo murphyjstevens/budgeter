@@ -3,7 +3,7 @@
   <a routerLink="/accounts/" class="sidebar-item">All Accounts</a>
   <div class="sidebar-section">
     <h4 class="sidebar-section-header">Accounts</h4>
-    <a *ngFor="let account of accounts"
+    <a *ngFor="let account of accounts$ | async"
       [routerLink]="['/accounts', account.url]"
       class="sidebar-item">{{ account.name }}</a>
   </div>
