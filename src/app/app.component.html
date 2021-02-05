@@ -1,5 +1,15 @@
 <app-sidebar class="sidebar-wrapper"></app-sidebar>
 
-<div class="content">
-  <router-outlet class="content"></router-outlet>
+<div class="content-wrapper">
+  <div *ngIf="isLoading$ | async" class="loading-overlay">
+    <div class="loading-dialog">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <h3 class="loading-message">Loading</h3>
+    </div>
+  </div>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
 </div>

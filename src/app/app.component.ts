@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { isLoading, State } from './state';
 
 @Component({
@@ -7,13 +8,11 @@ import { isLoading, State } from './state';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'budgeter';
-  isLoading = false;
+  isLoading$: Observable<boolean>;
 
-  constructor(private store: Store<State>) { }
-
-  ngOnInit(): void {
-    this.store.select(isLoading).subscribe(state => console.log(state));
-  }
+  constructor(store: Store<State>) {
+    this.isLoading$ = store.select(isLoading);
+   }
 }

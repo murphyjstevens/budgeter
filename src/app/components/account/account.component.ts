@@ -5,16 +5,13 @@ import { Store } from '@ngrx/store';
 import { Account } from 'src/app/models/account';
 import { Category } from 'src/app/models/category';
 import { Transaction } from 'src/app/models/transaction';
-import { AccountDataService } from 'src/app/services/account-data.service';
 import { CategoryDataService } from 'src/app/services/category-data.service';
 import { TransactionDataService } from 'src/app/services/transaction-data.service';
 import { DeleteConfirmationModalComponent } from 'src/app/shared/delete-confirmation-modal/delete-confirmation-modal.component';
 import { AddTransactionDialogComponent } from './add-transaction-dialog/add-transaction-dialog.component';
 import { accounts, State } from 'src/app/state';
-import { Observable } from 'rxjs/internal/Observable';
-import { of } from 'rxjs/internal/observable/of';
-import { tap } from 'rxjs/internal/operators/tap';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { AppActions } from 'src/app/state/actions';
 
 @Component({
   selector: 'app-account',
@@ -32,47 +29,86 @@ export class AccountComponent implements OnInit, OnDestroy {
   isAddDialogVisible = false;
   isEditingRow = false;
 
+  private isAccountsLoading = false;
+  private isTransactionsLoading = false;
+  private isCategoriesLoading = false;
+
   private subscriptions: Subscription[] = [];
 
   constructor(private route: ActivatedRoute,
               private store: Store<State>,
               private modalService: NgbModal,
               private categoryDataService: CategoryDataService,
-              private accountDataService: AccountDataService,
               private transactionDataService: TransactionDataService) { }
 
   ngOnInit(): void {
-    // this.store.dispatch(AppActions.setIsLoading({ isLoading: true }));
-    // this.modalService.open(LoadingModalComponent, { backdrop: 'static', keyboard: false, centered: true, size: 'sm' });
+    this.store.dispatch(AppActions.setIsLoading({ isLoading: true }));
+
+    this.isAccountsLoading = true;
     this.subscriptions.push(this.store.select(accounts).subscribe(accounts => {
       this.accounts = accounts;
+
       this.route.params.subscribe(params => {
+        this.store.dispatch(AppActions.setIsLoading({ isLoading: true }));
         if (params.account) {
           this.account = accounts.find(account => account.url === params.account) ?? null;
+
           if(this.account) {
+            this.isTransactionsLoading = true;
+
             this.transactionDataService.getByAccount(this.account.id).subscribe(transactions => {
               this.transactions = transactions
                 .map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
                 .sort((a, b) => b.date.getTime() - a.date.getTime());
+              this.isTransactionsLoading = false;
+              this.setIsLoading();
+            }, error => {
+              this.isTransactionsLoading = false;
+              this.setIsLoading();
+              console.error(error);
             });
           }
         } else {
           this.account = null;
+          this.isTransactionsLoading = true;
           this.transactionDataService.get().subscribe(transactions => {
             this.transactions = transactions
               .map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
               .sort((a, b) => b.date.getTime() - a.date.getTime());
+            this.isTransactionsLoading = false;
+            this.setIsLoading();
+          }, error => {
+            this.isTransactionsLoading = false;
+            this.setIsLoading();
+            console.error(error);
           });
         }
       });
+      this.isAccountsLoading = false;
+      this.setIsLoading();
+    }, error => {
+      this.isAccountsLoading = false;
+      this.setIsLoading();
     }));
     this.categoryDataService.get().subscribe(categories => {
       this.categories = categories;
+      this.isCategoriesLoading = false;
+      this.setIsLoading();
+    }, error => {
+      this.isCategoriesLoading = false;
+      this.setIsLoading();
+      console.error(error);
     });
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
+  setIsLoading(): void {
+    if (!this.isAccountsLoading && !this.isCategoriesLoading && !this.isTransactionsLoading) {
+      this.store.dispatch(AppActions.setIsLoading({ isLoading: false }));
+    }
   }
 
   getCategoryName(id: number): string {
@@ -107,12 +143,17 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   save(transaction: Transaction): void {
+    this.store.dispatch(AppActions.setIsLoading({ isLoading: true }));
     this.transactionDataService.update(transaction).subscribe(updatedTransaction => {
       const transactionIndex = this.transactions.findIndex(t => t.id === updatedTransaction.id);
       this.transactions[transactionIndex] = updatedTransaction;
       this.sortTransactions();
       transaction.isEditing = false;
       this.isEditingRow = false;
+      this.store.dispatch(AppActions.setIsLoading({ isLoading: false }));
+    }, error => {
+      this.store.dispatch(AppActions.setIsLoading({ isLoading: false }));
+      console.error(error);
     });
   }
 
