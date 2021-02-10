@@ -1,41 +1,25 @@
 <div class="flex-column">
   <h1>{{ month }}</h1>
-  <p-treeTable [value]="budgets" styleClass="p-treetable-sm" (onEditComplete)="onEditComplete($event)" dataKey="id">
-    <ng-template pTemplate="colgroup">
-        <colgroup>
-            <col style="width:55%">
-            <col style="width:15%">
-            <col style="width:15%">
-            <col style="width:15%">
-        </colgroup>
-    </ng-template>
-    <ng-template pTemplate="header">
-        <tr>
-            <th class="text-align-center">Category</th>
-            <th class="text-align-center">Budget</th>
-            <th class="text-align-center">Spent</th>
-            <th class="text-align-center">Available</th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-        <tr [class.tree-header-row]="rowNode.node.children">
-            <td ttEditableColumn>
-                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                {{rowData.name}}
-            </td>
-          <td ttEditableColumn>
-            <p-treeTableCellEditor class="float-right">
-              <ng-template pTemplate="input">
-                <p-inputNumber [(ngModel)]="rowData.budget" mode="currency" currency="USD" locale="en-US" inputStyleClass="text-align-right"></p-inputNumber>
-              </ng-template>
-              <ng-template pTemplate="output">
-                <span class="text-align-right">{{ rowData.budget | currency: 'USD' }}</span>
-              </ng-template>
-            </p-treeTableCellEditor>
-          </td>
-          <td class="text-align-right">{{ rowData.spent | currency: 'USD' }}</td>
-          <td class="text-align-right">{{ getAvailable(rowData) | currency: 'USD' }}</td>
-        </tr>
-    </ng-template>
-  </p-treeTable>
+  <div class="flex-column budget-container">
+    <div class="flex-row">
+      <span class="budget-header budget-column-category">Category</span>
+      <span class="budget-header budget-column-budget">Budget</span>
+      <span class="budget-header budget-column-spent">Spent</span>
+      <span class="budget-header budget-column-available">Available</span>
+    </div>
+    <div *ngFor="let group of categoryGroups" class="flex-column">
+      <div class="flex-row">
+        <span class="budget-group-cell budget-column-category">{{group.name}}</span>
+        <span class="budget-group-cell budget-column-budget"></span>
+        <span class="budget-group-cell budget-column-spent"></span>
+        <span class="budget-group-cell budget-column-available"></span>
+      </div>
+      <div *ngFor="let category of group.categories" class="flex-row">
+        <span class="budget-category-cell budget-column-category">{{category.name}}</span>
+        <span class="budget-category-cell budget-column-budget">{{category.budget | currency: 'USD'}}</span>
+        <span class="budget-category-cell budget-column-spent">{{category.spent | currency: 'USD'}}</span>
+        <span class="budget-category-cell budget-column-available">{{getAvailable(category)}}</span>
+      </div>
+    </div>
+  </div>
 </div>

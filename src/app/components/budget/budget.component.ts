@@ -5,6 +5,7 @@ import { CategoryDataService } from 'src/app/services/category-data.service';
 import { TreeNode } from 'primeng/api';
 import { CategoryGroup } from 'src/app/models/category-group';
 import { zip } from 'rxjs';
+import { group } from '@angular/animations';
 
 @Component({
   selector: 'app-budget',
@@ -12,7 +13,7 @@ import { zip } from 'rxjs';
   styleUrls: ['./budget.component.css']
 })
 export class BudgetComponent implements OnInit {
-  budgets: Array<TreeNode> = [];
+  categoryGroups: Array<CategoryGroup> = [];
   month = 'Jan 2021';
 
   constructor(private categoryDataService: CategoryDataService) { }
@@ -21,14 +22,11 @@ export class BudgetComponent implements OnInit {
     const categorySub = this.categoryDataService.get();
     const groupSub = this.categoryDataService.getGroups();
     zip(categorySub, groupSub).subscribe(([categories, categoryGroups]) => {
-      this.budgets = categoryGroups.map(group => {
+      this.categoryGroups = categoryGroups.map((group: CategoryGroup) => {
         return {
-          data: group,
-          children: categories.filter(category => category.categoryGroupId === group.id).map(category => {
-            return { data: category } as TreeNode;
-          }),
-          expanded: true
-        } as TreeNode;
+          ...group,
+          categories: categories.filter((category: Category) => category.categoryGroupId === group.id)
+        } as CategoryGroup
       });
     });
   }

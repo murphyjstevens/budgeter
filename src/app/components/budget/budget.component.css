@@ -4,6 +4,46 @@
   margin-left: 1em;
 }
 
-.tree-header-row {
-  background-color: gray;
+.budget-container {
+  width: 100%;
+}
+
+.budget-column-category {
+  width: 55%;
+}
+
+.budget-column-budget {
+  width: 15%;
+  text-align: right;
+}
+
+.budget-column-spent {
+  width: 15%;
+  text-align: right;
+}
+
+.budget-column-available {
+  width: 15%;
+  text-align: right;
+}
+
+.budget-container {
+  border: 1px solid #dee2e6;
+}
+
+.budget-header {
+  background-color: #343a40;
+  padding: 0.75rem;
+  color: white;
+  font-weight: 700;
+}
+
+.budget-group-cell {
+  background-color: lightgray;
+  padding: 0.75rem;
+}
+
+.budget-category-cell {
+  background-color: white;
+  padding: 0.75rem;
 }
