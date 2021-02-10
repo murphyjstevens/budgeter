@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Category } from 'src/app/models/category';
 import { CategoryDataService } from 'src/app/services/category-data.service';
-
-import { TreeNode } from 'primeng/api';
 import { CategoryGroup } from 'src/app/models/category-group';
 import { zip } from 'rxjs';
-import { group } from '@angular/animations';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/state';
+import { AppActions } from 'src/app/state/actions';
 
 @Component({
   selector: 'app-budget',
@@ -16,9 +16,11 @@ export class BudgetComponent implements OnInit {
   categoryGroups: Array<CategoryGroup> = [];
   month = 'Jan 2021';
 
-  constructor(private categoryDataService: CategoryDataService) { }
+  constructor(private categoryDataService: CategoryDataService,
+              private store: Store<State>) { }
 
   ngOnInit(): void {
+    this.store.dispatch(AppActions.setIsLoading({ isLoading: true }));
     const categorySub = this.categoryDataService.get();
     const groupSub = this.categoryDataService.getGroups();
     zip(categorySub, groupSub).subscribe(([categories, categoryGroups]) => {
@@ -28,19 +30,33 @@ export class BudgetComponent implements OnInit {
           categories: categories.filter((category: Category) => category.categoryGroupId === group.id)
         } as CategoryGroup
       });
+      this.store.dispatch(AppActions.setIsLoading({ isLoading: false }));
+    }, error => {
+      this.store.dispatch(AppActions.setIsLoading({ isLoading: false }));
+      console.error(error);
     });
   }
 
-  getAvailable(data: Category | CategoryGroup): string | undefined {
+  calculateAvailable(data: Category | CategoryGroup): number | undefined {
     const category = data as Category;
     if (category.budget === undefined || category.spent === undefined) { return undefined; }
 
-    return (category.budget - category.spent).toFixed(2);
+    return (category.budget - category.spent);
   }
 
-  onEditComplete(event: any): void {
-    console.log(event);
-    console.log(event.data);
-    console.log(event.originalEvent);
+  calculateGroupTotals(group: CategoryGroup, column: string): number | undefined {
+    let numberArray: Array<number> = [];
+    switch (column) {
+      case 'budgeted':
+        numberArray = group.categories.map(category => this.calculateAvailable(category) as number);
+        break;
+      case 'spent':
+        numberArray = group.categories.map(category => this.calculateAvailable(category) as number);
+        break;
+      case 'available':
+        numberArray = group.categories.map(category => this.calculateAvailable(category) as number);
+        break;
+    }
+    return numberArray.reduce((previous, current) => previous + current);
   }
 }
