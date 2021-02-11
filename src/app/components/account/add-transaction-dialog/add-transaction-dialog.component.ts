@@ -43,7 +43,7 @@ export class AddTransactionDialogComponent implements OnInit {
     this.accountDataService.getAccounts().subscribe(accounts => {
       this.accounts = accounts;
     });
-    this.categoryDataService.get().subscribe(categories => {
+    this.categoryDataService.getSimple().subscribe(categories => {
       this.categories = categories;
     });
   }

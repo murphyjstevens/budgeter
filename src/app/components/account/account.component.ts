@@ -90,7 +90,7 @@ export class AccountComponent implements OnInit, OnDestroy {
       this.isAccountsLoading = false;
       this.setIsLoading();
     }));
-    this.categoryDataService.get().subscribe(categories => {
+    this.categoryDataService.getSimple().subscribe(categories => {
       this.categories = categories;
       this.isCategoriesLoading = false;
       this.setIsLoading();

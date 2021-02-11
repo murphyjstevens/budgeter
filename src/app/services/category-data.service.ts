@@ -38,6 +38,10 @@ export class CategoryDataService {
     return this.httpClient.get<Array<Category>>(`${this.apiUrl}/Categories`);
   }
 
+  getSimple(): Observable<Array<Category>> {
+    return this.httpClient.get<Array<Category>>(`${this.apiUrl}/Categories/Simple`);
+  }
+
   getGroups(): Observable<Array<CategoryGroup>> {
     return this.httpClient.get<Array<CategoryGroup>>(`${this.apiUrl}/CategoryGroups`);
   }
