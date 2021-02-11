@@ -4,4 +4,5 @@ export interface CategoryGroup {
   id: number;
   name: string;
   categories: Array<Category>;
+  isExpanded: boolean;
 }

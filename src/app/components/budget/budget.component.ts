@@ -27,7 +27,8 @@ export class BudgetComponent implements OnInit {
       this.categoryGroups = categoryGroups.map((group: CategoryGroup) => {
         return {
           ...group,
-          categories: categories.filter((category: Category) => category.categoryGroupId === group.id)
+          categories: categories.filter((category: Category) => category.categoryGroupId === group.id),
+          isExpanded: true
         } as CategoryGroup
       });
       this.store.dispatch(AppActions.setIsLoading({ isLoading: false }));

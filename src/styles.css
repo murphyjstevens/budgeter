@@ -97,3 +97,10 @@
 .btn:disabled {
   cursor: not-allowed;
 }
+
+.btn-icon-only {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+}

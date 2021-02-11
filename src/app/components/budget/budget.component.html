@@ -9,17 +9,24 @@
     </div>
     <div *ngFor="let group of categoryGroups" class="flex-column">
       <div class="flex-row">
-        <span class="budget-group-cell budget-column-category">{{group.name}}</span>
+        <span class="budget-group-cell budget-column-category">
+          <button type="button" (click)="group.isExpanded = !group.isExpanded" class="btn-icon-only">
+            <i class="bi" [class.bi-caret-down-fill]="group.isExpanded" [class.bi-caret-right-fill]="!group.isExpanded"></i>
+          </button>
+          {{group.name}}
+        </span>
         <span class="budget-group-cell budget-column-budget">{{calculateGroupTotals(group, 'budgeted') | currency: 'USD'}}</span>
         <span class="budget-group-cell budget-column-spent">{{calculateGroupTotals(group, 'spent') | currency: 'USD'}}</span>
         <span class="budget-group-cell budget-column-available">{{calculateGroupTotals(group, 'available') | currency: 'USD'}}</span>
       </div>
-      <div *ngFor="let category of group.categories" class="flex-row">
-        <span class="budget-category-cell budget-column-category">{{category.name}}</span>
-        <span class="budget-category-cell budget-column-budget">{{category.budget | currency: 'USD'}}</span>
-        <span class="budget-category-cell budget-column-spent">{{category.spent | currency: 'USD'}}</span>
-        <span class="budget-category-cell budget-column-available">{{calculateAvailable(category) | currency: 'USD'}}</span>
-      </div>
+      <ng-container *ngIf="group.isExpanded">
+        <div *ngFor="let category of group.categories" class="flex-row">
+          <span class="budget-category-cell budget-column-category">{{category.name}}</span>
+          <span class="budget-category-cell budget-column-budget">{{category.budget | currency: 'USD'}}</span>
+          <span class="budget-category-cell budget-column-spent">{{category.spent | currency: 'USD'}}</span>
+          <span class="budget-category-cell budget-column-available">{{calculateAvailable(category) | currency: 'USD'}}</span>
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>
