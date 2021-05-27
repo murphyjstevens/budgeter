@@ -6,6 +6,8 @@ import { zip } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/state';
 import { AppActions } from 'src/app/state/actions';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AddCategoryDialogComponent } from './add-category-dialog/add-category-dialog.component';
 
 @Component({
   selector: 'app-budget',
@@ -17,7 +19,8 @@ export class BudgetComponent implements OnInit {
   month = 'Jan 2021';
 
   constructor(private categoryDataService: CategoryDataService,
-              private store: Store<State>) { }
+              private store: Store<State>,
+              private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.store.dispatch(AppActions.setIsLoading({ isLoading: true }));
@@ -46,6 +49,10 @@ export class BudgetComponent implements OnInit {
   }
 
   calculateGroupTotals(group: CategoryGroup, column: string): number | undefined {
+    if(!group.categories.length) {
+      return undefined;
+    }
+
     let numberArray: Array<number> = [];
     switch (column) {
       case 'budgeted':
@@ -59,5 +66,17 @@ export class BudgetComponent implements OnInit {
         break;
     }
     return numberArray.reduce((previous, current) => previous + current);
+  }
+
+  openAddCategoryDialog(categoryGroupId: number) {
+    const modal = this.modalService.open(AddCategoryDialogComponent);
+    modal.componentInstance.setCategoryGroupId(categoryGroupId);
+    modal.result.then((category: Category) => {
+      let categoryGroup = this.categoryGroups.find(group => group.id === category.categoryGroupId);
+      if (categoryGroup) {
+        categoryGroup.categories.push(category);
+        categoryGroup.categories.sort((a: Category, b: Category) => a.name < b.name ? -1 : 1);
+      }
+    });
   }
 }

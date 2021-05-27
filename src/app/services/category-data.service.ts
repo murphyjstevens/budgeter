@@ -30,19 +30,32 @@ export class CategoryDataService {
       categoryGroupId: 2
     } as Category
   ];
-  apiUrl = 'https://localhost:5001';
+  apiUrl = 'https://localhost:5001/Categories';
+  groupsApiUrl = 'https://localhost:5001/CategoryGroups';
 
   constructor(private httpClient: HttpClient) { }
 
   get(): Observable<Array<Category>> {
-    return this.httpClient.get<Array<Category>>(`${this.apiUrl}/Categories`);
+    return this.httpClient.get<Array<Category>>(this.apiUrl);
   }
 
   getSimple(): Observable<Array<Category>> {
-    return this.httpClient.get<Array<Category>>(`${this.apiUrl}/Categories/Simple`);
+    return this.httpClient.get<Array<Category>>(`${this.apiUrl}/Simple`);
+  }
+
+  add(category: Category): Observable<Category> {
+    return this.httpClient.post<Category>(this.apiUrl, category);
+  }
+
+  update(category: Category): Observable<Category> {
+    return this.httpClient.put<Category>(this.apiUrl, category);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.httpClient.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   getGroups(): Observable<Array<CategoryGroup>> {
-    return this.httpClient.get<Array<CategoryGroup>>(`${this.apiUrl}/CategoryGroups`);
+    return this.httpClient.get<Array<CategoryGroup>>(`${this.groupsApiUrl}`);
   }
 }

@@ -48,3 +48,12 @@
   background-color: white;
   padding: 0.75rem;
 }
+
+.add-category-button {
+  color: green;
+  display: none;
+}
+
+.group-header-row:hover .add-category-button {
+  display: inline-flex;
+}

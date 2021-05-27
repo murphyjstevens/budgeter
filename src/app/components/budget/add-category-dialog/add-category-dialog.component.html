@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Add Category</h4>
+  <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="addCategoryForm" (ngSubmit)="add()" id="addCategoryForm">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input id="name"
+             formControlName="name"
+             name="name"
+             class="form-control"
+             [class.form-control-invalid]="name?.invalid && (name?.dirty || name?.touched)"
+             required>
+    </div>
+
+    <div class="form-group">
+      <label for="categoryGroup" class="form-label">Category Group</label>
+      <select id="categoryGroup"
+              formControlName="categoryGroupId"
+              name="categoryGroup"
+              class="form-select"
+              [class.form-select-invalid]="categoryGroupId?.invalid && (categoryGroupId?.dirty || categoryGroupId?.touched)"
+              required>
+        <option *ngFor="let categoryGroup of categoryGroups"
+                [value]="categoryGroup.id">{{ categoryGroup.name }}</option>
+      </select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" (click)="modal.dismiss()" class="btn btn-outline-secondary">Cancel</button>
+  <button type="submit" form="addCategoryForm" [disabled]="!addCategoryForm.valid" class="btn btn-success">Save</button>
+</div>

@@ -27,6 +27,7 @@ import { environment } from '../environments/environment';
 import { reducers } from './state';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './state/app.effects';
+import { AddCategoryDialogComponent } from './components/budget/add-category-dialog/add-category-dialog.component';
 
 
 @NgModule({
@@ -36,6 +37,7 @@ import { AppEffects } from './state/app.effects';
     AccountComponent,
     SidebarComponent,
     AddTransactionDialogComponent,
+    AddCategoryDialogComponent,
     DeleteConfirmationModalComponent
   ],
   imports: [
