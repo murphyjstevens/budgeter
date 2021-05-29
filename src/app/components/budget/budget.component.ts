@@ -79,4 +79,13 @@ export class BudgetComponent implements OnInit {
       }
     });
   }
+
+  removeCategory(categoryGroupId: number, categoryId: number) {
+    this.categoryDataService.delete(categoryId).subscribe(() => {
+      let group = this.categoryGroups.find(categoryGroup => categoryGroup.id === categoryGroupId);
+      if (group) {
+        group.categories = group.categories.filter(category => category.id !== categoryId);
+      }
+    })
+  }
 }

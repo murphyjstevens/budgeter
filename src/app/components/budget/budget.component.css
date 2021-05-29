@@ -27,6 +27,11 @@
   text-align: right;
 }
 
+.budget-column-actions {
+  width: 100px;
+  text-align: center;
+}
+
 .budget-container {
   border: 1px solid #dee2e6;
 }
@@ -50,7 +55,7 @@
 }
 
 .add-category-button {
-  color: green;
+  color: white;
   display: none;
 }
 

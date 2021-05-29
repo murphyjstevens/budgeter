@@ -6,6 +6,7 @@
       <span class="budget-header budget-column-budget">Budget</span>
       <span class="budget-header budget-column-spent">Spent</span>
       <span class="budget-header budget-column-available">Available</span>
+      <span class="budget-header budget-column-actions"></span>
     </div>
     <div *ngFor="let group of categoryGroups" class="flex-column group-row-container">
       <div class="flex-row group-header-row">
@@ -14,13 +15,15 @@
             <i class="bi" [class.bi-caret-down-fill]="group.isExpanded" [class.bi-caret-right-fill]="!group.isExpanded"></i>
           </button>
           {{group.name}}
-          <button type="button" (click)="openAddCategoryDialog(group.id)" class="btn-icon-only add-category-button">
-            <i class="bi bi-plus-square"></i>
+          <button type="button" (click)="openAddCategoryDialog(group.id)" class="btn btn-primary add-category-button">
+            <i class="bi bi-plus-lg"></i>
+            <span>Add Category</span>
           </button>
         </span>
         <span class="budget-group-cell budget-column-budget">{{calculateGroupTotals(group, 'budgeted') | currency: 'USD'}}</span>
         <span class="budget-group-cell budget-column-spent">{{calculateGroupTotals(group, 'spent') | currency: 'USD'}}</span>
         <span class="budget-group-cell budget-column-available">{{calculateGroupTotals(group, 'available') | currency: 'USD'}}</span>
+        <span class="budget-group-cell budget-column-actions"></span>
       </div>
       <ng-container *ngIf="group.isExpanded">
         <div *ngFor="let category of group.categories" class="flex-row">
@@ -28,6 +31,11 @@
           <span class="budget-category-cell budget-column-budget">{{category.budget | currency: 'USD'}}</span>
           <span class="budget-category-cell budget-column-spent">{{category.spent | currency: 'USD'}}</span>
           <span class="budget-category-cell budget-column-available">{{calculateAvailable(category) | currency: 'USD'}}</span>
+          <span class="budget-category-cell budget-column-actions">
+            <button type="button" (click)="removeCategory(group.id, category.id)" class="btn-icon-only">
+              <i class="bi bi-trash"></i>
+            </button>
+          </span>
         </div>
       </ng-container>
     </div>
