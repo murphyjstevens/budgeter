@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing'
 
-import { CategoryDataService } from './category-data.service';
+import { CategoryDataService } from './category-data.service'
 
 describe('CategoryDataService', () => {
-  let service: CategoryDataService;
+  let service: CategoryDataService
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(CategoryDataService);
-  });
+    TestBed.configureTestingModule({})
+    service = TestBed.inject(CategoryDataService)
+  })
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+    expect(service).toBeTruthy()
+  })
+})

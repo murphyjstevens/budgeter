@@ -1,5 +1,5 @@
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl } from '@angular/forms'
 
-export function NumberValidator(control: AbstractControl): any {
-  return control.value ? null : { numberInvalid: true };
+export function NumberValidator (control: AbstractControl): any {
+  return control.value ? null : { numberInvalid: true }
 }

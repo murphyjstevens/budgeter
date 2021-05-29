@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/internal/Observable';
-import { of } from 'rxjs/internal/observable/of';
-import { Category } from '../models/category';
-import { CategoryGroup } from '../models/category-group';
+import { Injectable } from '@angular/core'
+import { HttpClient } from '@angular/common/http'
+import { Observable } from 'rxjs/internal/Observable'
+import { Category } from '../models/category'
+import { CategoryGroup } from '../models/category-group'
 
 @Injectable({
   providedIn: 'root'
@@ -30,32 +29,33 @@ export class CategoryDataService {
       categoryGroupId: 2
     } as Category
   ];
+
   apiUrl = 'https://localhost:5001/Categories';
   groupsApiUrl = 'https://localhost:5001/CategoryGroups';
 
-  constructor(private httpClient: HttpClient) { }
+  constructor (private httpClient: HttpClient) { }
 
-  get(): Observable<Array<Category>> {
-    return this.httpClient.get<Array<Category>>(this.apiUrl);
+  get (): Observable<Array<Category>> {
+    return this.httpClient.get<Array<Category>>(this.apiUrl)
   }
 
-  getSimple(): Observable<Array<Category>> {
-    return this.httpClient.get<Array<Category>>(`${this.apiUrl}/Simple`);
+  getSimple (): Observable<Array<Category>> {
+    return this.httpClient.get<Array<Category>>(`${this.apiUrl}/Simple`)
   }
 
-  add(category: Category): Observable<Category> {
-    return this.httpClient.post<Category>(this.apiUrl, category);
+  add (category: Category): Observable<Category> {
+    return this.httpClient.post<Category>(this.apiUrl, category)
   }
 
-  update(category: Category): Observable<Category> {
-    return this.httpClient.put<Category>(this.apiUrl, category);
+  update (category: Category): Observable<Category> {
+    return this.httpClient.put<Category>(this.apiUrl, category)
   }
 
-  delete(id: number): Observable<void> {
-    return this.httpClient.delete<void>(`${this.apiUrl}/${id}`);
+  delete (id: number): Observable<void> {
+    return this.httpClient.delete<void>(`${this.apiUrl}/${id}`)
   }
 
-  getGroups(): Observable<Array<CategoryGroup>> {
-    return this.httpClient.get<Array<CategoryGroup>>(`${this.groupsApiUrl}`);
+  getGroups (): Observable<Array<CategoryGroup>> {
+    return this.httpClient.get<Array<CategoryGroup>>(`${this.groupsApiUrl}`)
   }
 }

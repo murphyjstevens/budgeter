@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { isLoading, State } from './state';
+import { Component } from '@angular/core'
+import { Store } from '@ngrx/store'
+import { Observable } from 'rxjs'
+import { isLoading, State } from './state'
 
 @Component({
   selector: 'app-root',
@@ -12,7 +12,7 @@ export class AppComponent {
   title = 'budgeter';
   isLoading$: Observable<boolean>;
 
-  constructor(store: Store<State>) {
-    this.isLoading$ = store.select(isLoading);
-   }
+  constructor (store: Store<State>) {
+    this.isLoading$ = store.select(isLoading)
+  }
 }
