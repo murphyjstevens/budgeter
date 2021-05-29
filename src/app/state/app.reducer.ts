@@ -1,4 +1,4 @@
-import { Action, createReducer, on } from '@ngrx/store';
+import { Action, ActionReducer, createReducer, on } from '@ngrx/store';
 import * as AppActions from './actions/app.actions';
 import { Account } from '../models/account';
 import { AppApiActions } from './actions';
@@ -41,7 +41,7 @@ const appReducer = createReducer<AppState>(
   })
 );
 
-export function reducer(state: AppState | undefined, action: Action) {
+export function reducer(state: AppState | undefined, action: Action): AppState {
   return appReducer(state, action);
 }
 

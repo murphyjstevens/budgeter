@@ -1,6 +1,11 @@
 {
   "name": "budgeter",
   "version": "0.0.0",
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "maintained node versions"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

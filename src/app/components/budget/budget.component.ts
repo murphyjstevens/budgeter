@@ -32,7 +32,7 @@ export class BudgetComponent implements OnInit {
           ...group,
           categories: categories.filter((category: Category) => category.categoryGroupId === group.id),
           isExpanded: true
-        } as CategoryGroup
+        } as CategoryGroup;
       });
       this.store.dispatch(AppActions.setIsLoading({ isLoading: false }));
     }, error => {
@@ -49,7 +49,7 @@ export class BudgetComponent implements OnInit {
   }
 
   calculateGroupTotals(group: CategoryGroup, column: string): number | undefined {
-    if(!group.categories.length) {
+    if (!group.categories.length) {
       return undefined;
     }
 
@@ -68,11 +68,11 @@ export class BudgetComponent implements OnInit {
     return numberArray.reduce((previous, current) => previous + current);
   }
 
-  openAddCategoryDialog(categoryGroupId: number) {
+  openAddCategoryDialog(categoryGroupId: number): void {
     const modal = this.modalService.open(AddCategoryDialogComponent);
     modal.componentInstance.setCategoryGroupId(categoryGroupId);
     modal.result.then((category: Category) => {
-      let categoryGroup = this.categoryGroups.find(group => group.id === category.categoryGroupId);
+      const categoryGroup = this.categoryGroups.find(group => group.id === category.categoryGroupId);
       if (categoryGroup) {
         categoryGroup.categories.push(category);
         categoryGroup.categories.sort((a: Category, b: Category) => a.name < b.name ? -1 : 1);
@@ -80,12 +80,12 @@ export class BudgetComponent implements OnInit {
     });
   }
 
-  removeCategory(categoryGroupId: number, categoryId: number) {
+  removeCategory(categoryGroupId: number, categoryId: number): void {
     this.categoryDataService.delete(categoryId).subscribe(() => {
-      let group = this.categoryGroups.find(categoryGroup => categoryGroup.id === categoryGroupId);
+      const group = this.categoryGroups.find(categoryGroup => categoryGroup.id === categoryGroupId);
       if (group) {
         group.categories = group.categories.filter(category => category.id !== categoryId);
       }
-    })
+    });
   }
 }

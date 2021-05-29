@@ -17,7 +17,7 @@ import { NumberValidator } from 'src/app/shared/validators/number.validator';
 export class AddTransactionDialogComponent implements OnInit {
   @Input() defaultAccount: Account | null = null;
   @Output() save: EventEmitter<Transaction> = new EventEmitter();
-  title: string = 'Add Transaction';
+  title = 'Add Transaction';
   accounts: Array<Account> = [];
   categories: Array<Category> = [];
 

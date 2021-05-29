@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { Category } from "src/app/models/category";
-import { CategoryGroup } from "src/app/models/category-group";
-import { CategoryDataService } from "src/app/services/category-data.service";
+import { Component, Input, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Category } from 'src/app/models/category';
+import { CategoryGroup } from 'src/app/models/category-group';
+import { CategoryDataService } from 'src/app/services/category-data.service';
 
 @Component({
   selector: 'app-add-category-dialog',
@@ -20,7 +20,7 @@ export class AddCategoryDialogComponent implements OnInit {
   get name(): AbstractControl | null { return this.addCategoryForm.get('name'); }
   get categoryGroupId(): AbstractControl | null { return this.addCategoryForm.get('categoryGroupId'); }
 
-  constructor(public modal: NgbActiveModal, 
+  constructor(public modal: NgbActiveModal,
               private formBuilder: FormBuilder,
               private categoryDataService: CategoryDataService) {}
 
@@ -32,17 +32,22 @@ export class AddCategoryDialogComponent implements OnInit {
     });
   }
 
-  setCategoryGroupId(categoryGroupId: number) {
+  setCategoryGroupId(categoryGroupId: number): void {
     this.categoryGroupId?.setValue(categoryGroupId);
   }
 
   add(): void {
     if (this.name && this.categoryGroupId) {
-      this.categoryDataService.add({ name: this.name.value, categoryGroupId: this.categoryGroupId.value, budget: 0, spent: 0 } as Category).subscribe(category => {
+      this.categoryDataService.add({
+        name: this.name.value,
+        categoryGroupId: this.categoryGroupId.value,
+        budget: 0,
+        spent: 0
+      } as Category).subscribe(category => {
         this.modal.close(category);
       }, error => {
         console.error(error);
-      })
+      });
     }
   }
 }

@@ -45,15 +45,15 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.store.dispatch(AppActions.setIsLoading({ isLoading: true }));
 
     this.isAccountsLoading = true;
-    this.subscriptions.push(this.store.select(accounts).subscribe(accounts => {
-      this.accounts = accounts;
+    this.subscriptions.push(this.store.select(accounts).subscribe(allAccounts => {
+      this.accounts = allAccounts;
 
       this.route.params.subscribe(params => {
         this.store.dispatch(AppActions.setIsLoading({ isLoading: true }));
         if (params.account) {
-          this.account = accounts.find(account => account.url === params.account) ?? null;
+          this.account = allAccounts.find(account => account.url === params.account) ?? null;
 
-          if(this.account) {
+          if (this.account) {
             this.isTransactionsLoading = true;
 
             this.transactionDataService.getByAccount(this.account.id).subscribe(transactions => {
