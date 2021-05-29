@@ -1,95 +1,98 @@
 <form [formGroup]="addTransactionForm" (ngSubmit)="add()">
-  <p-dialog [(visible)]="isDialogVisible" [style]="{width: '450px'}" header="Add Transaction" [modal]="true" styleClass="p-fluid">
-    <ng-template pTemplate="content" class="form-group">
-      <div class="form-group required-field">
-        <label for="date">Date</label>    
-        <div class="input-group">
-          <input ngbDatepicker 
-                 id="date"
-                 formControlName="date"
-                 placeholder="MM/dd/yyyy"
-                 name="date" 
-                 #datePicker="ngbDatepicker"
-                 class="form-control"
-                 required>
-          <div class="input-group-append">
-            <button type="button" 
-                    (click)="datePicker.toggle()"
-                    class="btn btn-dark bi-calendar-day"></button>
-          </div>
-        </div>
-        <div *ngIf="date?.invalid && (date?.dirty || date?.touched)"
-            class="alert alert-danger">
-          Date is required
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">{{ title }}</h4>
+    <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group required-field">
+      <label for="date">Date</label>    
+      <div class="input-group">
+        <input ngbDatepicker 
+              id="date"
+              formControlName="date"
+              placeholder="MM/dd/yyyy"
+              name="date" 
+              #datePicker="ngbDatepicker"
+              class="form-control"
+              required>
+        <div class="input-group-append">
+          <button type="button" 
+                  (click)="datePicker.toggle()"
+                  class="btn btn-dark bi-calendar-day"></button>
         </div>
       </div>
+      <div *ngIf="date?.invalid && (date?.dirty || date?.touched)"
+          class="alert alert-danger">
+        Date is required
+      </div>
+    </div>
 
-      <div class="form-group">
-        <label for="account">Account</label>
-        <select id="account" 
-                formControlName="accountId"
-                name="account" 
-                class="form-control" 
-                required>
-          <option *ngFor="let account of accounts" 
-                  [value]="account.id">{{ account.name }}</option>
-        </select>
-        <div *ngIf="accountId?.invalid && (accountId?.dirty || accountId?.touched)"
-            class="alert alert-danger">
-          Account is required
-        </div>
+    <div class="form-group">
+      <label for="account">Account</label>
+      <select id="account" 
+              formControlName="accountId"
+              name="account" 
+              class="form-control" 
+              required>
+        <option *ngFor="let account of accounts" 
+                [value]="account.id">{{ account.name }}</option>
+      </select>
+      <div *ngIf="accountId?.invalid && (accountId?.dirty || accountId?.touched)"
+          class="alert alert-danger">
+        Account is required
       </div>
+    </div>
 
-      <div class="p-field">
-        <label for="category">Category</label>
-        <select id="category"
-                formControlName="categoryId"
-                name="category"
-                class="form-control"
-                required>
-          <option *ngFor="let category of categories"
-                  [value]="category.id">{{ category.name }}</option>
-        </select>
-        <div *ngIf="categoryId?.invalid && (categoryId?.dirty || categoryId?.touched)"
-            class="alert alert-danger">
-          Category is required
-        </div>
+    <div class="p-field">
+      <label for="category">Category</label>
+      <select id="category"
+              formControlName="categoryId"
+              name="category"
+              class="form-control"
+              required>
+        <option *ngFor="let category of categories"
+                [value]="category.id">{{ category.name }}</option>
+      </select>
+      <div *ngIf="categoryId?.invalid && (categoryId?.dirty || categoryId?.touched)"
+          class="alert alert-danger">
+        Category is required
       </div>
+    </div>
 
-      <div class="p-field">
-        <label for="cost">Cost</label>
-        <input id="cost"
-               formControlName="cost"
-               (blur)="convertToMoney($event)"
-               (keyup.enter)="convertToMoney($event)"
-               name="cost"
-               class="form-control"
-               style="text-align: right;"
-               required>
-        <div *ngIf="cost?.invalid && (cost?.dirty || cost?.touched)"
-            class="alert alert-danger">
-          Cost is required
-        </div>
+    <div class="p-field">
+      <label for="cost">Cost</label>
+      <input id="cost"
+            formControlName="cost"
+            (blur)="convertToMoney($event)"
+            (keyup.enter)="convertToMoney($event)"
+            name="cost"
+            class="form-control"
+            style="text-align: right;"
+            required>
+      <div *ngIf="cost?.invalid && (cost?.dirty || cost?.touched)"
+          class="alert alert-danger">
+        Cost is required
       </div>
+    </div>
 
-      <div class="p-field">
-        <label for="recipient">Recipient</label>
-        <input id="recipient"
-               type="text"
-               formControlName="recipient"
-               name="recipient"
-               class="form-control"
-               required>
-        <div *ngIf="recipient?.invalid && (recipient?.dirty || recipient?.touched)"
-             class="alert alert-danger">
-          Recipient is required
-        </div>
+    <div class="p-field">
+      <label for="recipient">Recipient</label>
+      <input id="recipient"
+            type="text"
+            formControlName="recipient"
+            name="recipient"
+            class="form-control"
+            required>
+      <div *ngIf="recipient?.invalid && (recipient?.dirty || recipient?.touched)"
+          class="alert alert-danger">
+        Recipient is required
       </div>
-    </ng-template>
-    
-    <ng-template pTemplate="footer">
-      <button type="button" (click)="hide()" class="btn btn-outline-secondary">Cancel</button>
-      <button type="submit" [disabled]="!addTransactionForm.valid" class="btn btn-success">Save</button>
-    </ng-template>
-  </p-dialog>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">Cancel</button>
+    <button type="submit" [disabled]="!addTransactionForm.valid" class="btn btn-success">Save</button>
+  </div>
 </form>

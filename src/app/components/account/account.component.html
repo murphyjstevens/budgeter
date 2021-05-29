@@ -3,7 +3,7 @@
     <h2>{{ account ? account.name : "All Accounts" }}</h2>
     <button type="button"
             class="btn btn-primary button-icon add-transaction-button"
-            (click)="addTransactionDialog.show()">
+            (click)="showAddTransactionDialog()">
       <i class="bi bi-plus icon-button"></i>
     </button>
   </span>
@@ -146,7 +146,3 @@
     </tbody>
   </table>
 </div>
-
-<app-add-transaction-dialog #addTransactionDialog
-                            [defaultAccount]="account"
-                            (save)="onNewTransaction($event)"></app-add-transaction-dialog>

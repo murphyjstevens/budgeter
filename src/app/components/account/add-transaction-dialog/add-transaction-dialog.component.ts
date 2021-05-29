@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Account } from 'src/app/models/account';
 import { Category } from 'src/app/models/category';
 import { Transaction } from 'src/app/models/transaction';
@@ -16,7 +17,7 @@ import { NumberValidator } from 'src/app/shared/validators/number.validator';
 export class AddTransactionDialogComponent implements OnInit {
   @Input() defaultAccount: Account | null = null;
   @Output() save: EventEmitter<Transaction> = new EventEmitter();
-  isDialogVisible = false;
+  title: string = 'Add Transaction';
   accounts: Array<Account> = [];
   categories: Array<Category> = [];
 
@@ -34,7 +35,8 @@ export class AddTransactionDialogComponent implements OnInit {
   get cost(): AbstractControl | null { return this.addTransactionForm.get('cost'); }
   get recipient(): AbstractControl | null { return this.addTransactionForm.get('recipient'); }
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(public modal: NgbActiveModal,
+              private formBuilder: FormBuilder,
               private transactionDataService: TransactionDataService,
               private accountDataService: AccountDataService,
               private categoryDataService: CategoryDataService) { }
@@ -55,8 +57,7 @@ export class AddTransactionDialogComponent implements OnInit {
     this.addTransactionForm.get('cost')?.setValue(cost);
   }
 
-  show(): void {
-    this.isDialogVisible = true;
+  initialize(): void {
     const today = new Date();
     this.addTransactionForm.patchValue({
       date: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0),
@@ -64,15 +65,10 @@ export class AddTransactionDialogComponent implements OnInit {
     } as Transaction);
   }
 
-  hide(): void {
-    this.isDialogVisible = false;
-  }
-
   add(): void {
     const transaction = this.addTransactionForm.getRawValue() as Transaction;
     this.transactionDataService.insert(transaction).subscribe(updatedTransaction => {
-      this.save.emit(updatedTransaction);
-      this.hide();
+      this.modal.close(updatedTransaction);
     });
   }
 }

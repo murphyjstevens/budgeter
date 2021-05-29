@@ -6,15 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StoreModule } from '@ngrx/store';
 
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { CalendarModule } from 'primeng/calendar';
-import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
-import { TreeTableModule } from 'primeng/treetable';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BudgetComponent } from './components/budget/budget.component';
@@ -47,14 +38,6 @@ import { AddCategoryDialogComponent } from './components/budget/add-category-dia
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    AutoCompleteModule,
-    CalendarModule,
-    DialogModule,
-    DropdownModule,
-    InputNumberModule,
-    InputTextModule,
-    TableModule,
-    TreeTableModule,
     NgbModule,
     StoreModule.forRoot(reducers),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),

@@ -174,12 +174,15 @@ export class AccountComponent implements OnInit, OnDestroy {
     });
   }
 
-  onNewTransaction(transaction: Transaction): void {
-    this.transactions.push(transaction);
-    this.sortTransactions();
-  }
-
   sortTransactions(): void {
     this.transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
+  }
+
+  showAddTransactionDialog(): void {
+    const modal = this.modalService.open(AddTransactionDialogComponent);
+    modal.result.then((transaction: Transaction) => {
+      this.transactions.push(transaction);
+      this.sortTransactions();
+    });
   }
 }
