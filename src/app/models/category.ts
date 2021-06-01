@@ -4,4 +4,5 @@ export interface Category {
   budget: number;
   spent: number;
   categoryGroupId: number;
+  isEditing: boolean;
 }

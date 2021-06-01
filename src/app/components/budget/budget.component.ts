@@ -8,15 +8,20 @@ import { State } from 'src/app/state'
 import { AppActions } from 'src/app/state/actions'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { AddCategoryDialogComponent } from './add-category-dialog/add-category-dialog.component'
+import { DeleteConfirmationModalComponent } from 'src/app/shared/delete-confirmation-modal/delete-confirmation-modal.component'
 
 @Component({
   selector: 'app-budget',
   templateUrl: './budget.component.html',
-  styleUrls: ['./budget.component.css']
+  styleUrls: ['./budget.component.scss']
 })
 export class BudgetComponent implements OnInit {
   categoryGroups: Array<CategoryGroup> = [];
-  month = 'Jan 2021';
+  month: string = 'Jan 2021';
+  isEditingRow: boolean = false;
+
+  modifiedBudget: number = 0;
+  renameText: string = '';
 
   constructor (private categoryDataService: CategoryDataService,
               private store: Store<State>,
@@ -56,10 +61,10 @@ export class BudgetComponent implements OnInit {
     let numberArray: Array<number> = []
     switch (column) {
       case 'budgeted':
-        numberArray = group.categories.map(category => this.calculateAvailable(category) as number)
+        numberArray = group.categories.map(category => category.budget)
         break
       case 'spent':
-        numberArray = group.categories.map(category => this.calculateAvailable(category) as number)
+        numberArray = group.categories.map(category => category.spent)
         break
       case 'available':
         numberArray = group.categories.map(category => this.calculateAvailable(category) as number)
@@ -80,12 +85,58 @@ export class BudgetComponent implements OnInit {
     })
   }
 
-  removeCategory (categoryGroupId: number, categoryId: number): void {
-    this.categoryDataService.delete(categoryId).subscribe(() => {
-      const group = this.categoryGroups.find(categoryGroup => categoryGroup.id === categoryGroupId)
-      if (group) {
-        group.categories = group.categories.filter(category => category.id !== categoryId)
+  renameCategory (category: Category) {
+    if (this.renameText) {
+      this.saveCategory({ ...category, name: this.renameText } as Category)
+    }
+  }
+
+  updateBudget (event: any, category: Category): void {
+    if (event.relatedTarget && event.relatedTarget.name === 'undo-budget-button') return
+
+    if (event.target) {
+      const updatedBudget = Number.parseFloat(event.target.value)
+      if (updatedBudget || updatedBudget === 0) {
+        if (updatedBudget === category.budget) return
+        this.saveCategory({ ...category, budget: updatedBudget } as Category)
       }
+    }
+  }
+
+  saveCategory (category: Category) {
+    this.store.dispatch(AppActions.setIsLoading({ isLoading: true }))
+    this.categoryDataService.update(category).subscribe(updatedCategory => {
+      category = updatedCategory
+      this.store.dispatch(AppActions.setIsLoading({ isLoading: false }))
+    }, error => {
+      this.store.dispatch(AppActions.setIsLoading({ isLoading: false }))
+      console.error(error)
+    })
+  }
+
+  confirmDeleteCategory (category: Category): void {
+    const modal = this.modalService.open(DeleteConfirmationModalComponent)
+    modal.componentInstance.title = 'Delete Category'
+    modal.componentInstance.message = 'Would you like to delete this Category?'
+    modal.result.then(result => {
+      if (result) {
+        this.deleteCategory(category)
+      }
+    })
+  }
+
+  deleteCategory (category: Category): void {
+    this.store.dispatch(AppActions.setIsLoading({ isLoading: true }))
+
+    this.categoryDataService.delete(category.id).subscribe(() => {
+      const group = this.categoryGroups.find(categoryGroup => categoryGroup.id === category.categoryGroupId)
+      if (group) {
+        group.categories = group.categories.filter(c => c.id !== category.id)
+      }
+      this.store.dispatch(AppActions.setIsLoading({ isLoading: false }))
+    }, error => {
+      this.store.dispatch(AppActions.setIsLoading({ isLoading: false }))
+      console.error(error)
     })
   }
 }
