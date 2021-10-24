@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ViewChild } from '@angular/core'
 import { Category } from 'src/app/models/category'
 import { CategoryDataService } from 'src/app/services/category-data.service'
 import { CategoryGroup } from 'src/app/models/category-group'
@@ -16,6 +16,7 @@ import { DeleteConfirmationModalComponent } from 'src/app/shared/delete-confirma
   styleUrls: ['./budget.component.scss']
 })
 export class BudgetComponent implements OnInit {
+  @ViewChild('categoryRenamePopover') categoryRenamePopover: any;
   categoryGroups: Array<CategoryGroup> = [];
   month: string = 'Jan 2021';
   isEditingRow: boolean = false;
