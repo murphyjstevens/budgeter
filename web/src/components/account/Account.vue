@@ -157,18 +157,18 @@ export default {
   computed: {
     ...mapState({
       account: state => state.accounts.account,
+      accounts: state => state.accounts.all,
       categoryGroups: state => state.categoryGroups.all,
+      categories: state => state.categories.all,
       transactions: state => state.transactions.all
     })
-  },
-  created () {
-    this.$store.dispatch('transactions/getByAccount', this.accountId)
   },
   data () {
     return {
       isEditingRow: false,
       editTransaction: null,
-      renameText: ''
+      renameText: '',
+      accountUrl: null
     }
   },
   methods: {
@@ -236,10 +236,31 @@ export default {
     }
   },
   mounted () {
-    this.id = +this.$route.params.id
-    this.name = null
-    this.description = null
-    this.$store.dispatch('projects/find', this.id)
+    this.$store.dispatch('accounts/get')
+    this.$watch(
+      () => this.$route.params,
+      () => {
+        this.accountUrl = this.$route.params.url
+        this.name = null
+        this.description = null
+
+        if (this.accountUrl) {
+          this.$store.dispatch('accounts/find', this.accountUrl)
+        } else {
+          this.$store.commit('accounts/setAccount', null)
+        }
+      },
+      { immediate: true }
+    )
+  },
+  watch: {
+    account (value) {
+      if (value) {
+        this.$store.dispatch('transactions/getByAccount', value.id)
+      } else {
+        this.$store.dispatch('transactions/get')
+      }
+    }
   }
 }
 </script>

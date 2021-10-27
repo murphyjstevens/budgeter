@@ -6,7 +6,7 @@
       <h4 class="sidebar-section-header">Accounts</h4>
       <router-link v-for="account in accounts"
         :key="account.id"
-        :to="{ name: 'Project', params: { url: account.url }}"
+        :to="{ name: 'Account', params: { url: account.url }}"
         class="sidebar-item">{{ account.name }}</router-link>
     </div>
   </div>

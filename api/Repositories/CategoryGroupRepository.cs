@@ -2,6 +2,7 @@ using Dapper;
 using Npgsql;
 using System.Collections.Generic;
 using BudgeterApi.Models;
+using BudgeterApi.Mocks;
 
 namespace BudgeterApi.Repositories
 {
@@ -19,11 +20,12 @@ namespace BudgeterApi.Repositories
 
     public IEnumerable<CategoryGroup> Get()
     {
-      using (var connection = new NpgsqlConnection(ConnectionString))
-      {
-        connection.Open();
-        return connection.Query<CategoryGroup>("SELECT * FROM category_groups");
-      }
+      // using (var connection = new NpgsqlConnection(ConnectionString))
+      // {
+      //   connection.Open();
+      //   return connection.Query<CategoryGroup>("SELECT * FROM category_groups");
+      // }
+      return CategoryGroupMock.CategoryGroups;
     }
 
     public CategoryGroup Create(CategoryGroup categoryGroup)

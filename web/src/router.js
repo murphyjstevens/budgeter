@@ -5,8 +5,7 @@ import Account from './components/account/Account'
 
 const routes = [
   { path: '/', name: 'Budget', component: Budget },
-  { path: '/accounts/:id', name: 'Account', component: Account },
-  { path: '/accounts', name: 'Account', component: Account }
+  { path: '/accounts/:url?', name: 'Account', component: Account }
 ]
 
 export const router = createRouter({

@@ -15,9 +15,9 @@
                   type="date"
                   id="date"
                   class="form-control"
-                  :class="{ 'is-invalid': v$.name.$error }"
+                  :class="{ 'is-invalid': v$.date.$error }"
                   placeholder="yyyy/MM/dd"
-                  @blur="v$.name.$touch"
+                  @blur="v$.date.$touch"
                   required>
                 <div class="input-errors" v-for="error of v$.date.$errors" :key="error.$uid">
                   <div class="error-msg invalid-feedback d-block">{{ error.$message }}</div>
@@ -106,6 +106,7 @@ export default {
   name: 'TransactionDialog',
   computed: {
     ...mapState({
+      account: state => state.accounts.account,
       accounts: state => state.accounts.all,
       categories: state => state.categories.all
     })
@@ -154,8 +155,6 @@ export default {
   },
   mounted () {
     this.modal = new Modal(this.$refs.modal, {})
-    this.$store.dispatch('categories/get')
-    this.$store.dispatch('accounts/get')
   },
   setup () {
     return { v$: useVuelidate() }

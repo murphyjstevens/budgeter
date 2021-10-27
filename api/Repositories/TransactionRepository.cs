@@ -1,7 +1,9 @@
 using Dapper;
 using Npgsql;
 using System.Collections.Generic;
+using System.Linq;
 using BudgeterApi.Models;
+using BudgeterApi.Mocks;
 
 namespace BudgeterApi.Repositories
 {
@@ -19,25 +21,28 @@ namespace BudgeterApi.Repositories
     private const string TRANSACTION_SELECT = "id, account_id AS AccountId, date, cost, recipient, category_id AS CategoryId";
     public IEnumerable<Transaction> Get()
     {
-      using (var connection = new NpgsqlConnection(ConnectionString)) {
-        connection.Open();
-        return connection.Query<Transaction>($"SELECT {TRANSACTION_SELECT} FROM transactions");
-      }
+      // using (var connection = new NpgsqlConnection(ConnectionString)) {
+      //   connection.Open();
+      //   return connection.Query<Transaction>($"SELECT {TRANSACTION_SELECT} FROM transactions");
+      // }
+      return TransactionMock.Transactions;
     }
     public IEnumerable<Transaction> GetByAccount(int accountId)
     {
-      using (var connection = new NpgsqlConnection(ConnectionString)) {
-        connection.Open();
-        return connection.Query<Transaction>($"SELECT {TRANSACTION_SELECT} FROM transactions WHERE account_id = @AccountId", new { AccountId = accountId });
-      }
+      // using (var connection = new NpgsqlConnection(ConnectionString)) {
+      //   connection.Open();
+      //   return connection.Query<Transaction>($"SELECT {TRANSACTION_SELECT} FROM transactions WHERE account_id = @AccountId", new { AccountId = accountId });
+      // }
+      return TransactionMock.Transactions.Where(transaction => transaction.AccountId == accountId);
     }
 
     public IEnumerable<Transaction> GetByCategory(int categoryId)
     {
-      using (var connection = new NpgsqlConnection(ConnectionString)) {
-        connection.Open();
-        return connection.Query<Transaction>($"SELECT {TRANSACTION_SELECT} FROM transactions WHERE category_id = @CategoryId", new { CategoryId = categoryId });
-      }
+      // using (var connection = new NpgsqlConnection(ConnectionString)) {
+      //   connection.Open();
+      //   return connection.Query<Transaction>($"SELECT {TRANSACTION_SELECT} FROM transactions WHERE category_id = @CategoryId", new { CategoryId = categoryId });
+      // }
+      return TransactionMock.Transactions.Where(transaction => transaction.CategoryId == categoryId);
     }
 
     public Transaction Create(Transaction transaction)

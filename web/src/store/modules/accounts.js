@@ -26,7 +26,7 @@ const actions = {
         return
       }
       commit('setIsLoading', true, { root: true })
-      const response = await axios.get(baseUrl + '/accounts/' + url)
+      const response = await axios.get(baseUrl + '/accounts/url/' + url)
       commit('setAccount', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
@@ -41,7 +41,7 @@ const mutations = {
     state.all = accounts
   },
   setAccount (state, account) {
-    state.accounts.push(account)
+    state.account = account
   }
 }
 

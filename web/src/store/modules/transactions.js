@@ -7,10 +7,21 @@ const state = () => ({
 })
 
 const actions = {
+  async get ({ commit }) {
+    try {
+      commit('setIsLoading', true, { root: true })
+      const response = await axios.get(baseUrl + '/transactions')
+      commit('setTransactions', response.data)
+      commit('setIsLoading', false, { root: true })
+    } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      console.error(error)
+    }
+  },
   async getByAccount ({ commit }, accountId) {
     try {
       commit('setIsLoading', true, { root: true })
-      const response = await axios.get(baseUrl + '/transactions/' + accountId)
+      const response = await axios.get(baseUrl + '/transactions/Account/' + accountId)
       commit('setTransactions', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
@@ -21,7 +32,7 @@ const actions = {
   async getByCategory ({ commit }, categoryId) {
     try {
       commit('setIsLoading', true, { root: true })
-      const response = await axios.get(baseUrl + '/transactions/' + categoryId)
+      const response = await axios.get(baseUrl + '/transactions/Category/' + categoryId)
       commit('setTransactions', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
@@ -95,7 +106,7 @@ const mutations = {
       .filter(transaction => transaction.id !== transactionId)
   },
   sortTransactions (state) {
-    state.all.sort((a, b) => b.date.getTime() - a.date.getTime())
+    state.all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }
 }
 

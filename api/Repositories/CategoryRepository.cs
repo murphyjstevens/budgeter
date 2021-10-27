@@ -2,6 +2,7 @@ using Dapper;
 using Npgsql;
 using System.Collections.Generic;
 using BudgeterApi.Models;
+using BudgeterApi.Mocks;
 
 namespace BudgeterApi.Repositories
 {
@@ -19,23 +20,25 @@ namespace BudgeterApi.Repositories
 
     public IEnumerable<Category> Get()
     {
-      using (var connection = new NpgsqlConnection(ConnectionString))
-      {
-        connection.Open();
-        return connection.Query<Category>(
-          $@"SELECT c.id, c.name, c.budget, c.category_group_id as CategoryGroupId, coalesce(SUM(t.cost), 0::money) as Spent FROM categories c
-LEFT JOIN transactions t ON t.category_id = c.id
-GROUP BY c.id, c.name, c.budget, c.category_group_id");
-      }
+//       using (var connection = new NpgsqlConnection(ConnectionString))
+//       {
+//         connection.Open();
+//         return connection.Query<Category>(
+//           $@"SELECT c.id, c.name, c.budget, c.category_group_id as CategoryGroupId, coalesce(SUM(t.cost), 0::money) as Spent FROM categories c
+// LEFT JOIN transactions t ON t.category_id = c.id
+// GROUP BY c.id, c.name, c.budget, c.category_group_id");
+//       }
+      return CategoryMock.Categories;
     }
 
     public IEnumerable<Category> GetSimple()
     {
-      using (var connection = new NpgsqlConnection(ConnectionString))
-      {
-        connection.Open();
-        return connection.Query<Category>($"SELECT {RETURN_OBJECT} FROM categories");
-      }
+      // using (var connection = new NpgsqlConnection(ConnectionString))
+      // {
+      //   connection.Open();
+      //   return connection.Query<Category>($"SELECT {RETURN_OBJECT} FROM categories");
+      // }
+      return CategoryMock.Categories;
     }
 
     public Category Create(Category category)
