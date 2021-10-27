@@ -9,12 +9,12 @@
         <span class="budget-header budget-column-available">Available</span>
         <span class="budget-header budget-column-actions"></span>
       </div>
-      <div v-for="group in categoryGroups"
+      <div v-for="group in categoryGroupsCombined"
            :key="group.id"
            class="flex-column group-row-container">
         <div class="flex-row group-header-row">
           <span class="budget-group-cell budget-column-category">
-            <button type="button" @click="group.isExpanded = !group.isExpanded" class="btn-icon-only">
+            <button type="button" @click="group.isExpanded = !group.isExpanded" class="btn btn-icon-only">
               <i class="bi" :class="{ 'bi-caret-down-fill': group.isExpanded, 'bi-caret-right-fill': !group.isExpanded }"></i>
             </button>
             {{ group.name }}
@@ -30,7 +30,7 @@
           <span class="budget-group-cell budget-column-available">{{ $filters.toCurrency(calculateGroupTotals(group, 'available')) }}</span>
           <span class="budget-group-cell budget-column-actions"></span>
         </div>
-        <ng-container v-if="group.isExpanded">
+        <div v-if="group.isExpanded">
           <div v-for="category in group.categories"
                :key="category.id"
                class="flex-row">
@@ -76,18 +76,27 @@
               </button>
             </span>
           </div>
-        </ng-container>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'Budget',
+  computed: {
+    ...mapState({
+      categoryGroups: state => state.categoryGroups.all,
+      categories: state => state.categories.all
+    })
+  },
   data () {
     return {
-      categoryGroups: [],
+      month: 'January',
+      categoryGroupsCombined: [],
       isEditingRow: false,
       renameText: ''
     }
@@ -176,6 +185,34 @@ export default {
         // this.store.dispatch(AppActions.setIsLoading({ isLoading: false }))
         console.error(error)
       })
+    },
+
+    setCategoryGroupsCombined () {
+      if (this.categoryGroups?.length && this.categories?.length) {
+        this.categoryGroupsCombined = [...this.categoryGroups.map(group => {
+          return { ...group, categories: this.categories.filter(category => category.categoryGroupId === group.id) }
+        })]
+      } else {
+        this.categoryGroupsCombined = []
+      }
+    }
+  },
+  mounted () {
+    this.$watch(
+      () => this.$route.params,
+      () => {
+        this.$store.dispatch('categoryGroups/get')
+        this.$store.dispatch('categories/get')
+      },
+      { immediate: true }
+    )
+  },
+  watch: {
+    categories () {
+      this.setCategoryGroupsCombined()
+    },
+    categoryGroups () {
+      this.setCategoryGroupsCombined()
     }
   }
 }
