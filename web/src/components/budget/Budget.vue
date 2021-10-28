@@ -34,8 +34,8 @@
           <div v-for="category in group.categories"
                :key="category.id"
                class="flex-row">
-            <span class="budget-category-cell budget-column-category">
-              <div v-if="category.showRenameEdit" class="flex-row" @blur="category.showRenameEdit = false">
+            <span class="flex-row budget-category-cell budget-column-category">
+              <div v-if="category.showRenameEdit" class="flex-row" @focusout="hideRename(category)">
                 <input v-model="renameText" class="form-control margin-bottom-sm">
                 <button type="button"
                         class="btn btn-primary btn-sm flex-align-self-end"
@@ -49,27 +49,25 @@
                 {{category.name}}
               </button>
             </span>
-            <span class="budget-category-cell budget-column-budget editable-cell">
-              <div class="input-group mb-3">
+            <span class="flex-row budget-category-cell budget-column-budget editable-cell">
+              <div class="input-group">
                 <div class="input-group-prepend">
                   <button class="btn btn-outline-danger" type="button" name="undo-budget-button">
                     <i class="bi bi-arrow-counterclockwise"></i>
                   </button>
                 </div>
-                <input v-model="category.budget" 
-                      pattern="^d+((.|,)d{2})?$" 
+                <input v-model.number="category.budget"
                       @blur="updateBudget($event, category)" 
-                      currencyFormatter 
                       class="form-control editable-cell-input">
               </div>
             </span>
-            <span class="budget-category-cell budget-column-spent">
+            <span class="flex-row budget-category-cell budget-column-spent">
               <span>{{ $filters.toCurrency(category.spent) }}</span>
             </span>
-            <span class="budget-category-cell budget-column-available">
+            <span class="flex-row budget-category-cell budget-column-available">
               <span>{{ $filters.toCurrency(calculateAvailable(category)) }}</span>
             </span>
-            <span class="budget-category-cell budget-column-actions">
+            <span class="flex-row budget-category-cell budget-column-actions">
               <button type="button"
                       @click="confirmDeleteCategory(category)"
                       class="btn trash-button">
@@ -134,10 +132,20 @@ export default {
     },
 
     startRename (category) {
+      this.categoryGroupsCombined.forEach(group => {
+        group.categories.forEach(category => {
+          if (category.showRenameEdit) {
+            category.showRenameEdit = false
+          }
+        })
+      })
       if (category) {
         this.renameText = category.name
         category.showRenameEdit = true
       }
+    },
+    hideRename (category) {
+      category.showRenameEdit = false
     },
     renameCategory (category) {
       return category
@@ -308,6 +316,7 @@ export default {
     }
     
     .budget-category-cell {
+      align-items: center;
       padding: 0.75rem;
       background-color: #212529bb;
       color: #dee2e6;
