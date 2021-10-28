@@ -14,7 +14,7 @@
            class="flex-column group-row-container">
         <div class="flex-row group-header-row">
           <span class="budget-group-cell budget-column-category">
-            <button type="button" @click="group.isExpanded = !group.isExpanded" class="btn btn-icon-only">
+            <button type="button" @click="group.isExpanded = !group.isExpanded" class="btn expand-button">
               <i class="bi" :class="{ 'bi-caret-down-fill': group.isExpanded, 'bi-caret-right-fill': !group.isExpanded }"></i>
             </button>
             {{ group.name }}
@@ -25,9 +25,9 @@
               <span>Add Category</span>
             </button>
           </span>
-          <span class="budget-group-cell budget-column-budget">{{ $filters.toCurrency(calculateGroupTotals(group, 'budgeted')) }}</span>
-          <span class="budget-group-cell budget-column-spent">{{ $filters.toCurrency(calculateGroupTotals(group, 'spent')) }}</span>
-          <span class="budget-group-cell budget-column-available">{{ $filters.toCurrency(calculateGroupTotals(group, 'available')) }}</span>
+          <span class="budget-group-cell budget-column-budget">{{ $filters.toCurrency(group.budgeted) }}</span>
+          <span class="budget-group-cell budget-column-spent">{{ $filters.toCurrency(group.spent) }}</span>
+          <span class="budget-group-cell budget-column-available">{{ $filters.toCurrency(group.available) }}</span>
           <span class="budget-group-cell budget-column-actions"></span>
         </div>
         <div v-if="group.isExpanded">
@@ -35,18 +35,19 @@
                :key="category.id"
                class="flex-row">
             <span class="budget-category-cell budget-column-category">
-              <!-- <div id="renameModal">
-                <div class="flex-column">
-                  <input v-model="renameText" class="form-control margin-bottom-sm">
-                  <button type="button"
-                          class="btn btn-primary btn-sm flex-align-self-end"
-                          @click="renameCategory(category)">Save</button>
-                </div>
+              <div v-if="category.showRenameEdit" class="flex-row" @blur="category.showRenameEdit = false">
+                <input v-model="renameText" class="form-control margin-bottom-sm">
+                <button type="button"
+                        class="btn btn-primary btn-sm flex-align-self-end"
+                        @click="renameCategory(category)">Save</button>
               </div>
               
-              <button type="button" [ngbPopover]="categoryRenamePopover" popoverTitle="Rename" [autoClose]="'outside'" class="btn-no-style rename-button">
+              <button v-if="!category.showRenameEdit"
+                      type="button"
+                      class="btn-no-style rename-button"
+                      @click="startRename(category)">
                 {{category.name}}
-              </button> -->
+              </button>
             </span>
             <span class="budget-category-cell budget-column-budget editable-cell">
               <div class="input-group mb-3">
@@ -71,7 +72,7 @@
             <span class="budget-category-cell budget-column-actions">
               <button type="button"
                       @click="confirmDeleteCategory(category)"
-                      class="btn-icon-only">
+                      class="btn trash-button">
                 <i class="bi bi-trash-fill"></i>
               </button>
             </span>
@@ -111,26 +112,33 @@ export default {
       return (category.budget - category.spent)
     },
 
-    calculateGroupTotals (group, column) {
-      if (!group.categories.length) {
+    calculateGroupTotals (group, column, groupCategories) {
+      const categories = groupCategories ?? group.categories
+      if (!categories?.length) {
         return undefined
       }
 
       let numberArray = []
       switch (column) {
         case 'budgeted':
-          numberArray = group.categories.map(category => category.budget)
+          numberArray = categories.map(category => category.budget)
           break
         case 'spent':
-          numberArray = group.categories.map(category => category.spent)
+          numberArray = categories.map(category => category.spent)
           break
         case 'available':
-          numberArray = group.categories.map(category => this.calculateAvailable(category))
+          numberArray = categories.map(category => this.calculateAvailable(category))
           break
       }
       return numberArray.reduce((previous, current) => previous + current)
     },
 
+    startRename (category) {
+      if (category) {
+        this.renameText = category.name
+        category.showRenameEdit = true
+      }
+    },
     renameCategory (category) {
       return category
       // if (this.renameText) {
@@ -189,9 +197,24 @@ export default {
 
     setCategoryGroupsCombined () {
       if (this.categoryGroups?.length && this.categories?.length) {
-        this.categoryGroupsCombined = [...this.categoryGroups.map(group => {
-          return { ...group, categories: this.categories.filter(category => category.categoryGroupId === group.id) }
-        })]
+        this.categoryGroupsCombined = this.categoryGroups.map(group => {
+          const categories = this.categories.filter(category => category.categoryGroupId === group.id).map(category => ({ ...category }))
+          return {
+            ...group,
+            categories,
+            budgeted: this.calculateGroupTotals(group, 'budgeted', categories),
+            spent: this.calculateGroupTotals(group, 'spent', categories),
+            available: this.calculateGroupTotals(group, 'available', categories)
+          }
+        })
+
+        // Called after the categories are already in object
+        this.categoryGroupsCombined = this.categoryGroupsCombined.map(group => {
+          return {
+            ...group,
+            
+          }
+        })
       } else {
         this.categoryGroupsCombined = []
       }
@@ -221,13 +244,13 @@ export default {
 <style scoped lang="scss">
   .budget-container {
     width: 100%;
-    border: 1px solid #dee2e6;
 
     .budget-header {
-      background-color: #343a40;
+      background-color: #212529;
       padding: 0.75rem;
       color: white;
       font-weight: 700;
+      border-bottom: 1px solid #dee2e6;
     }
 
     .budget-category-money {
@@ -275,7 +298,8 @@ export default {
     }
 
     .budget-group-cell {
-      background-color: whitesmoke;
+      background-color: #212529;
+      color: #dee2e6;
       display: flex;
       align-items: center;
       padding: 0 0.75rem;
@@ -285,6 +309,8 @@ export default {
     
     .budget-category-cell {
       padding: 0.75rem;
+      background-color: #212529bb;
+      color: #dee2e6;
     }
 
     .editable-cell {
@@ -311,9 +337,20 @@ export default {
     .editable-cell:focus-within .input-group .input-group-prepend {
       display: flex;
     }
-
-    .rename-button:hover {
-      color: dodgerblue
-    }
   }
+
+  .expand-button {
+    color: #dee2e6;
+  }
+
+  .trash-button {
+    color: #dc3545;
+  }
+
+    .rename-button {
+      color: #dee2e6;
+      :hover {
+        color: dodgerblue;
+      }
+    }
 </style>
