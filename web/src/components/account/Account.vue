@@ -236,7 +236,6 @@ export default {
     }
   },
   mounted () {
-    this.$store.dispatch('accounts/get')
     this.$watch(
       () => this.$route.params,
       () => {
@@ -247,7 +246,7 @@ export default {
         if (this.accountUrl) {
           this.$store.dispatch('accounts/find', this.accountUrl)
         } else {
-          this.$store.commit('accounts/setAccount', null)
+          this.$store.commit('accounts/setAccount', undefined)
         }
       },
       { immediate: true }

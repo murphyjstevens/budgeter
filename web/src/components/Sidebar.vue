@@ -21,6 +21,9 @@ export default {
     ...mapState({
       accounts: state => state.accounts.all
     })
+  },
+  created () {
+    this.$store.dispatch('accounts/get')
   }
 }
 </script>
