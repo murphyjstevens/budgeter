@@ -17,7 +17,7 @@ namespace BudgeterApi.Repositories
   }
   public class CategoryGroupRepository : CoreRepository, ICategoryGroupRepository
   {
-    private const string RETURN_OBJECT = "id, name";
+    private const string RETURN_OBJECT = "id, name, sort_order as SortOrder";
 
     public CategoryGroupRepository(IConfiguration configuration) : base(configuration) { }
 
@@ -36,8 +36,8 @@ namespace BudgeterApi.Repositories
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
         connection.Open();
-        string sql = $@"INSERT INTO category_group (name) 
-        VALUES (@Name)
+        string sql = $@"INSERT INTO category_group (name, sort_order) 
+        VALUES (@Name, @SortOrder)
         RETURNING {RETURN_OBJECT}";
         return connection.QueryFirstOrDefault<CategoryGroup>(sql, categoryGroup);
       }
@@ -49,7 +49,7 @@ namespace BudgeterApi.Repositories
       {
         connection.Open();
         string sql = $@"UPDATE category_groups
-        SET name = @Name
+        SET name = @Name, sort_order = @SortOrder
         WHERE id = @Id
         RETURNING {RETURN_OBJECT}";
         return connection.QueryFirstOrDefault<CategoryGroup>(sql, categoryGroup);

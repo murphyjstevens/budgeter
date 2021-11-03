@@ -27,14 +27,15 @@
                 <label for="account" class="form-label">Account</label>
                 <select id="account"
                         v-model="accountId"
-                        name="account" 
-                        class="form-control" 
+                        name="account"
+                        class="form-control"
+                        @blur="v$.accountId.$touch"
                         required>
                   <option v-for="account in accounts" 
                           :key="account.id"
                           :value="account.id">{{ account.name }}</option>
                 </select>
-                <div class="input-errors" v-for="error of v$.account.$errors" :key="error.$uid">
+                <div class="input-errors" v-for="error of v$.accountId.$errors" :key="error.$uid">
                   <div class="error-msg invalid-feedback d-block">{{ error.$message }}</div>
                 </div>
               </div>
@@ -42,14 +43,15 @@
                 <label for="category" class="form-label">Category</label>
                 <select id="category" 
                         v-model="categoryId"
-                        name="category" 
-                        class="form-control" 
+                        name="category"
+                        class="form-control"
+                        @blur="v$.categoryId.$touch"
                         required>
                   <option v-for="category in categories" 
                           :key="category.id"
                           :value="category.id">{{ category.name }}</option>
                 </select>
-                <div class="input-errors" v-for="error of v$.category.$errors" :key="error.$uid">
+                <div class="input-errors" v-for="error of v$.categoryId.$errors" :key="error.$uid">
                   <div class="error-msg invalid-feedback d-block">{{ error.$message }}</div>
                 </div>
               </div>
@@ -57,7 +59,7 @@
                 <label for="cost" class="form-label">Cost</label>
                 <input id="cost"
                        v-model.number="cost"
-                       @blur="convertToMoney($event)"
+                       @blur="blurCost($event)"
                        @keyup.enter="convertToMoney($event)"
                        name="cost"
                        maxLength="15"
@@ -74,6 +76,7 @@
                        type="text"
                        name="recipient"
                        class="form-control"
+                       @blur="v$.recipient.$touch"
                        required>
                 <div class="input-errors" v-for="error of v$.recipient.$errors" :key="error.$uid">
                   <div class="error-msg invalid-feedback d-block">{{ error.$message }}</div>
@@ -143,7 +146,14 @@ export default {
       if (this.v$.invalid) {
         return
       }
-      await this.$store.dispatch('transactions/create', { name: this.name, description: this.description })
+      const transaction = {
+        accountId: this.accountId,
+        categoryId: this.categoryId,
+        date: this.date,
+        cost: this.cost,
+        recipient: this.recipient
+      }
+      await this.$store.dispatch('transactions/create', transaction)
       this.close()
     },
     convertToMoney (event) {
@@ -151,10 +161,17 @@ export default {
 
       const cost = Math.round(event.target.value * 100) / 100
       this.cost = cost
+    },
+    blurCost (event) {
+      this.v$.cost.$touch()
+      this.convertToMoney(event)
     }
   },
   mounted () {
     this.modal = new Modal(this.$refs.modal, {})
+    if (!this.categories?.length) {
+      this.$store.dispatch('categories/get')
+    }
   },
   setup () {
     return { v$: useVuelidate() }
@@ -162,8 +179,8 @@ export default {
   validations () {
     return {
       date: { required },
-      account: { required },
-      category: { required },
+      accountId: { required },
+      categoryId: { required },
       cost: { required },
       recipient: { required }
     }

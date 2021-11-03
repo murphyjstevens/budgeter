@@ -53,8 +53,8 @@ namespace BudgeterApi.Repositories
     {
       using (var connection = new NpgsqlConnection(ConnectionString)) {
         connection.Open();
-        string sql = $@"INSERT INTO transaction (id, account_id, date, cost, recipient, category_id) 
-        VALUES (@Id, @AccountId, @Date, @Cost, @Recipient, @CategoryId)
+        string sql = $@"INSERT INTO transaction (account_id, date, cost, recipient, category_id) 
+        VALUES (@AccountId, @Date, @Cost, @Recipient, @CategoryId)
         RETURNING {TRANSACTION_SELECT}";
         return connection.QueryFirstOrDefault<Transaction>(sql, transaction);
       }

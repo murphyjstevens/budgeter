@@ -16,6 +16,7 @@
                        type="text"
                        name="name"
                        class="form-control"
+                       @blur="v$.name.$touch"
                        required>
                 <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
                   <div class="error-msg invalid-feedback d-block">{{ error.$message }}</div>

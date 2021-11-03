@@ -17,7 +17,7 @@ const actions = {
   },
   async create ({ commit }, categoryGroup) {
     try {
-      const response = await axios.get(baseUrl + '/CategoryGroups', categoryGroup)
+      const response = await axios.post(baseUrl + '/CategoryGroups', categoryGroup)
       commit('addCategoryGroup', response.data)
     } catch (error) {
       console.error(error)
