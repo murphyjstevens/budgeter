@@ -3,6 +3,7 @@ using Npgsql;
 using System.Collections.Generic;
 using BudgeterApi.Models;
 using BudgeterApi.Mocks;
+using Microsoft.Extensions.Configuration;
 
 namespace BudgeterApi.Repositories
 {
@@ -18,14 +19,16 @@ namespace BudgeterApi.Repositories
   {
     private const string RETURN_OBJECT = "id, name";
 
+    public CategoryGroupRepository(IConfiguration configuration) : base(configuration) { }
+
     public IEnumerable<CategoryGroup> Get()
     {
-      // using (var connection = new NpgsqlConnection(ConnectionString))
-      // {
-      //   connection.Open();
-      //   return connection.Query<CategoryGroup>("SELECT * FROM category_groups");
-      // }
-      return CategoryGroupMock.CategoryGroups;
+      using (var connection = new NpgsqlConnection(ConnectionString))
+      {
+        connection.Open();
+        return connection.Query<CategoryGroup>("SELECT * FROM category_group");
+      }
+      // return CategoryGroupMock.CategoryGroups;
     }
 
     public CategoryGroup Create(CategoryGroup categoryGroup)
@@ -33,7 +36,7 @@ namespace BudgeterApi.Repositories
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
         connection.Open();
-        string sql = $@"INSERT INTO category_groups (name) 
+        string sql = $@"INSERT INTO category_group (name) 
         VALUES (@Name)
         RETURNING {RETURN_OBJECT}";
         return connection.QueryFirstOrDefault<CategoryGroup>(sql, categoryGroup);

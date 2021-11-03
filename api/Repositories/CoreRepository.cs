@@ -1,7 +1,13 @@
+using Microsoft.Extensions.Configuration;
+
 namespace BudgeterApi.Repositories
 {
   public abstract class CoreRepository
   {
-    public string ConnectionString { get; } = Config.ConnectionString;
+    public string ConnectionString { get; }
+
+    public CoreRepository(IConfiguration configuration) {
+      ConnectionString = configuration.GetConnectionString("Budgeter");
+    }
   }
 }

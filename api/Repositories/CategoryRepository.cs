@@ -3,6 +3,7 @@ using Npgsql;
 using System.Collections.Generic;
 using BudgeterApi.Models;
 using BudgeterApi.Mocks;
+using Microsoft.Extensions.Configuration;
 
 namespace BudgeterApi.Repositories
 {
@@ -18,27 +19,29 @@ namespace BudgeterApi.Repositories
   {
     private const string RETURN_OBJECT = "id, name, budget, category_group_id AS CategoryGroupId";
 
+    public CategoryRepository(IConfiguration configuration) : base(configuration) { }
+
     public IEnumerable<Category> Get()
     {
-//       using (var connection = new NpgsqlConnection(ConnectionString))
-//       {
-//         connection.Open();
-//         return connection.Query<Category>(
-//           $@"SELECT c.id, c.name, c.budget, c.category_group_id as CategoryGroupId, coalesce(SUM(t.cost), 0::money) as Spent FROM categories c
-// LEFT JOIN transactions t ON t.category_id = c.id
-// GROUP BY c.id, c.name, c.budget, c.category_group_id");
-//       }
-      return CategoryMock.Categories;
+      using (var connection = new NpgsqlConnection(ConnectionString))
+      {
+        connection.Open();
+        return connection.Query<Category>(
+          $@"SELECT c.id, c.name, c.budget, c.category_group_id as CategoryGroupId, coalesce(SUM(t.cost), 0::money) as Spent FROM category c
+LEFT JOIN transaction t ON t.category_id = c.id
+GROUP BY c.id, c.name, c.budget, c.category_group_id");
+      }
+      // return CategoryMock.Categories;
     }
 
     public IEnumerable<Category> GetSimple()
     {
-      // using (var connection = new NpgsqlConnection(ConnectionString))
-      // {
-      //   connection.Open();
-      //   return connection.Query<Category>($"SELECT {RETURN_OBJECT} FROM categories");
-      // }
-      return CategoryMock.Categories;
+      using (var connection = new NpgsqlConnection(ConnectionString))
+      {
+        connection.Open();
+        return connection.Query<Category>($"SELECT {RETURN_OBJECT} FROM category");
+      }
+      // return CategoryMock.Categories;
     }
 
     public Category Create(Category category)
@@ -46,7 +49,7 @@ namespace BudgeterApi.Repositories
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
         connection.Open();
-        string sql = $@"INSERT INTO categories (name, budget, category_group_id) 
+        string sql = $@"INSERT INTO category (name, budget, category_group_id) 
         VALUES (@Name, @Budget, @CategoryGroupId)
         RETURNING {RETURN_OBJECT}";
         return connection.QueryFirstOrDefault<Category>(sql, category);
@@ -58,7 +61,7 @@ namespace BudgeterApi.Repositories
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
         connection.Open();
-        string sql = $@"UPDATE categories
+        string sql = $@"UPDATE category
         SET name = @Name, budget = @Budget, category_group_id = @CategoryGroupId
         WHERE id = @Id
         RETURNING {RETURN_OBJECT}";
@@ -71,7 +74,7 @@ namespace BudgeterApi.Repositories
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
         connection.Open();
-        string sql = @"DELETE FROM categories WHERE id = @Id";
+        string sql = @"DELETE FROM category WHERE id = @Id";
         connection.Execute(sql, new { Id = id });
       }
     }

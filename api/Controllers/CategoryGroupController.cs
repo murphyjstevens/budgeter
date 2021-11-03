@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BudgeterApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BudgeterApi.Mocks;
 using BudgeterApi.Repositories;
 
 namespace BudgeterApi.Controllers
@@ -19,14 +15,33 @@ namespace BudgeterApi.Controllers
 
     public CategoryGroupController(ILogger<CategoryGroupController> logger, ICategoryGroupRepository repository)
     {
-        _logger = logger;
-        _repository = repository;
+      _logger = logger;
+      _repository = repository;
     }
 
     [HttpGet]
     public IEnumerable<CategoryGroup> Get()
     {
       return _repository.Get();
+    }
+
+    [HttpPost]
+    public CategoryGroup Create(CategoryGroup group)
+    {
+      return _repository.Create(group);
+    }
+
+    [HttpPut]
+    public CategoryGroup Update(CategoryGroup group)
+    {
+      return _repository.Update(group);
+    }
+
+    [HttpDelete]
+    [Route("{id}")]
+    public void Delete(int id)
+    {
+      _repository.Delete(id);
     }
   }
 }

@@ -1,5 +1,3 @@
-using System;
-
 namespace BudgeterApi.Models
 {
   public class Account {
