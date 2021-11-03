@@ -2,11 +2,24 @@
   <div class="flex-column">
     <span class="flex-row transaction-header-row">
       <h2>{{ account ? account.name : "All Accounts" }}</h2>
-      <button type="button"
-              class="btn btn-primary button-icon add-transaction-button"
-              @click="showAddTransactionDialog()">
-        <i class="bi bi-plus-lg icon-button"></i>
-      </button>
+      <div class="flex-row align-items-center">
+        <button type="button"
+                class="btn btn-light account-header-button"
+                @click="showImportDialog()"
+                title="Import Transactions"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top">
+          <i class="bi bi-file-earmark-arrow-up"></i>
+        </button>
+        <button type="button"
+                class="btn btn-primary account-header-button"
+                @click="showAddTransactionDialog()"
+                title="Add Transaction"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+      </div>
     </span>
     <table class="table table-dark">
       <colgroup>
@@ -269,8 +282,9 @@ export default {
     justify-content: space-between;
   }
 
-  .add-transaction-button {
-    align-self: center;
-    margin: 0.5em 0;
+  .account-header-button {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: 0.5em;
   }
 </style>
