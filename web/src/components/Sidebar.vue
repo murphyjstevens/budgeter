@@ -2,7 +2,7 @@
   <div class="flex-column sidebar">
     <router-link to="/" class="sidebar-item">Budget</router-link>
     <router-link to="/accounts/" class="sidebar-item">All Accounts</router-link>
-    <div class="sidebar-section">
+    <div class="sidebar-section flex-column">
       <h4 class="sidebar-section-header">Accounts</h4>
       <router-link v-for="account in accounts"
         :key="account.id"

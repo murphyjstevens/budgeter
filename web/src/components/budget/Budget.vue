@@ -1,6 +1,17 @@
 <template>
   <div class="flex-column">
-    <h1>{{ month }}</h1>
+    <div class="flex-row justify-content-between">
+      <h1>{{ month }}</h1>
+      <button type="button"
+              class="btn btn-primary align-self-center"
+              @click="showAddCategoryGroupDialog()"
+              title="Add Category Group"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top">
+        <i class="bi bi-plus-lg me-2"></i>
+        <span>Category Group</span>
+      </button>
+    </div>
     <div class="flex-column budget-container">
       <div class="flex-row">
         <span class="budget-header budget-column-category">Category</span>
@@ -17,12 +28,12 @@
             <button type="button" @click="group.isExpanded = !group.isExpanded" class="btn expand-button">
               <i class="bi" :class="{ 'bi-caret-down-fill': group.isExpanded, 'bi-caret-right-fill': !group.isExpanded }"></i>
             </button>
-            {{ group.name }}
+            <span class="me-2">{{ group.name }}</span>
             <button type="button"
                     @click="openAddCategoryDialog(group.id)"
                     class="btn btn-primary btn-sm add-category-button">
-              <i class="bi bi-plus-lg margin-right-sm"></i>
-              <span>Add Category</span>
+              <i class="bi bi-plus-lg margin-right-sm me-2"></i>
+              <span>Category</span>
             </button>
           </span>
           <span class="budget-group-cell budget-column-budget">{{ $filters.toCurrency(group.budgeted) }}</span>
@@ -79,13 +90,20 @@
       </div>
     </div>
   </div>
+
+  <DeleteConfirmation ref="deleteConfirmationModal" />
+  <CategoryGroupDialog ref="categoryGroupDialog" />
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import CategoryGroupDialog from './CategoryGroupDialog.vue'
 
 export default {
   name: 'Budget',
+  components: {
+    CategoryGroupDialog
+  },
   computed: {
     ...mapState({
       categoryGroups: state => state.categoryGroups.all,
@@ -166,45 +184,40 @@ export default {
     },
 
     saveCategory (category) {
-      // this.store.dispatch(AppActions.setIsLoading({ isLoading: true }))
+      this.$store.commit('setIsLoading', true)
       this.categoryDataService.update(category).subscribe(updatedCategory => {
         category = updatedCategory
-        // this.store.dispatch(AppActions.setIsLoading({ isLoading: false }))
+        this.$store.commit('setIsLoading', false)
       }, error => {
-        // this.store.dispatch(AppActions.setIsLoading({ isLoading: false }))
+        this.$store.commit('setIsLoading', false)
         console.error(error)
       })
     },
 
     confirmDeleteCategory (category) {
-      return category
-      // const modal = this.modalService.open(DeleteConfirmationModalComponent)
-      // modal.componentInstance.title = 'Delete Category'
-      // modal.componentInstance.message = 'Would you like to delete this Category?'
-      // modal.result.then(result => {
-      //   if (result) {
-      //     this.deleteCategory(category)
-      //   }
-      // })
+      if (this.$refs.deleteConfirmationModal && category) {
+        this.$refs.deleteConfirmationModal.open(this.deleteCategory, category.id, category.name)
+      }
     },
 
-    deleteCategory (category) {
-      // this.store.dispatch(AppActions.setIsLoading({ isLoading: true }))
+    deleteCategory (id) {
+      this.$store.commit('setIsLoading', true)
 
-      this.categoryDataService.delete(category.id).subscribe(() => {
-        const group = this.categoryGroups.find(categoryGroup => categoryGroup.id === category.categoryGroupId)
+      this.categoryDataService.delete(id).subscribe(() => {
+        const category = this.categories.find(category => category.id === id)
+        const group = this.categoryGroups.find(categoryGroup => categoryGroup.id === category?.categoryGroupId)
         if (group) {
           group.categories = group.categories.filter(c => c.id !== category.id)
         }
-        // this.store.dispatch(AppActions.setIsLoading({ isLoading: false }))
+        this.$store.commit('setIsLoading', false)
       }, error => {
-        // this.store.dispatch(AppActions.setIsLoading({ isLoading: false }))
+        this.$store.commit('setIsLoading', false)
         console.error(error)
       })
     },
 
     setCategoryGroupsCombined () {
-      if (this.categoryGroups?.length && this.categories?.length) {
+      if (this.categoryGroups?.length) {
         this.categoryGroupsCombined = this.categoryGroups.map(group => {
           const categories = this.categories.filter(category => category.categoryGroupId === group.id).map(category => ({ ...category }))
           return {
@@ -215,16 +228,14 @@ export default {
             available: this.calculateGroupTotals(group, 'available', categories)
           }
         })
-
-        // Called after the categories are already in object
-        this.categoryGroupsCombined = this.categoryGroupsCombined.map(group => {
-          return {
-            ...group,
-            
-          }
-        })
       } else {
         this.categoryGroupsCombined = []
+      }
+    },
+
+    showAddCategoryGroupDialog() {
+      if (this.$refs.categoryGroupDialog) {
+        this.$refs.categoryGroupDialog.open()
       }
     }
   },
@@ -356,10 +367,10 @@ export default {
     color: #dc3545;
   }
 
-    .rename-button {
-      color: #dee2e6;
-      :hover {
-        color: dodgerblue;
-      }
+  .rename-button {
+    color: #dee2e6;
+    :hover {
+      color: dodgerblue;
     }
+  }
 </style>

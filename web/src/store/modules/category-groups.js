@@ -14,12 +14,23 @@ const actions = {
     } catch (error) {
       console.error(error)
     }
+  },
+  async create ({ commit }, categoryGroup) {
+    try {
+      const response = await axios.get(baseUrl + '/CategoryGroups', categoryGroup)
+      commit('addCategoryGroup', response.data)
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 
 const mutations = {
   setCategoryGroups (state, categoryGroups) {
     state.all = categoryGroups
+  },
+  addCategoryGroup (state, categoryGroup) {
+    state.all.push(categoryGroup)
   }
 }
 

@@ -233,9 +233,9 @@ export default {
       }
     },
 
-    async delete (transaction) {
-      await this.$store.dispatch('transactions/delete', transaction.id)
-      this.transactions.splice(this.transactions.findIndex(t => t.id === transaction.id), 1)
+    async delete (id) {
+      await this.$store.dispatch('transactions/delete', id)
+      this.transactions.splice(this.transactions.findIndex(t => t.id === id), 1)
     },
     
     sortTransactions () {
