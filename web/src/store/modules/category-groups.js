@@ -9,7 +9,7 @@ const state = () => ({
 const actions = {
   async get ({ commit }) {
     try {
-      const response = await axios.get(baseUrl + '/CategoryGroups')
+      const response = await axios.get(baseUrl + '/category-groups')
       commit('setCategoryGroups', response.data)
     } catch (error) {
       console.error(error)
@@ -17,7 +17,7 @@ const actions = {
   },
   async create ({ commit }, categoryGroup) {
     try {
-      const response = await axios.post(baseUrl + '/CategoryGroups', categoryGroup)
+      const response = await axios.post(baseUrl + '/category-groups', categoryGroup)
       commit('addCategoryGroup', response.data)
     } catch (error) {
       console.error(error)

@@ -10,7 +10,7 @@ const actions = {
   async get ({ commit }) {
     try {
       commit('setIsLoading', true, { root: true })
-      const response = await axios.get(baseUrl + '/transactions')
+      const response = await axios.get(`${baseUrl}/transactions`)
       commit('setTransactions', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
@@ -21,7 +21,7 @@ const actions = {
   async getByAccount ({ commit }, accountId) {
     try {
       commit('setIsLoading', true, { root: true })
-      const response = await axios.get(baseUrl + '/transactions/Account/' + accountId)
+      const response = await axios.get(`${baseUrl}/accounts/${accountId}/transactions`)
       commit('setTransactions', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
@@ -32,7 +32,7 @@ const actions = {
   async getByCategory ({ commit }, categoryId) {
     try {
       commit('setIsLoading', true, { root: true })
-      const response = await axios.get(baseUrl + '/transactions/Category/' + categoryId)
+      const response = await axios.get(`${baseUrl}/categories/${categoryId}/transactions`)
       commit('setTransactions', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
@@ -47,7 +47,7 @@ const actions = {
         return
       }
       commit('setIsLoading', true, { root: true })
-      const response = await axios.post(baseUrl + '/transactions', transaction)
+      const response = await axios.post(`${baseUrl}/transactions`, transaction)
       commit('addTransaction', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
@@ -62,7 +62,7 @@ const actions = {
         return
       }
       commit('setIsLoading', true, { root: true })
-      const response = await axios.put(baseUrl + '/transactions', transaction)
+      const response = await axios.put(`${baseUrl}/transactions`, transaction)
       commit('updateTransaction', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
@@ -77,7 +77,7 @@ const actions = {
         return
       }
       commit('setIsLoading', true, { root: true })
-      await axios.delete(baseUrl + '/transaction/' + id)
+      await axios.delete(`${baseUrl}/transactions/${id}`)
       commit('deleteTransaction', id)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
