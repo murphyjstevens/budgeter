@@ -1,17 +1,12 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BudgeterApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BudgeterApi.Mocks;
 using BudgeterApi.Repositories;
 
 namespace BudgeterApi.Controllers
 {
   [ApiController]
-  [Route("Transactions")]
   public class TransactionController : ControllerBase
   {
     private readonly ILogger<TransactionController> _logger;
@@ -24,42 +19,42 @@ namespace BudgeterApi.Controllers
     }
 
     [HttpGet]
-    [Route("")]
+    [Route("transactions")]
     public IEnumerable<Transaction> Get()
     {
       return _repository.Get();
     }
 
     [HttpGet]
-    [Route("Account/{accountId}")]
+    [Route("accounts/{accountId}/transactions")]
     public IEnumerable<Transaction> GetByAccount(int accountId)
     {
       return _repository.GetByAccount(accountId);
     }
 
     [HttpGet]
-    [Route("Category/{categoryId}")]
+    [Route("categories/{categoryId}/transactions")]
     public IEnumerable<Transaction> GetByCategory(int categoryId)
     {
       return _repository.GetByCategory(categoryId);
     }
 
     [HttpPost]
-    [Route("")]
+    [Route("transactions")]
     public Transaction Create(Transaction transaction)
     {
       return _repository.Create(transaction);
     }
 
     [HttpPut]
-    [Route("")]
+    [Route("transactions")]
     public Transaction Update(Transaction transaction)
     {
       return _repository.Update(transaction);
     }
 
     [HttpDelete]
-    [Route("{id}")]
+    [Route("transactions/{id}")]
     public void Delete(int id)
     {
       _repository.Delete(id);

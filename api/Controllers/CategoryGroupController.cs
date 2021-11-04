@@ -7,7 +7,7 @@ using BudgeterApi.Repositories;
 namespace BudgeterApi.Controllers
 {
   [ApiController]
-  [Route("CategoryGroups")]
+  [Route("category-groups")]
   public class CategoryGroupController : ControllerBase
   {
     private readonly ILogger<CategoryGroupController> _logger;

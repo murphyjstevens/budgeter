@@ -11,7 +11,7 @@ using BudgeterApi.Repositories;
 namespace BudgeterApi.Controllers
 {
   [ApiController]
-  [Route("Accounts")]
+  [Route("accounts")]
   public class AccountController : ControllerBase
   {
     private readonly ILogger<AccountController> _logger;
