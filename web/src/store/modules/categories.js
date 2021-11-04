@@ -61,8 +61,10 @@ const mutations = {
     state.all = [ ...state.all, category ].sort((a, b) => a.sortOrder - b.sortOrder)
   },
   updateCategory (state, category) {
-    const index = state.all.findIndex(p => p.id === category.id)
-    state.all[index] = category
+    state.all = [
+      ...state.all.filter(c => c.id !== category.id),
+      category
+   ].sort((a, b) => a.sortOrder - b.sortOrder)
   },
   deleteCategory (state, categoryId) {
     state.all = state.all

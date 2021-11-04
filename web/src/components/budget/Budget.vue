@@ -39,13 +39,15 @@
             <button type="button"
                     @click="reorder(group, true, true)"
                     class="btn btn-outline-light btn-sm category-hover-action me-2"
-                    title="Reorder Down">
+                    title="Reorder Down"
+                    :disabled="group.sortOrder === 1">
               <i class="bi bi-arrow-up"></i>
             </button>
             <button type="button"
                     @click="reorder(group, true, false)"
                     class="btn btn-outline-light btn-sm category-hover-action me-2"
-                    title="Reorder Down">
+                    title="Reorder Down"
+                    :disabled="group.sortOrder === categoryGroups.length">
               <i class="bi bi-arrow-down"></i>
             </button>
           </span>
