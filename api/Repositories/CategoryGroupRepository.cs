@@ -26,7 +26,7 @@ namespace BudgeterApi.Repositories
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
         connection.Open();
-        return connection.Query<CategoryGroup>("SELECT * FROM category_group");
+        return connection.Query<CategoryGroup>($"SELECT {RETURN_OBJECT} FROM category_group");
       }
       // return CategoryGroupMock.CategoryGroups;
     }
