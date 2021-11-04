@@ -27,10 +27,10 @@ const actions = {
 
 const mutations = {
   setCategoryGroups (state, categoryGroups) {
-    state.all = categoryGroups
+    state.all = categoryGroups.sort((a, b) => a.sortOrder - b.sortOrder)
   },
   addCategoryGroup (state, categoryGroup) {
-    state.all.push(categoryGroup)
+    state.all = [ ...state.all, categoryGroup ].sort((a, b) => a.sortOrder - b.sortOrder)
   }
 }
 

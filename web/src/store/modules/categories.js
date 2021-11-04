@@ -55,10 +55,10 @@ const actions = {
 
 const mutations = {
   setCategories (state, categories) {
-    state.all = categories
+    state.all = categories.sort((a, b) => a.sortOrder - b.sortOrder)
   },
   addCategory (state, category) {
-    state.all.push(category)
+    state.all = [ ...state.all, category ].sort((a, b) => a.sortOrder - b.sortOrder)
   },
   updateCategory (state, category) {
     const index = state.all.findIndex(p => p.id === category.id)

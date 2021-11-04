@@ -30,7 +30,7 @@
             </button>
             <span class="me-2">{{ group.name }}</span>
             <button type="button"
-                    @click="openAddCategoryDialog(group.id)"
+                    @click="showAddCategoryDialog(group.id)"
                     class="btn btn-primary btn-sm category-hover-action me-2"
                     title="Add Category">
               <i class="bi bi-plus-lg me-2"></i>
@@ -96,18 +96,21 @@
     </div>
   </div>
 
-  <DeleteConfirmation ref="deleteConfirmationModal" />
+  <CategoryDialog ref="categoryDialog" />
   <CategoryGroupDialog ref="categoryGroupDialog" />
+  <DeleteConfirmation ref="deleteConfirmationModal" />
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import CategoryDialog from './CategoryDialog.vue'
 import CategoryGroupDialog from './CategoryGroupDialog.vue'
 import DeleteConfirmation from '../shared/DeleteConfirmation.vue'
 
 export default {
   name: 'Budget',
   components: {
+    CategoryDialog,
     CategoryGroupDialog,
     DeleteConfirmation
   },
@@ -207,11 +210,6 @@ export default {
 
       try {
         await this.$store.dispatch('categories/delete', id)
-        const category = this.categories.find(category => category.id === id)
-        const group = this.categoryGroups.find(categoryGroup => categoryGroup.id === category?.categoryGroupId)
-        if (group) {
-          group.categories = group.categories.filter(c => c.id !== category.id)
-        }
         this.$store.commit('setIsLoading', false)
       } catch (error) {
         this.$store.commit('setIsLoading', false)
@@ -237,9 +235,15 @@ export default {
       }
     },
 
-    showAddCategoryGroupDialog() {
+    showAddCategoryGroupDialog () {
       if (this.$refs.categoryGroupDialog) {
         this.$refs.categoryGroupDialog.open()
+      }
+    },
+
+    showAddCategoryDialog (groupId) {
+      if (this.$refs.categoryDialog) {
+        this.$refs.categoryDialog.open(groupId)
       }
     }
   },
