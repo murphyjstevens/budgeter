@@ -31,9 +31,22 @@
             <span class="me-2">{{ group.name }}</span>
             <button type="button"
                     @click="openAddCategoryDialog(group.id)"
-                    class="btn btn-primary btn-sm add-category-button">
-              <i class="bi bi-plus-lg margin-right-sm me-2"></i>
+                    class="btn btn-primary btn-sm category-hover-action me-2"
+                    title="Add Category">
+              <i class="bi bi-plus-lg me-2"></i>
               <span>Category</span>
+            </button>
+            <button type="button"
+                    @click="reorder(group, true, true)"
+                    class="btn btn-outline-light btn-sm category-hover-action me-2"
+                    title="Reorder Down">
+              <i class="bi bi-arrow-up"></i>
+            </button>
+            <button type="button"
+                    @click="reorder(group, true, false)"
+                    class="btn btn-outline-light btn-sm category-hover-action me-2"
+                    title="Reorder Down">
+              <i class="bi bi-arrow-down"></i>
             </button>
           </span>
           <span class="budget-group-cell budget-column-budget">{{ $filters.toCurrency(group.budgeted) }}</span>
@@ -45,31 +58,23 @@
           <div v-for="category in group.categories"
                :key="category.id"
                class="flex-row">
-            <span class="flex-row budget-category-cell budget-column-category">
-              <div v-if="category.showRenameEdit" class="flex-row" @focusout="hideRename(category)">
-                <input v-model="renameText" class="form-control margin-bottom-sm">
-                <button type="button"
-                        class="btn btn-primary btn-sm flex-align-self-end"
-                        @click="renameCategory(category)">Save</button>
-              </div>
-              
-              <button v-if="!category.showRenameEdit"
-                      type="button"
-                      class="btn-no-style rename-button"
-                      @click="startRename(category)">
-                {{category.name}}
-              </button>
+            <span class="flex-row budget-category-cell budget-column-category editable-cell">
+              <input :value="category.name" 
+                     class="form-control margin-bottom-sm editable-cell-input category-name-input"
+                     :class="{ 'is-invalid': category.isNameInvalid }"
+                     @blur="renameCategory($event, category)"
+                     maxlength="100">
             </span>
             <span class="flex-row budget-category-cell budget-column-budget editable-cell">
               <div class="input-group">
                 <div class="input-group-prepend">
-                  <button class="btn btn-outline-danger" type="button" name="undo-budget-button">
+                  <button class="btn btn-warning" type="button" name="undo-budget-button">
                     <i class="bi bi-arrow-counterclockwise"></i>
                   </button>
                 </div>
-                <input v-model.number="category.budget"
+                <input :value="category.budget"
                       @blur="updateBudget($event, category)" 
-                      class="form-control editable-cell-input">
+                      class="form-control editable-cell-input text-end">
               </div>
             </span>
             <span class="flex-row budget-category-cell budget-column-spent">
@@ -98,11 +103,13 @@
 <script>
 import { mapState } from 'vuex'
 import CategoryGroupDialog from './CategoryGroupDialog.vue'
+import DeleteConfirmation from '../shared/DeleteConfirmation.vue'
 
 export default {
   name: 'Budget',
   components: {
-    CategoryGroupDialog
+    CategoryGroupDialog,
+    DeleteConfirmation
   },
   computed: {
     ...mapState({
@@ -149,28 +156,22 @@ export default {
       return numberArray.reduce((previous, current) => previous + current)
     },
 
-    startRename (category) {
-      this.categoryGroupsCombined.forEach(group => {
-        group.categories.forEach(category => {
-          if (category.showRenameEdit) {
-            category.showRenameEdit = false
+    renameCategory (event, category) {
+      if (event.target?.value) {
+        const updatedName = event.target.value.trim()
+        if (updatedName) {
+          if (updatedName === category.name) {
+            category.isNameInvalid = false
+            return
           }
-        })
-      })
-      if (category) {
-        this.renameText = category.name
-        category.showRenameEdit = true
+          this.saveCategory({ ...category, name: updatedName })
+          category.isNameInvalid = false
+          return
+        }
       }
+      category.isNameInvalid = true
     },
-    hideRename (category) {
-      category.showRenameEdit = false
-    },
-    renameCategory (category) {
-      return category
-      // if (this.renameText) {
-      //   this.saveCategory({ ...category, name: this.renameText } as Category)
-      // }
-    },
+
     updateBudget (event, category) {
       if (event.relatedTarget && event.relatedTarget.name === 'undo-budget-button') return
 
@@ -183,15 +184,16 @@ export default {
       }
     },
 
-    saveCategory (category) {
+    async saveCategory (category) {
       this.$store.commit('setIsLoading', true)
-      this.categoryDataService.update(category).subscribe(updatedCategory => {
+      try {
+        const updatedCategory = await this.$store.dispatch('categories/update', category)
         category = updatedCategory
         this.$store.commit('setIsLoading', false)
-      }, error => {
+      } catch (error) {
         this.$store.commit('setIsLoading', false)
         console.error(error)
-      })
+      }
     },
 
     confirmDeleteCategory (category) {
@@ -200,20 +202,21 @@ export default {
       }
     },
 
-    deleteCategory (id) {
+    async deleteCategory (id) {
       this.$store.commit('setIsLoading', true)
 
-      this.categoryDataService.delete(id).subscribe(() => {
+      try {
+        await this.$store.dispatch('categories/delete', id)
         const category = this.categories.find(category => category.id === id)
         const group = this.categoryGroups.find(categoryGroup => categoryGroup.id === category?.categoryGroupId)
         if (group) {
           group.categories = group.categories.filter(c => c.id !== category.id)
         }
         this.$store.commit('setIsLoading', false)
-      }, error => {
+      } catch (error) {
         this.$store.commit('setIsLoading', false)
         console.error(error)
-      })
+      }
     },
 
     setCategoryGroupsCombined () {
@@ -222,6 +225,7 @@ export default {
           const categories = this.categories.filter(category => category.categoryGroupId === group.id).map(category => ({ ...category }))
           return {
             ...group,
+            isExpanded: true,
             categories,
             budgeted: this.calculateGroupTotals(group, 'budgeted', categories),
             spent: this.calculateGroupTotals(group, 'spent', categories),
@@ -306,13 +310,12 @@ export default {
       justify-content: center;
     }
 
-    .add-category-button {
-      color: white;
+    .category-hover-action {
       margin-left: 5px;
       display: none;
     }
     
-    .group-header-row:hover .add-category-button {
+    .group-header-row:hover .category-hover-action {
       display: inline-flex;
     }
 
@@ -339,8 +342,14 @@ export default {
       padding: 0 0.75rem;
     
       .editable-cell-input {
-        text-align: right;
+        background-color: transparent;
+        color: white;
         border-width: 0;
+      }
+
+      .category-name-input {
+        width: 400px;
+        max-width: 100%;
       }
     }
 

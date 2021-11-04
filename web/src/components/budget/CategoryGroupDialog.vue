@@ -72,7 +72,7 @@ export default {
       }
       const group = {
         name: this.name,
-        sortOrder: this.$store.state.categoryGroups.all.length
+        sortOrder: this.$store.state.categoryGroups.all.length + 1
       }
       await this.$store.dispatch('categoryGroups/create', group)
       this.close()
