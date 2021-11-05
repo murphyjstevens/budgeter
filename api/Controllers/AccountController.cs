@@ -1,12 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BudgeterApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BudgeterApi.Mocks;
 using BudgeterApi.Repositories;
+using System.Threading.Tasks;
 
 namespace BudgeterApi.Controllers
 {
@@ -24,16 +21,16 @@ namespace BudgeterApi.Controllers
     }
 
     [HttpGet]
-    public IEnumerable<Account> Get()
+    public async Task<IEnumerable<Account>> Get()
     {
-      return _repository.Get();
+      return await _repository.Get();
     }
 
     [HttpGet]
     [Route("Url/{url}")]
-    public Account Find(string url) 
+    public async Task<Account> Find(string url) 
     {
-      return _repository.FindByUrl(url);
+      return await _repository.FindByUrl(url);
     }
   }
 }

@@ -3,6 +3,7 @@ using BudgeterApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BudgeterApi.Repositories;
+using System.Threading.Tasks;
 
 namespace BudgeterApi.Controllers
 {
@@ -20,44 +21,44 @@ namespace BudgeterApi.Controllers
 
     [HttpGet]
     [Route("transactions")]
-    public IEnumerable<Transaction> Get()
+    public async Task<IEnumerable<Transaction>> Get()
     {
-      return _repository.Get();
+      return await _repository.Get();
     }
 
     [HttpGet]
     [Route("accounts/{accountId}/transactions")]
-    public IEnumerable<Transaction> GetByAccount(int accountId)
+    public async Task<IEnumerable<Transaction>> GetByAccount(int accountId)
     {
-      return _repository.GetByAccount(accountId);
+      return await _repository.GetByAccount(accountId);
     }
 
     [HttpGet]
     [Route("categories/{categoryId}/transactions")]
-    public IEnumerable<Transaction> GetByCategory(int categoryId)
+    public async Task<IEnumerable<Transaction>> GetByCategory(int categoryId)
     {
-      return _repository.GetByCategory(categoryId);
+      return await _repository.GetByCategory(categoryId);
     }
 
     [HttpPost]
     [Route("transactions")]
-    public Transaction Create(Transaction transaction)
+    public async Task<Transaction> Create(Transaction transaction)
     {
-      return _repository.Create(transaction);
+      return await _repository.Create(transaction);
     }
 
     [HttpPut]
     [Route("transactions")]
-    public Transaction Update(Transaction transaction)
+    public async Task<Transaction> Update(Transaction transaction)
     {
-      return _repository.Update(transaction);
+      return await _repository.Update(transaction);
     }
 
     [HttpDelete]
     [Route("transactions/{id}")]
-    public void Delete(int id)
+    public async Task Delete(int id)
     {
-      _repository.Delete(id);
+      await _repository.Delete(id);
     }
   }
 }

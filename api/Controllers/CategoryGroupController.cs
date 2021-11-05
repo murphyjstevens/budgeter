@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using BudgeterApi.Repositories;
 using System;
 using BudgeterApi.Requests;
+using System.Threading.Tasks;
 
 namespace BudgeterApi.Controllers
 {
@@ -22,35 +23,35 @@ namespace BudgeterApi.Controllers
     }
 
     [HttpGet]
-    public IEnumerable<CategoryGroup> Get()
+    public async Task<IEnumerable<CategoryGroup>> Get()
     {
-      return _repository.Get();
+      return await _repository.Get();
     }
 
     [HttpPost]
-    public CategoryGroup Create(CategoryGroup group)
+    public async Task<CategoryGroup> Create(CategoryGroup group)
     {
-      return _repository.Create(group);
+      return await _repository.Create(group);
     }
 
     [HttpPut]
-    public CategoryGroup Update(CategoryGroup group)
+    public async Task<CategoryGroup> Update(CategoryGroup group)
     {
-      return _repository.Update(group);
+      return await _repository.Update(group);
     }
 
     [HttpPatch]
     [Route("reorder")]
-    public Tuple<CategoryGroup, CategoryGroup> Reorder(ReorderRequest request)
+    public async Task<Tuple<CategoryGroup, CategoryGroup>> Reorder(ReorderRequest request)
     {
-      return _repository.Reorder(request);
+      return await _repository.Reorder(request);
     }
 
     [HttpDelete]
     [Route("{id}")]
-    public void Delete(int id)
+    public async Task Delete(int id)
     {
-      _repository.Delete(id);
+      await _repository.Delete(id);
     }
   }
 }

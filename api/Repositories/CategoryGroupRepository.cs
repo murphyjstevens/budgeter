@@ -8,16 +8,17 @@ using System;
 using BudgeterApi.Requests;
 using static Dapper.SqlMapper;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BudgeterApi.Repositories
 {
   public interface ICategoryGroupRepository
   {
-    IEnumerable<CategoryGroup> Get();
-    CategoryGroup Create(CategoryGroup categoryGroup);
-    CategoryGroup Update(CategoryGroup categoryGroup);
-    Tuple<CategoryGroup, CategoryGroup> Reorder(ReorderRequest request);
-    void Delete(int id);
+    Task<IEnumerable<CategoryGroup>> Get();
+    Task<CategoryGroup> Create(CategoryGroup categoryGroup);
+    Task<CategoryGroup> Update(CategoryGroup categoryGroup);
+    Task<Tuple<CategoryGroup, CategoryGroup>> Reorder(ReorderRequest request);
+    Task Delete(int id);
   }
   public class CategoryGroupRepository : CoreRepository, ICategoryGroupRepository
   {
@@ -25,46 +26,46 @@ namespace BudgeterApi.Repositories
 
     public CategoryGroupRepository(IConfiguration configuration) : base(configuration) { }
 
-    public IEnumerable<CategoryGroup> Get()
+    public async Task<IEnumerable<CategoryGroup>> Get()
     {
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
-        connection.Open();
-        return connection.Query<CategoryGroup>($"SELECT {RETURN_OBJECT} FROM category_group");
+        await connection.OpenAsync();
+        return await connection.QueryAsync<CategoryGroup>($"SELECT {RETURN_OBJECT} FROM category_group");
       }
       // return CategoryGroupMock.CategoryGroups;
     }
 
-    public CategoryGroup Create(CategoryGroup categoryGroup)
+    public async Task<CategoryGroup> Create(CategoryGroup categoryGroup)
     {
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
-        connection.Open();
+        await connection.OpenAsync();
         string sql = $@"INSERT INTO category_group (name, sort_order) 
         VALUES (@Name, @SortOrder)
         RETURNING {RETURN_OBJECT}";
-        return connection.QueryFirstOrDefault<CategoryGroup>(sql, categoryGroup);
+        return await connection.QueryFirstOrDefaultAsync<CategoryGroup>(sql, categoryGroup);
       }
     }
 
-    public CategoryGroup Update(CategoryGroup categoryGroup)
+    public async Task<CategoryGroup> Update(CategoryGroup categoryGroup)
     {
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
-        connection.Open();
+        await connection.OpenAsync();
         string sql = $@"UPDATE category_group
         SET name = @Name, sort_order = @SortOrder
         WHERE id = @Id
         RETURNING {RETURN_OBJECT}";
-        return connection.QueryFirstOrDefault<CategoryGroup>(sql, categoryGroup);
+        return await connection.QueryFirstOrDefaultAsync<CategoryGroup>(sql, categoryGroup);
       }
     }
 
-    public Tuple<CategoryGroup, CategoryGroup> Reorder(ReorderRequest request)
+    public async Task<Tuple<CategoryGroup, CategoryGroup>> Reorder(ReorderRequest request)
     {
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
-        connection.Open();
+        await connection.OpenAsync();
         string sql = $@"UPDATE category_group
             SET sort_order = @Item1SortOrder
             WHERE id = @Item1Id
@@ -75,27 +76,27 @@ namespace BudgeterApi.Repositories
             WHERE id = @Item2Id
             RETURNING {RETURN_OBJECT};";
 
-        GridReader gridReader = connection.QueryMultiple(sql, new {
+        GridReader gridReader = await connection.QueryMultipleAsync(sql, new {
             Item1Id = request.Item1.Id,
             Item1SortOrder = request.Item1.SortOrder,
             Item2Id = request.Item2.Id,
             Item2SortOrder = request.Item2.SortOrder
         });
 
-        CategoryGroup item1 = gridReader.Read<CategoryGroup>().First();
-        CategoryGroup item2 = gridReader.Read<CategoryGroup>().First();
+        CategoryGroup item1 = (await gridReader.ReadAsync<CategoryGroup>()).First();
+        CategoryGroup item2 = (await gridReader.ReadAsync<CategoryGroup>()).First();
 
         return new Tuple<CategoryGroup, CategoryGroup>(item1, item2);
       }
     }
 
-    public void Delete(int id)
+    public async Task Delete(int id)
     {
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
-        connection.Open();
+        await connection.OpenAsync();
         string sql = @"DELETE FROM category_group WHERE id = @Id";
-        connection.Execute(sql, new { Id = id });
+        await connection.ExecuteAsync(sql, new { Id = id });
       }
     }
   }

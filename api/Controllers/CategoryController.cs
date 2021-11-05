@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BudgeterApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BudgeterApi.Mocks;
 using BudgeterApi.Repositories;
 using BudgeterApi.Requests;
 
@@ -25,42 +23,42 @@ namespace BudgeterApi.Controllers
     }
 
     [HttpGet]
-    public IEnumerable<Category> Get()
+    public async Task<IEnumerable<Category>> Get()
     {
-      return _repository.Get();
+      return await _repository.Get();
     }
 
     [HttpGet]
     [Route("Simple")]
-    public IEnumerable<Category> GetSimple()
+    public async Task<IEnumerable<Category>> GetSimple()
     {
-      return _repository.GetSimple();
+      return await _repository.GetSimple();
     }
 
     [HttpPost]
-    public Category Create(Category category)
+    public async Task<Category> Create(Category category)
     {
-      return _repository.Create(category);
+      return await _repository.Create(category);
     }
 
     [HttpPut]
-    public Category Update(Category category)
+    public async Task<Category> Update(Category category)
     {
-      return _repository.Update(category);
+      return await _repository.Update(category);
     }
 
     [HttpPatch]
     [Route("reorder")]
-    public Tuple<Category, Category> Reorder(ReorderRequest request)
+    public async Task<Tuple<Category, Category>> Reorder(ReorderRequest request)
     {
-      return _repository.Reorder(request);
+      return await _repository.Reorder(request);
     }
 
     [HttpDelete]
     [Route("{id}")]
-    public void Delete(int id)
+    public async Task Delete(int id)
     {
-      _repository.Delete(id);
+      await _repository.Delete(id);
     }
   }
 }
