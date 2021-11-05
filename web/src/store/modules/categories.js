@@ -50,6 +50,18 @@ const actions = {
     } catch (error) {
       console.error(error)
     }
+  },
+  async reorder ({ commit }, request) {
+    try {
+      if (!request.item1 || !request.item2) {
+        console.error('The parameters are invalid')
+        return
+      }
+      const response = await axios.patch(baseUrl + '/categories/reorder', request)
+      commit('reorderCategories', response.data)
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 
@@ -69,6 +81,14 @@ const mutations = {
   deleteCategory (state, categoryId) {
     state.all = state.all
       .filter(category => category.id !== categoryId)
+  },
+  reorderCategories (state, response) {
+    const ids = [response.item1.id, response.item2.id]
+    state.all = [
+      ...state.all.filter(category => !ids.includes(category.id)),
+      response.item1,
+      response.item2
+    ].sort((a, b) => a.sortOrder - b.sortOrder)
   }
 }
 

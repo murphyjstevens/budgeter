@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using BudgeterApi.Models;
 using BudgeterApi.Mocks;
 using Microsoft.Extensions.Configuration;
+using System;
+using BudgeterApi.Requests;
+using static Dapper.SqlMapper;
+using System.Linq;
 
 namespace BudgeterApi.Repositories
 {
@@ -13,6 +17,7 @@ namespace BudgeterApi.Repositories
     IEnumerable<Category> GetSimple();
     Category Create(Category category);
     Category Update(Category category);
+    Tuple<Category, Category> Reorder(ReorderRequest request);
     void Delete(int id);
   }
   public class CategoryRepository : CoreRepository, ICategoryRepository
@@ -66,6 +71,35 @@ GROUP BY c.id, c.name, c.budget, c.category_group_id");
         WHERE id = @Id
         RETURNING {RETURN_OBJECT}";
         return connection.QueryFirstOrDefault<Category>(sql, category);
+      }
+    }
+
+    public Tuple<Category, Category> Reorder(ReorderRequest request)
+    {
+      using (var connection = new NpgsqlConnection(ConnectionString))
+      {
+        connection.Open();
+        string sql = $@"UPDATE category
+            SET sort_order = @Item1SortOrder
+            WHERE id = @Item1Id
+            RETURNING {RETURN_OBJECT};
+            
+            UPDATE category
+            SET sort_order = @Item2SortOrder
+            WHERE id = @Item2Id
+            RETURNING {RETURN_OBJECT};";
+
+        GridReader gridReader = connection.QueryMultiple(sql, new {
+            Item1Id = request.Item1.Id,
+            Item1SortOrder = request.Item1.SortOrder,
+            Item2Id = request.Item2.Id,
+            Item2SortOrder = request.Item2.SortOrder
+        });
+
+        Category item1 = gridReader.Read<Category>().First();
+        Category item2 = gridReader.Read<Category>().First();
+
+        return new Tuple<Category, Category>(item1, item2);
       }
     }
 

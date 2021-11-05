@@ -37,14 +37,14 @@
               <span>Category</span>
             </button>
             <button type="button"
-                    @click="reorder(group, true, true)"
+                    @click="reorderCategoryGroup(group, true)"
                     class="btn btn-outline-light btn-sm category-hover-action me-2"
                     title="Reorder Down"
                     :disabled="group.sortOrder === 1">
               <i class="bi bi-arrow-up"></i>
             </button>
             <button type="button"
-                    @click="reorder(group, true, false)"
+                    @click="reorderCategoryGroup(group, false)"
                     class="btn btn-outline-light btn-sm category-hover-action me-2"
                     title="Reorder Down"
                     :disabled="group.sortOrder === categoryGroups.length">
@@ -59,13 +59,27 @@
         <div v-if="group.isExpanded">
           <div v-for="category in group.categories"
                :key="category.id"
-               class="flex-row">
+               class="flex-row category-row">
             <span class="flex-row budget-category-cell budget-column-category editable-cell">
               <input :value="category.name" 
                      class="form-control margin-bottom-sm editable-cell-input category-name-input"
                      :class="{ 'is-invalid': category.isNameInvalid }"
                      @blur="renameCategory($event, category)"
                      maxlength="100">
+              <button type="button"
+                      @click="reorderCategory(category, true)"
+                      class="btn btn-outline-light btn-sm category-hover-action me-2"
+                      title="Reorder Down"
+                      :disabled="category.sortOrder === 1">
+                <i class="bi bi-arrow-up"></i>
+              </button>
+              <button type="button"
+                      @click="reorderCategory(category, false)"
+                      class="btn btn-outline-light btn-sm category-hover-action me-2"
+                      title="Reorder Down"
+                      :disabled="category.sortOrder === group.categories.length">
+                <i class="bi bi-arrow-down"></i>
+              </button>
             </span>
             <span class="flex-row budget-category-cell budget-column-budget editable-cell">
               <div class="input-group">
@@ -219,6 +233,81 @@ export default {
       }
     },
 
+    async reorderCategory (category, isUp) {
+      this.$store.commit('setIsLoading', true)
+      const maxSortOrder =
+        this.categories
+          .filter(cat => cat.categoryGroupId === category.categoryGroupId)
+          .reduce((a, b) => a.sortOrder > b.sortOrder ? a : b)
+      if ((isUp && category.sortOrder === 0) ||
+        (!isUp && category.sortOrder === maxSortOrder)) {
+        this.$store.commit('setIsLoading', false)
+        return
+      }
+      const newOrder = isUp ? category.sortOrder - 1 : category.sortOrder + 1
+      const otherCategory = 
+        this.categories
+          .filter(cat => cat.categoryGroupId === category.categoryGroupId)
+          .find(cat => cat.sortOrder === newOrder)
+      if (!otherCategory) {
+        this.$store.commit('setIsLoading', false)
+        console.error('Could not find sort order')
+        return
+      }
+      const reorderRequest = {
+        item1: {
+          id: category.id,
+          sortOrder: newOrder
+        },
+        item2: {
+          id: otherCategory.id,
+          sortOrder: category.sortOrder
+        }
+      }
+
+      try {
+        await this.$store.dispatch('categories/reorder', reorderRequest)
+        this.$store.commit('setIsLoading', false)
+      } catch (error) {
+        this.$store.commit('setIsLoading', false)
+        console.error(error)
+      }
+    },
+
+    async reorderCategoryGroup (group, isUp) {
+      this.$store.commit('setIsLoading', true)
+      if ((isUp && group.sortOrder === 0) ||
+        (!isUp && group.sortOrder === this.categories.reduce((a, b) => a.sortOrder > b.sortOrder ? a : b))) {
+        this.$store.commit('setIsLoading', false)
+        return
+      }
+      const newOrder = isUp ? group.sortOrder - 1 : group.sortOrder + 1
+      const otherGroup = this.categoryGroups.find(cat => cat.sortOrder === newOrder)
+      if (!otherGroup) {
+        console.error('Could not find sort order')
+        this.$store.commit('setIsLoading', false)
+        return
+      }
+      const reorderRequest = {
+        item1: {
+          id: group.id,
+          sortOrder: newOrder
+        },
+        item2: {
+          id: otherGroup.id,
+          sortOrder: group.sortOrder
+        }
+      }
+
+      try {
+        await this.$store.dispatch('categoryGroups/reorder', reorderRequest)
+        this.$store.commit('setIsLoading', false)
+      } catch (error) {
+        this.$store.commit('setIsLoading', false)
+        console.error(error)
+      }
+    },
+
     setCategoryGroupsCombined () {
       if (this.categoryGroups?.length) {
         this.categoryGroupsCombined = this.categoryGroups.map(group => {
@@ -321,7 +410,8 @@ export default {
       display: none;
     }
     
-    .group-header-row:hover .category-hover-action {
+    .group-header-row:hover .category-hover-action,
+    .category-row:hover .category-hover-action {
       display: inline-flex;
     }
 

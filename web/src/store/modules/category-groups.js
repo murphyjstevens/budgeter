@@ -22,6 +22,18 @@ const actions = {
     } catch (error) {
       console.error(error)
     }
+  },
+  async reorder ({ commit }, request) {
+    try {
+      if (!request.item1 || !request.item2) {
+        console.error('The parameters are invalid')
+        return
+      }
+      const response = await axios.patch(baseUrl + '/category-groups/reorder', request)
+      commit('reorderCategoryGroups', response.data)
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 
@@ -31,6 +43,14 @@ const mutations = {
   },
   addCategoryGroup (state, categoryGroup) {
     state.all = [ ...state.all, categoryGroup ].sort((a, b) => a.sortOrder - b.sortOrder)
+  },
+  reorderCategoryGroups (state, response) {
+    const ids = [response.item1.id, response.item2.id]
+    state.all = [
+      ...state.all.filter(group => !ids.includes(group.id)),
+      response.item1,
+      response.item2
+    ].sort((a, b) => a.sortOrder - b.sortOrder)
   }
 }
 

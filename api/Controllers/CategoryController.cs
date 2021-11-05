@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BudgeterApi.Mocks;
 using BudgeterApi.Repositories;
+using BudgeterApi.Requests;
 
 namespace BudgeterApi.Controllers
 {
@@ -46,6 +47,13 @@ namespace BudgeterApi.Controllers
     public Category Update(Category category)
     {
       return _repository.Update(category);
+    }
+
+    [HttpPatch]
+    [Route("reorder")]
+    public Tuple<Category, Category> Reorder(ReorderRequest request)
+    {
+      return _repository.Reorder(request);
     }
 
     [HttpDelete]

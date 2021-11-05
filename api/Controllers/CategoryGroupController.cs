@@ -3,6 +3,8 @@ using BudgeterApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BudgeterApi.Repositories;
+using System;
+using BudgeterApi.Requests;
 
 namespace BudgeterApi.Controllers
 {
@@ -35,6 +37,13 @@ namespace BudgeterApi.Controllers
     public CategoryGroup Update(CategoryGroup group)
     {
       return _repository.Update(group);
+    }
+
+    [HttpPatch]
+    [Route("reorder")]
+    public Tuple<CategoryGroup, CategoryGroup> Reorder(ReorderRequest request)
+    {
+      return _repository.Reorder(request);
     }
 
     [HttpDelete]
