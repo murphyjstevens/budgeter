@@ -23,6 +23,18 @@ const actions = {
       console.error(error)
     }
   },
+  async update ({ commit }, categoryGroup) {
+    try {
+      if (!categoryGroup) {
+        console.error('Empty categoryGroup object')
+        return
+      }
+      const response = await axios.put(baseUrl + '/category-groups', categoryGroup)
+      commit('updateCategoryGroup', response.data)
+    } catch (error) {
+      console.error(error)
+    }
+  },
   async reorder ({ commit }, request) {
     try {
       if (!request.item1 || !request.item2) {
@@ -31,6 +43,18 @@ const actions = {
       }
       const response = await axios.patch(baseUrl + '/category-groups/reorder', request)
       commit('reorderCategoryGroups', response.data)
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  async delete ({ commit }, id) {
+    try {
+      if (!id) {
+        console.error('Empty groupId')
+        return
+      }
+      await axios.delete(`${baseUrl}/category-groups/${id}`)
+      commit('deleteCategoryGroup', id)
     } catch (error) {
       console.error(error)
     }
@@ -44,6 +68,12 @@ const mutations = {
   addCategoryGroup (state, categoryGroup) {
     state.all = [ ...state.all, categoryGroup ].sort((a, b) => a.sortOrder - b.sortOrder)
   },
+  updateCategoryGroup (state, categoryGroup) {
+    state.all = [
+      ...state.all.filter(c => c.id !== categoryGroup.id),
+      categoryGroup
+   ].sort((a, b) => a.sortOrder - b.sortOrder)
+  },
   reorderCategoryGroups (state, response) {
     const ids = [response.item1.id, response.item2.id]
     state.all = [
@@ -51,6 +81,10 @@ const mutations = {
       response.item1,
       response.item2
     ].sort((a, b) => a.sortOrder - b.sortOrder)
+  },
+  deleteCategoryGroup (state, id) {
+    state.all = state.all
+      .filter(group => group.id !== id)
   }
 }
 

@@ -24,11 +24,15 @@
            :key="group.id"
            class="flex-column group-row-container">
         <div class="flex-row group-header-row">
-          <span class="budget-group-cell budget-column-category">
+          <span class="budget-group-cell budget-column-category editable-cell">
             <button type="button" @click="group.isExpanded = !group.isExpanded" class="btn expand-button">
               <i class="bi" :class="{ 'bi-caret-down-fill': group.isExpanded, 'bi-caret-right-fill': !group.isExpanded }"></i>
             </button>
-            <span class="me-2">{{ group.name }}</span>
+            <input :value="group.name" 
+                    class="form-control margin-bottom-sm editable-cell-input category-name-input me-2"
+                    :class="{ 'is-invalid': group.isNameInvalid }"
+                    @blur="rename($event, group, true)"
+                    maxlength="100">
             <button type="button"
                     @click="showAddCategoryDialog(group.id)"
                     class="btn btn-primary btn-sm category-hover-action me-2"
@@ -54,7 +58,13 @@
           <span class="budget-group-cell budget-column-budget">{{ $filters.toCurrency(group.budgeted) }}</span>
           <span class="budget-group-cell budget-column-spent">{{ $filters.toCurrency(group.spent) }}</span>
           <span class="budget-group-cell budget-column-available">{{ $filters.toCurrency(group.available) }}</span>
-          <span class="budget-group-cell budget-column-actions"></span>
+          <span class="budget-group-cell budget-column-actions">
+            <button type="button"
+                    @click="confirmDeleteCategoryGroup(group)"
+                    class="btn trash-button category-hover-action">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </span>
         </div>
         <div v-if="group.isExpanded">
           <div v-for="category in group.categories"
@@ -62,9 +72,9 @@
                class="flex-row category-row">
             <span class="flex-row budget-category-cell budget-column-category editable-cell">
               <input :value="category.name" 
-                     class="form-control margin-bottom-sm editable-cell-input category-name-input"
+                     class="form-control margin-bottom-sm editable-cell-input category-name-input me-2"
                      :class="{ 'is-invalid': category.isNameInvalid }"
-                     @blur="renameCategory($event, category)"
+                     @blur="rename($event, category, false)"
                      maxlength="100">
               <button type="button"
                       @click="reorderCategory(category, true)"
@@ -102,7 +112,7 @@
             <span class="flex-row budget-category-cell budget-column-actions">
               <button type="button"
                       @click="confirmDeleteCategory(category)"
-                      class="btn trash-button">
+                      class="btn trash-button category-hover-action">
                 <i class="bi bi-trash-fill"></i>
               </button>
             </span>
@@ -175,20 +185,24 @@ export default {
       return numberArray.reduce((previous, current) => previous + current)
     },
 
-    renameCategory (event, category) {
+    rename (event, item, isGroup) {
       if (event.target?.value) {
         const updatedName = event.target.value.trim()
         if (updatedName) {
-          if (updatedName === category.name) {
-            category.isNameInvalid = false
+          if (updatedName === item.name) {
+            item.isNameInvalid = false
             return
           }
-          this.saveCategory({ ...category, name: updatedName })
-          category.isNameInvalid = false
+          if (isGroup) {
+            this.saveGroup({ ...item, name: updatedName })
+          } else {
+            this.saveCategory({ ...item, name: updatedName })
+          }
+          item.isNameInvalid = false
           return
         }
       }
-      category.isNameInvalid = true
+      item.isNameInvalid = true
     },
 
     updateBudget (event, category) {
@@ -206,8 +220,18 @@ export default {
     async saveCategory (category) {
       this.$store.commit('setIsLoading', true)
       try {
-        const updatedCategory = await this.$store.dispatch('categories/update', category)
-        category = updatedCategory
+        await this.$store.dispatch('categories/update', category)
+        this.$store.commit('setIsLoading', false)
+      } catch (error) {
+        this.$store.commit('setIsLoading', false)
+        console.error(error)
+      }
+    },
+
+    async saveGroup (group) {
+      this.$store.commit('setIsLoading', true)
+      try {
+        await this.$store.dispatch('categoryGroups/update', group)
         this.$store.commit('setIsLoading', false)
       } catch (error) {
         this.$store.commit('setIsLoading', false)
@@ -226,6 +250,24 @@ export default {
 
       try {
         await this.$store.dispatch('categories/delete', id)
+        this.$store.commit('setIsLoading', false)
+      } catch (error) {
+        this.$store.commit('setIsLoading', false)
+        console.error(error)
+      }
+    },
+
+    confirmDeleteCategoryGroup (group) {
+      if (this.$refs.deleteConfirmationModal && group) {
+        this.$refs.deleteConfirmationModal.open(this.deleteCategoryGroup, group.id, group.name)
+      }
+    },
+
+    async deleteCategoryGroup (id) {
+      this.$store.commit('setIsLoading', true)
+
+      try {
+        await this.$store.dispatch('categoryGroups/delete', id)
         this.$store.commit('setIsLoading', false)
       } catch (error) {
         this.$store.commit('setIsLoading', false)
@@ -406,7 +448,6 @@ export default {
     }
 
     .category-hover-action {
-      margin-left: 5px;
       display: none;
     }
     
@@ -427,7 +468,7 @@ export default {
     
     .budget-category-cell {
       align-items: center;
-      padding: 0.75rem;
+      padding: 0 0.75rem;
       background-color: #212529bb;
       color: #dee2e6;
     }
@@ -440,7 +481,9 @@ export default {
       .editable-cell-input {
         background-color: transparent;
         color: white;
-        border-width: 0;
+        border-color: transparent;
+        margin-top: 5px;
+        margin-bottom: 5px;
       }
 
       .category-name-input {
@@ -455,7 +498,7 @@ export default {
 
     .editable-cell:hover, .editable-cell:focus-within {
       .editable-cell-input {
-        border-width: 1px;
+        border-color: inherit;
       }
     }
 
