@@ -125,25 +125,25 @@
                       type="button" 
                       class="cell-button-icon cell-button-icon-primary" 
                       @click="startEditing(transaction)">
-                <i class="bi-pencil text-primary"></i>
+                <i class="bi bi-pencil-fill link-primary"></i>
               </button>
               <button v-if="!transaction.isEditing" 
                       type="button" 
                       class="cell-button-icon cell-button-icon-danger"
                       @click="confirmDelete(transaction)">
-                <i class="bi-trash text-danger"></i>
+                <i class="bi bi-trash-fill link-danger"></i>
               </button>
               <button v-if="transaction.isEditing" 
                       type="button" 
                       class="cell-button-icon cell-button-icon-success" 
                       @click="save(editTransaction)">
-                <i class="bi-check-circle text-success"></i>
+                <i class="bi bi-check-circle-fill link-success"></i>
               </button>
               <button v-if="transaction.isEditing" 
                       type="button" 
                       class="cell-button-icon cell-button-icon-secondary" 
                       @click="cancelEditing(transaction)">
-                <i class="bi-x-circle text-secondary"></i>
+                <i class="bi bi-x-circle-fill link-secondary"></i>
               </button>
             </div>
           </td>

@@ -113,7 +113,7 @@
               <button type="button"
                       @click="confirmDeleteCategory(category)"
                       class="btn trash-button category-hover-action">
-                <i class="bi bi-trash-fill"></i>
+                <i class="bi bi-trash-fill link-danger"></i>
               </button>
             </span>
           </div>
