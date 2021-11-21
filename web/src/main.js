@@ -6,6 +6,9 @@ import store from './store'
 
 import App from './App'
 
+import 'normalize.css/normalize.css'
+import 'bootstrap/scss/bootstrap.scss'
+import 'bootstrap-icons/font/bootstrap-icons.scss'
 import './assets/global.scss'
 import './assets/bootstrap-override.css'
 
