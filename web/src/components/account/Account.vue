@@ -209,11 +209,11 @@ export default {
         this.cancelEditing(unsavedTransaction)
       }
       this.editTransaction = { ...transaction }
-      transaction.isEditing = true
+      this.$store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: true })
     },
 
     cancelEditing (transaction) {
-      transaction.isEditing = false
+      this.$store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: false })
     },
 
     async save (transaction) {

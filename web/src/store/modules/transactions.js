@@ -107,6 +107,10 @@ const mutations = {
   },
   sortTransactions (state) {
     state.all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  },
+  setTransactionIsEditing (state, transaction) {
+    const index = state.all.findIndex(p => p.id === transaction.id)
+    state.all[index].isEditing = transaction.isEditing
   }
 }
 
