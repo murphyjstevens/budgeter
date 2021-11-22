@@ -25,7 +25,7 @@
            class="flex-column group-row-container">
         <div class="flex-row group-header-row">
           <span class="budget-group-cell budget-column-category editable-cell">
-            <button type="button" @click="group.isExpanded = !group.isExpanded" class="btn expand-button">
+            <button type="button" @click="group.isExpanded = !group.isExpanded" class="btn link-light">
               <i class="bi" :class="{ 'bi-caret-down-fill': group.isExpanded, 'bi-caret-right-fill': !group.isExpanded }"></i>
             </button>
             <input :value="group.name" 
@@ -61,7 +61,7 @@
           <span class="budget-group-cell budget-column-actions">
             <button type="button"
                     @click="confirmDeleteCategoryGroup(group)"
-                    class="btn trash-button category-hover-action">
+                    class="btn category-hover-action link-danger">
               <i class="bi bi-trash-fill"></i>
             </button>
           </span>
@@ -112,8 +112,8 @@
             <span class="flex-row budget-category-cell budget-column-actions">
               <button type="button"
                       @click="confirmDeleteCategory(category)"
-                      class="btn trash-button category-hover-action">
-                <i class="bi bi-trash-fill link-danger"></i>
+                      class="btn category-hover-action link-danger">
+                <i class="bi bi-trash-fill"></i>
               </button>
             </span>
           </div>
@@ -505,14 +505,6 @@ export default {
     .editable-cell:focus-within .input-group .input-group-prepend {
       display: flex;
     }
-  }
-
-  .expand-button {
-    color: #dee2e6;
-  }
-
-  .trash-button {
-    color: #dc3545;
   }
 
   .rename-button {

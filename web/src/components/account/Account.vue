@@ -123,27 +123,27 @@
             <div class="icons-container">
               <button v-if="!transaction.isEditing" 
                       type="button" 
-                      class="cell-button-icon cell-button-icon-primary" 
+                      class="btn link-primary" 
                       @click="startEditing(transaction)">
-                <i class="bi bi-pencil-fill link-primary"></i>
+                <i class="bi bi-pencil-fill"></i>
               </button>
               <button v-if="!transaction.isEditing" 
                       type="button" 
-                      class="cell-button-icon cell-button-icon-danger"
+                      class="btn link-danger"
                       @click="confirmDelete(transaction)">
-                <i class="bi bi-trash-fill link-danger"></i>
+                <i class="bi bi-trash-fill"></i>
               </button>
               <button v-if="transaction.isEditing" 
                       type="button" 
-                      class="cell-button-icon cell-button-icon-success" 
+                      class="btn link-success" 
                       @click="save(editTransaction)">
-                <i class="bi bi-check-circle-fill link-success"></i>
+                <i class="bi bi-check-circle-fill"></i>
               </button>
               <button v-if="transaction.isEditing" 
                       type="button" 
-                      class="cell-button-icon cell-button-icon-secondary" 
+                      class="btn link-secondary" 
                       @click="cancelEditing(transaction)">
-                <i class="bi bi-x-circle-fill link-secondary"></i>
+                <i class="bi bi-x-circle-fill"></i>
               </button>
             </div>
           </td>
