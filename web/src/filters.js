@@ -11,16 +11,20 @@ export const filters = {
     return formatter.format(value)
   },
 
-  toShortDate (value) {
-    if (!(value instanceof Date)) {
+  toShortDate (value, format = 'MM/dd/yyyy') {
+    if (!(value instanceof Date) || !format) {
       return value
     }
 
-    const monthString = this.padZeros(value.getMonth(), 2)
+    const monthString = this.padZeros(value.getMonth()+1, 2)
     const dayString = this.padZeros(value.getDate(), 2)
     const yearString = this.padZeros(value.getFullYear(), 4)
 
-    return `${monthString}/${dayString}/${yearString}`
+    let result = format 
+    result = result.replace('MM', monthString)
+    result = result.replace('dd', dayString)
+    result = result.replace('yyyy', yearString)
+    return result
   },
 
   padZeros (value, numberOfDigits) {

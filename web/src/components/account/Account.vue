@@ -208,7 +208,8 @@ export default {
       if (unsavedTransaction) {
         this.cancelEditing(unsavedTransaction)
       }
-      this.editTransaction = { ...transaction }
+      const dateString = this.$filters.toShortDate(new Date(transaction.date), 'yyyy-MM-dd')
+      this.editTransaction = { ...transaction, date: dateString }
       this.$store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: true })
     },
 
