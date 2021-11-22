@@ -178,7 +178,6 @@ export default {
   },
   data () {
     return {
-      isEditingRow: false,
       editTransaction: null,
       renameText: '',
       accountUrl: null
@@ -219,13 +218,7 @@ export default {
 
     async save (transaction) {
       this.$store.commit('setIsLoading', true)
-      const updatedTransaction = await this.$store.dispatch('transactions/update', transaction)
-
-      const transactionIndex = this.transactions.findIndex(t => t.id === updatedTransaction.id)
-      this.transactions[transactionIndex] = updatedTransaction
-      this.sortTransactions()
-      transaction.isEditing = false
-      this.isEditingRow = false
+      await this.$store.dispatch('transactions/update', transaction)
     },
 
     confirmDelete (transaction) {
