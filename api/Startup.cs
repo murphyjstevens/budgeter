@@ -28,10 +28,11 @@ namespace BudgeterApi
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "BudgeterApi", Version = "v1" });
       });
 
-      services.AddScoped<ICategoryRepository, CategoryRepository>();
-      services.AddScoped<ICategoryGroupRepository, CategoryGroupRepository>();
       services.AddScoped<IAccountRepository, AccountRepository>();
+      services.AddScoped<ICategoryGroupRepository, CategoryGroupRepository>();
+      services.AddScoped<ICategoryRepository, CategoryRepository>();
       services.AddScoped<ITransactionRepository, TransactionRepository>();
+      services.AddScoped<IRecipientRepository, RecipientRepository>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
