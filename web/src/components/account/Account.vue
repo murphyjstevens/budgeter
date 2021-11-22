@@ -55,7 +55,7 @@
                       required />
             </div>
             <div v-if="!transaction.isEditing">
-              {{ $filters.toShortDate(transaction.date)}}
+              {{ $filters.toShortDate(new Date(transaction.date))}}
             </div>
           </td>
           <td v-if="!account">
