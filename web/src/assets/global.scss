@@ -4,36 +4,6 @@ body {
   background-attachment: fixed;
 }
 
-.button-icon {
-	background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
-  height: 19px;
-
-  :disabled {
-    cursor: not-allowed;
-    opacity: 0.3;
-  }
-}
-
-.button-icon-danger {
-  color: #da3444;
-}
-
-.btn-no-style {
-  border: none;
-  background-color: transparent;
-}
-
-.icon-button {
-  font-size: 2rem;
-  line-height: 1;
-}
-
 .icons-cell {
   padding: 0 !important;
   vertical-align: middle !important;
