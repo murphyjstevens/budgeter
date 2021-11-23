@@ -9,17 +9,23 @@ const state = () => ({
 const actions = {
   async get ({ commit }) {
     try {
+      commit('setIsLoading', true, { root: true })
       const response = await axios.get(baseUrl + '/recipients')
       commit('setRecipients', response.data)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
       console.error(error)
     }
   },
   async create ({ commit }, recipient) {
     try {
+      commit('setIsLoading', true, { root: true })
       const response = await axios.post(baseUrl + '/recipients', recipient)
       commit('addRecipient', response.data)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
       console.error(error)
     }
   },
@@ -29,9 +35,12 @@ const actions = {
         console.error('Empty recipient object')
         return
       }
+      commit('setIsLoading', true, { root: true })
       const response = await axios.put(baseUrl + '/recipients', recipient)
       commit('updateRecipient', response.data)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
       console.error(error)
     }
   },
@@ -41,9 +50,12 @@ const actions = {
         console.error('Empty recipientId')
         return
       }
+      commit('setIsLoading', true, { root: true })
       await axios.delete(`${baseUrl}/recipients/${id}`)
       commit('deleteRecipient', id)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
       console.error(error)
     }
   }
@@ -61,6 +73,10 @@ const mutations = {
       ...state.all.filter(c => c.id !== recipient.id),
       recipient
    ].sort((a, b) => b.name - a.name)
+  },
+  setRecipientIsEditing (state, recipient) {
+    const index = state.all.findIndex(p => p.id === recipient.id)
+    state.all[index].isEditing = recipient.isEditing
   },
   deleteRecipient (state, id) {
     state.all = state.all

@@ -4,7 +4,7 @@
       <h2>{{ account ? account.name : "All Accounts" }}</h2>
       <div class="flex-row align-items-center">
         <button type="button"
-                class="btn btn-light account-header-button"
+                class="btn btn-light mb-1 ms-2"
                 @click="showImportDialog()"
                 title="Import Transactions"
                 data-bs-toggle="tooltip"
@@ -12,7 +12,7 @@
           <i class="bi bi-file-earmark-arrow-up"></i>
         </button>
         <button type="button"
-                class="btn btn-primary account-header-button"
+                class="btn btn-primary mb-1 ms-2"
                 @click="showAddTransactionDialog()"
                 title="Add Transaction"
                 data-bs-toggle="tooltip"

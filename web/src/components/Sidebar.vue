@@ -9,6 +9,7 @@
         :to="{ name: 'Account', params: { url: account.url }}"
         class="sidebar-item">{{ account.name }}</router-link>
     </div>
+    <router-link to="/recipients" class="sidebar-item mt-auto">Recipients</router-link>
   </div>
 </template>
 
