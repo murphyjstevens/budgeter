@@ -20,7 +20,7 @@ namespace BudgeterApi.Repositories
   }
   public class TransactionRepository : CoreRepository, ITransactionRepository
   {
-    private const string TRANSACTION_SELECT = "id, account_id AS AccountId, date, cost, recipient, category_id AS CategoryId";
+    private const string TRANSACTION_SELECT = "id, account_id AS AccountId, date, cost, recipient_id AS RecipientId, category_id AS CategoryId";
 
     public TransactionRepository(IConfiguration configuration) : base(configuration) { }
 
@@ -54,8 +54,8 @@ namespace BudgeterApi.Repositories
     {
       using (var connection = new NpgsqlConnection(ConnectionString)) {
         await connection.OpenAsync();
-        string sql = $@"INSERT INTO transaction (account_id, date, cost, recipient, category_id) 
-        VALUES (@AccountId, @Date, @Cost, @Recipient, @CategoryId)
+        string sql = $@"INSERT INTO transaction (account_id, date, cost, recipient_id, category_id) 
+        VALUES (@AccountId, @Date, @Cost, @RecipientId, @CategoryId)
         RETURNING {TRANSACTION_SELECT}";
         return await connection.QueryFirstOrDefaultAsync<Transaction>(sql, transaction);
       }
@@ -66,7 +66,7 @@ namespace BudgeterApi.Repositories
       using (var connection = new NpgsqlConnection(ConnectionString)) {
         await connection.OpenAsync();
         string sql = $@"UPDATE transaction
-        SET account_id = @AccountId, date = @Date, cost = @Cost, recipient = @Recipient, category_id = @CategoryId
+        SET account_id = @AccountId, date = @Date, cost = @Cost, recipient_id = @RecipientId, category_id = @CategoryId
         WHERE id = @Id
         RETURNING {TRANSACTION_SELECT}";
         return await connection.QueryFirstOrDefaultAsync<Transaction>(sql, transaction);

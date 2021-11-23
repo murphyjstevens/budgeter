@@ -76,15 +76,18 @@
           </td>
           <td>
             <div v-if="transaction.isEditing">
-              <input id="recipient"
-                    type="text"
-                    v-model="editTransaction.recipient"
-                    name="recipient"
-                    class="form-control"
-                    required>
+              <select id="recipient"
+                      v-model="editTransaction.recipientId"
+                      name="recipient"
+                      class="form-control"
+                      required>
+                <option v-for="rec in recipients"
+                        :key="rec.id"
+                        :value="rec.id">{{ rec.name }}</option>
+              </select>
             </div>
             <div v-if="!transaction.isEditing">
-              {{ transaction.recipient }}
+              {{ getRecipientName(transaction.recipientId) }}
             </div>
           </td>
           <td>
@@ -163,6 +166,12 @@ import TransactionDialog from './TransactionDialog.vue'
 
 export default {
   name: 'Account',
+  beforeRouteLeave () {
+    this.transactions.filter(transaction => transaction.isEditing).forEach(transaction => {
+      this.$store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: false })
+    })
+    this.editTransaction = null
+  },
   components: {
     DeleteConfirmation,
     TransactionDialog
@@ -173,6 +182,7 @@ export default {
       accounts: state => state.accounts.all,
       categoryGroups: state => state.categoryGroups.all,
       categories: state => state.categories.all,
+      recipients: state => state.recipients.all,
       transactions: state => state.transactions.all
     })
   },
@@ -192,6 +202,11 @@ export default {
     getAccountName (id) {
       const account = this.accounts?.find(a => a.id === id)
       return account ? account.name : ''
+    },
+
+    getRecipientName (id) {
+      const recipient = this.recipients?.find(r => r.id === id)
+      return recipient ? recipient.name : ''
     },
 
     convertToMoney (event, transaction) {

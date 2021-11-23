@@ -71,14 +71,17 @@
               </div>
               <div class="col-sm-12">
                 <label for="recipient" class="form-label">Recipient</label>
-                <input id="recipient"
-                       v-model="recipient"
-                       type="text"
-                       name="recipient"
-                       class="form-control"
-                       @blur="v$.recipient.$touch"
-                       required>
-                <div class="input-errors" v-for="error of v$.recipient.$errors" :key="error.$uid">
+                <select id="recipient" 
+                        v-model="recipientId"
+                        name="recipient"
+                        class="form-control"
+                        @blur="v$.recipientId.$touch"
+                        required>
+                  <option v-for="recipient in recipients" 
+                          :key="recipient.id"
+                          :value="recipient.id">{{ recipient.name }}</option>
+                </select>
+                <div class="input-errors" v-for="error of v$.recipientId.$errors" :key="error.$uid">
                   <div class="error-msg invalid-feedback d-block">{{ error.$message }}</div>
                 </div>
               </div>
@@ -111,7 +114,8 @@ export default {
     ...mapState({
       account: state => state.accounts.account,
       accounts: state => state.accounts.all,
-      categories: state => state.categories.all
+      categories: state => state.categories.all,
+      recipients: state => state.recipients.all
     })
   },
   data () {
@@ -121,7 +125,7 @@ export default {
       accountId: null,
       categoryId: null,
       cost: 0.00,
-      recipient: ''
+      recipientId: null
     }
   },
   methods: {
@@ -137,7 +141,7 @@ export default {
       this.accountId = accountId
       this.categoryId = null
       this.cost = 0.00
-      this.recipient = ''
+      this.recipientId = null
       this.$nextTick(() => {
         this.v$.$reset()
       })
@@ -151,7 +155,7 @@ export default {
         categoryId: this.categoryId,
         date: this.date,
         cost: this.cost,
-        recipient: this.recipient
+        recipientId: this.recipientId
       }
       await this.$store.dispatch('transactions/create', transaction)
       this.close()
@@ -172,6 +176,9 @@ export default {
     if (!this.categories?.length) {
       this.$store.dispatch('categories/get')
     }
+    if (!this.recipients?.length) {
+      this.$store.dispatch('recipients/get')
+    }
   },
   setup () {
     return { v$: useVuelidate() }
@@ -182,7 +189,7 @@ export default {
       accountId: { required },
       categoryId: { required },
       cost: { required },
-      recipient: { required }
+      recipientId: { required }
     }
   }
 }
