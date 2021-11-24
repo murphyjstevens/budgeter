@@ -9,9 +9,13 @@ const state = () => ({
 const actions = {
   async get ({ commit }) {
     try {
+      commit('setIsLoading', true, { root: true })
       const response = await axios.get(baseUrl + '/categories')
       commit('setCategories', response.data)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   },
@@ -21,9 +25,13 @@ const actions = {
         console.error('Empty category object')
         return
       }
+      commit('setIsLoading', true, { root: true })
       const response = await axios.post(baseUrl + '/categories', category)
       commit('addCategory', response.data)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   },
@@ -33,9 +41,13 @@ const actions = {
         console.error('Empty category object')
         return
       }
+      commit('setIsLoading', true, { root: true })
       const response = await axios.put(baseUrl + '/categories', category)
       commit('updateCategory', response.data)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   },
@@ -45,9 +57,13 @@ const actions = {
         console.error('Empty categoryId')
         return
       }
+      commit('setIsLoading', true, { root: true })
       await axios.delete(baseUrl + '/categories/' + categoryId)
       commit('deleteCategory', categoryId)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   },
@@ -57,9 +73,13 @@ const actions = {
         console.error('The parameters are invalid')
         return
       }
+      commit('setIsLoading', true, { root: true })
       const response = await axios.patch(baseUrl + '/categories/reorder', request)
       commit('reorderCategories', response.data)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   }

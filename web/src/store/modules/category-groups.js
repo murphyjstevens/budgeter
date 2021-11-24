@@ -9,17 +9,25 @@ const state = () => ({
 const actions = {
   async get ({ commit }) {
     try {
+      commit('setIsLoading', true, { root: true })
       const response = await axios.get(baseUrl + '/category-groups')
       commit('setCategoryGroups', response.data)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   },
   async create ({ commit }, categoryGroup) {
     try {
+      commit('setIsLoading', true, { root: true })
       const response = await axios.post(baseUrl + '/category-groups', categoryGroup)
       commit('addCategoryGroup', response.data)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   },
@@ -29,9 +37,13 @@ const actions = {
         console.error('Empty categoryGroup object')
         return
       }
+      commit('setIsLoading', true, { root: true })
       const response = await axios.put(baseUrl + '/category-groups', categoryGroup)
       commit('updateCategoryGroup', response.data)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   },
@@ -41,9 +53,13 @@ const actions = {
         console.error('The parameters are invalid')
         return
       }
+      commit('setIsLoading', true, { root: true })
       const response = await axios.patch(baseUrl + '/category-groups/reorder', request)
       commit('reorderCategoryGroups', response.data)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   },
@@ -53,9 +69,13 @@ const actions = {
         console.error('Empty groupId')
         return
       }
+      commit('setIsLoading', true, { root: true })
       await axios.delete(`${baseUrl}/category-groups/${id}`)
       commit('deleteCategoryGroup', id)
+      commit('setIsLoading', false, { root: true })
     } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   }

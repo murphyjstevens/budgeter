@@ -16,11 +16,15 @@ export default createStore({
     transactions
   },
   state: () => ({
-    isLoading: false
+    isLoading: false,
+    toast: null
   }),
   mutations: {
     setIsLoading(state, isLoading) {
       state.isLoading = isLoading
+    },
+    setToast(state, toast) {
+      state.toast = toast
     }
   }
 })

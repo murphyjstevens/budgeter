@@ -2,6 +2,7 @@
   <Sidebar class="sidebar-wrapper"></Sidebar>
 
   <div class="content-wrapper">
+    <Toast></Toast>
     <div v-if="isLoading" class="loading-overlay">
       <div class="loading-dialog">
         <div class="spinner-border" role="status">
@@ -18,11 +19,13 @@
 <script>
 import { mapState } from 'vuex'
 import Sidebar from './components/Sidebar.vue'
+import Toast from './components/shared/Toast.vue'
 
 export default {
   name: 'App',
   components: {
-    Sidebar
+    Sidebar,
+    Toast
   },
   computed: {
     ...mapState({

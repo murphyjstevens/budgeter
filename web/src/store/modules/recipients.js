@@ -15,6 +15,7 @@ const actions = {
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   },
@@ -26,6 +27,7 @@ const actions = {
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   },
@@ -41,6 +43,7 @@ const actions = {
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   },
@@ -56,6 +59,7 @@ const actions = {
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
     }
   }
