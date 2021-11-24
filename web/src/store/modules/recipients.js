@@ -63,16 +63,16 @@ const actions = {
 
 const mutations = {
   setRecipients (state, recipients) {
-    state.all = recipients.sort((a, b) => b.name - a.name)
+    state.all = recipients.sort((a, b) => a.name.localeCompare(b.name))
   },
   addRecipient (state, recipient) {
-    state.all = [ ...state.all, recipient ].sort((a, b) => b.name - a.name)
+    state.all = [ ...state.all, recipient ].sort((a, b) => a.name.localeCompare(b.name))
   },
   updateRecipient (state, recipient) {
     state.all = [
       ...state.all.filter(c => c.id !== recipient.id),
       recipient
-   ].sort((a, b) => b.name - a.name)
+   ].sort((a, b) => a.name.localeCompare(b.name))
   },
   setRecipientIsEditing (state, recipient) {
     const index = state.all.findIndex(p => p.id === recipient.id)
