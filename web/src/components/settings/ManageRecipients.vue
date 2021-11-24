@@ -183,7 +183,6 @@ export default {
 
     async delete (id) {
       await this.$store.dispatch('recipients/delete', id)
-      this.recipients.splice(this.recipients.findIndex(t => t.id === id), 1)
     },
 
     addRow () {

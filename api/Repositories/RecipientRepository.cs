@@ -3,6 +3,7 @@ using Npgsql;
 using System.Collections.Generic;
 using BudgeterApi.Models;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Threading.Tasks;
 
 namespace BudgeterApi.Repositories
@@ -54,7 +55,12 @@ namespace BudgeterApi.Repositories
     public async Task Delete(int id) {
       using (var connection = new NpgsqlConnection(ConnectionString)) {
         await connection.OpenAsync();
-        string sql = @"DELETE FROM recipient WHERE id = @Id";
+        int countInUse = await connection.QueryFirstAsync<int>("select count(1) from transaction where recipient_id = @Id;", new { Id = id });
+        if (countInUse > 0) {
+          throw new Exception("This recipient is in use by a Transaction");
+        }
+
+        string sql = @"DELETE FROM recipient WHERE id = @Id;";
         await connection.ExecuteAsync(sql, new { Id = id });
       }
     }
