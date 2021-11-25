@@ -56,12 +56,11 @@ export default {
     display: flex;
     flex-direction: column;
     position: absolute;
-    position: fixed;
+    left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
     align-items: center;
-    justify-content: center;
   }
 
   .loading-dialog {
@@ -75,6 +74,7 @@ export default {
     justify-content: center;
     align-items: center;
     padding: 8px;
+    margin-top: 190px;
   }
 
   .loading-message {
