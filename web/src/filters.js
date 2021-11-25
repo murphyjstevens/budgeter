@@ -37,5 +37,15 @@ export const filters = {
     const zeroString = '0'.repeat(numberOfDigits - characterCount)
 
     return zeroString + valueString
+  },
+
+  getMonthString (month) {
+    if (!month || month < 0 || month > 11) {
+      console.error(`Month is not valid: ${month ?? 'null'}`)
+    }
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December']
+
+    return monthNames[month]
   }
 }

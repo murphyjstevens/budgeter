@@ -1,7 +1,21 @@
 <template>
   <div class="flex-column">
     <div class="flex-row justify-content-between">
-      <h1>{{ month }}</h1>
+      <div class="flex-row">
+        <button type="button"
+                @click="changeMonth(false)"
+                class="btn btn-outline-light btn-sm me-2"
+                title="Previous Month">
+          <i class="bi bi-caret-left-fill"></i>
+        </button>
+        <h1>{{ selectedDateDisplay }}</h1>
+        <button type="button"
+                @click="changeMonth(true)"
+                class="btn btn-outline-light btn-sm me-2"
+                title="Next Month">
+          <i class="bi bi-caret-right-fill"></i>
+        </button>
+      </div>
       <button type="button"
               class="btn btn-primary align-self-center"
               @click="showAddCategoryGroupDialog()"
@@ -146,11 +160,16 @@ export default {
       categoryGroups: state => state.categoryGroups.all,
       categories: state => state.categories.all,
       selectedDate: state => state.date
-    })
+    }),
+    selectedDateDisplay: function () {
+      if (!this.selectedDate) return ''
+      const monthName = this.$filters.getMonthString(this.selectedDate.getMonth())
+      const year = this.selectedDate.getFullYear()
+      return `${monthName} ${year}`
+    }
   },
   data () {
     return {
-      month: 'January',
       categoryGroupsCombined: [],
       isEditingRow: false,
       renameText: ''
@@ -378,12 +397,19 @@ export default {
           if (categoryBudget) {
             category.budget = categoryBudget.assigned
             category.spent = categoryBudget.spent
+          } else {
+            category.budget = 0
+            category.spent = 0
           }
         })
         group.budgeted = this.calculateGroupTotals(group, 'budgeted', group.categories),
         group.spent = this.calculateGroupTotals(group, 'spent', group.categories),
         group.available = this.calculateGroupTotals(group, 'available', group.categories)
       })
+    },
+
+    changeMonth (isIncrement) {
+      this.$store.commit('changeDate', isIncrement)
     },
 
     showAddCategoryGroupDialog () {
