@@ -1,7 +1,7 @@
 <template>
   <div class="flex-column recipients-container">
     <span class="flex-row justify-content-between">
-      <h2>Recipients</h2>
+      <h2 class="text-light">Recipients</h2>
       <div class="flex-row align-items-center">
         <button type="button"
                 class="btn btn-primary mb-1"

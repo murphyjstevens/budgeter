@@ -1,7 +1,7 @@
 <template>
   <div class="flex-column">
     <span class="flex-row transaction-header-row">
-      <h2>{{ account ? account.name : "All Accounts" }}</h2>
+      <h2 class="text-light">{{ account ? account.name : "All Accounts" }}</h2>
       <div class="flex-row align-items-center">
         <button type="button"
                 class="btn btn-light mb-1 ms-2"

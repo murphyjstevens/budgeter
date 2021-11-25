@@ -32,8 +32,9 @@ export default {
 <style scoped lang="scss">
   .sidebar {
     height: 100%;
-    background-color: #343a40;
+    background-color: #1b1b1b;
     padding: 1em 0;
+    border-right: 1px solid #262b30;
 
     .sidebar-item {
       font-size: 18px;

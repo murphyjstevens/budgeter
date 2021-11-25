@@ -1,14 +1,14 @@
 <template>
   <div class="flex-column">
-    <div class="flex-row justify-content-between">
-      <div class="flex-row">
+    <div class="flex-row justify-content-between mb-1">
+      <div class="flex-row align-items-center">
         <button type="button"
                 @click="changeMonth(false)"
                 class="btn btn-outline-light btn-sm me-2"
                 title="Previous Month">
           <i class="bi bi-caret-left-fill"></i>
         </button>
-        <h1>{{ selectedDateDisplay }}</h1>
+        <h2 class="text-light me-2">{{ selectedDateDisplay }}</h2>
         <button type="button"
                 @click="changeMonth(true)"
                 class="btn btn-outline-light btn-sm me-2"
