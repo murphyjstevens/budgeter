@@ -1,10 +1,8 @@
+using BudgeterApi.Models;
 using Dapper;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System.Collections.Generic;
-using System.Linq;
-using BudgeterApi.Models;
-using BudgeterApi.Mocks;
-using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
 namespace BudgeterApi.Repositories
@@ -30,7 +28,6 @@ namespace BudgeterApi.Repositories
         await connection.OpenAsync();
         return await connection.QueryAsync<Transaction>($"SELECT {TRANSACTION_SELECT} FROM transaction");
       }
-      // return TransactionMock.Transactions;
     }
     public async Task<IEnumerable<Transaction>> GetByAccount(int accountId)
     {
@@ -38,7 +35,6 @@ namespace BudgeterApi.Repositories
         await connection.OpenAsync();
         return await connection.QueryAsync<Transaction>($"SELECT {TRANSACTION_SELECT} FROM transaction WHERE account_id = @AccountId", new { AccountId = accountId });
       }
-      // return TransactionMock.Transactions.Where(transaction => transaction.AccountId == accountId);
     }
 
     public async Task<IEnumerable<Transaction>> GetByCategory(int categoryId)
@@ -47,7 +43,6 @@ namespace BudgeterApi.Repositories
         await connection.OpenAsync();
         return await connection.QueryAsync<Transaction>($"SELECT {TRANSACTION_SELECT} FROM transaction WHERE category_id = @CategoryId", new { CategoryId = categoryId });
       }
-      // return TransactionMock.Transactions.Where(transaction => transaction.CategoryId == categoryId);
     }
 
     public async Task<Transaction> Create(Transaction transaction)

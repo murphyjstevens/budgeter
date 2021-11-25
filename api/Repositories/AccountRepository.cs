@@ -1,10 +1,8 @@
+using BudgeterApi.Models;
 using Dapper;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System.Collections.Generic;
-using System.Linq;
-using BudgeterApi.Models;
-using BudgeterApi.Mocks;
-using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
 namespace BudgeterApi.Repositories
@@ -24,7 +22,6 @@ namespace BudgeterApi.Repositories
         await connection.OpenAsync();
         return await connection.QueryAsync<Account>("SELECT * FROM account");
       }
-      // return AccountMock.Accounts;
     }
 
     public async Task<Account> FindByUrl(string url)
@@ -33,7 +30,6 @@ namespace BudgeterApi.Repositories
         await connection.OpenAsync();
         return await connection.QueryFirstOrDefaultAsync<Account>("SELECT * FROM account WHERE url = @Url", new { Url = url });
       }
-      // return AccountMock.Accounts.First(account => account.Url == url);
     }
   }
 }

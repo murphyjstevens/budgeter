@@ -1,9 +1,9 @@
-using Dapper;
-using Npgsql;
-using System.Collections.Generic;
 using BudgeterApi.Models;
+using Dapper;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BudgeterApi.Repositories

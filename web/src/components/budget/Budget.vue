@@ -142,8 +142,10 @@ export default {
   },
   computed: {
     ...mapState({
+      budgets: state => state.budgets.all,
       categoryGroups: state => state.categoryGroups.all,
-      categories: state => state.categories.all
+      categories: state => state.categories.all,
+      selectedDate: state => state.date
     })
   },
   data () {
@@ -357,15 +359,31 @@ export default {
           return {
             ...group,
             isExpanded: true,
-            categories,
-            budgeted: this.calculateGroupTotals(group, 'budgeted', categories),
-            spent: this.calculateGroupTotals(group, 'spent', categories),
-            available: this.calculateGroupTotals(group, 'available', categories)
+            categories
           }
         })
       } else {
         this.categoryGroupsCombined = []
       }
+    },
+
+    async loadBudgets () {
+      await this.$store.dispatch('budgets/get')
+    },
+
+    fillBudgets () {
+      this.categoryGroupsCombined.forEach(group => {
+        group.categories.forEach(category => {
+          const categoryBudget = this.budgets.find(budget => budget.categoryId === category.id)
+          if (categoryBudget) {
+            category.budget = categoryBudget.assigned
+            category.spent = categoryBudget.spent
+          }
+        })
+        group.budgeted = this.calculateGroupTotals(group, 'budgeted', group.categories),
+        group.spent = this.calculateGroupTotals(group, 'spent', group.categories),
+        group.available = this.calculateGroupTotals(group, 'available', group.categories)
+      })
     },
 
     showAddCategoryGroupDialog () {
@@ -384,6 +402,7 @@ export default {
     this.$watch(
       () => this.$route.params,
       () => {
+        this.$store.commit('initializeDate')
         this.$store.dispatch('categoryGroups/get')
         this.$store.dispatch('categories/get')
       },
@@ -391,11 +410,17 @@ export default {
     )
   },
   watch: {
+    budgets () {
+      this.fillBudgets()
+    },
     categories () {
       this.setCategoryGroupsCombined()
     },
     categoryGroups () {
       this.setCategoryGroupsCombined()
+    },
+    selectedDate () {
+      this.loadBudgets()
     }
   }
 }

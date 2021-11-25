@@ -1,14 +1,13 @@
-using Dapper;
-using Npgsql;
-using System.Collections.Generic;
 using BudgeterApi.Models;
-using BudgeterApi.Mocks;
-using Microsoft.Extensions.Configuration;
-using System;
 using BudgeterApi.Requests;
-using static Dapper.SqlMapper;
+using Dapper;
+using Microsoft.Extensions.Configuration;
+using Npgsql;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Dapper.SqlMapper;
 
 namespace BudgeterApi.Repositories
 {
@@ -23,7 +22,7 @@ namespace BudgeterApi.Repositories
   }
   public class CategoryRepository : CoreRepository, ICategoryRepository
   {
-    private const string RETURN_OBJECT = "id, name, budget, sort_order as SortOrder, category_group_id AS CategoryGroupId";
+    private const string RETURN_OBJECT = "id, name, sort_order as SortOrder, category_group_id AS CategoryGroupId";
 
     public CategoryRepository(IConfiguration configuration) : base(configuration) { }
 
@@ -33,11 +32,10 @@ namespace BudgeterApi.Repositories
       {
         await connection.OpenAsync();
         return await connection.QueryAsync<Category>(
-          $@"SELECT c.id, c.name, c.budget, c.sort_order as SortOrder, c.category_group_id as CategoryGroupId, coalesce(SUM(t.cost), 0::money) as Spent FROM category c
+          $@"SELECT c.id, c.name, c.sort_order as SortOrder, c.category_group_id as CategoryGroupId, coalesce(SUM(t.cost), 0::money) as Spent FROM category c
 LEFT JOIN transaction t ON t.category_id = c.id
-GROUP BY c.id, c.name, c.budget, c.category_group_id");
+GROUP BY c.id, c.name, c.category_group_id");
       }
-      // return CategoryMock.Categories;
     }
 
     public async Task<IEnumerable<Category>> GetSimple()
@@ -47,7 +45,6 @@ GROUP BY c.id, c.name, c.budget, c.category_group_id");
         await connection.OpenAsync();
         return await connection.QueryAsync<Category>($"SELECT {RETURN_OBJECT} FROM category");
       }
-      // return CategoryMock.Categories;
     }
 
     public async Task<Category> Create(Category category)

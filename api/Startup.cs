@@ -29,6 +29,7 @@ namespace BudgeterApi
       });
 
       services.AddScoped<IAccountRepository, AccountRepository>();
+      services.AddScoped<IBudgetRepository, BudgetRepository>();
       services.AddScoped<ICategoryGroupRepository, CategoryGroupRepository>();
       services.AddScoped<ICategoryRepository, CategoryRepository>();
       services.AddScoped<ITransactionRepository, TransactionRepository>();

@@ -1,14 +1,13 @@
-using Dapper;
-using Npgsql;
-using System.Collections.Generic;
 using BudgeterApi.Models;
-using BudgeterApi.Mocks;
-using Microsoft.Extensions.Configuration;
-using System;
 using BudgeterApi.Requests;
-using static Dapper.SqlMapper;
+using Dapper;
+using Microsoft.Extensions.Configuration;
+using Npgsql;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Dapper.SqlMapper;
 
 namespace BudgeterApi.Repositories
 {
@@ -33,7 +32,6 @@ namespace BudgeterApi.Repositories
         await connection.OpenAsync();
         return await connection.QueryAsync<CategoryGroup>($"SELECT {RETURN_OBJECT} FROM category_group");
       }
-      // return CategoryGroupMock.CategoryGroups;
     }
 
     public async Task<CategoryGroup> Create(CategoryGroup categoryGroup)
