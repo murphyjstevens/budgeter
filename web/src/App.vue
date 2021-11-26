@@ -4,10 +4,10 @@
   <div class="content-wrapper">
     <Toast></Toast>
     <div v-if="isLoading" class="loading-overlay">
-      <div class="loading-dialog">
+      <div class="loading-dialog flex-column">
         <div class="spinner-border" role="status">
-          <span>Loading...</span>
         </div>
+        <h4 class="mt-3">Loading...</h4>
       </div>
     </div>
     <div class="content">
