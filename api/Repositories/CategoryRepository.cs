@@ -106,7 +106,8 @@ GROUP BY c.id, c.name, c.category_group_id", new { Date = date });
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
         await connection.OpenAsync();
-        string sql = @"DELETE FROM category WHERE id = @Id";
+        string sql = @"DELETE FROM budget WHERE category_id = @Id;
+          DELETE FROM category WHERE id = @Id";
         await connection.ExecuteAsync(sql, new { Id = id });
       }
     }
