@@ -239,25 +239,11 @@ export default {
     },
 
     async saveCategory (category) {
-      this.$store.commit('setIsLoading', true)
-      try {
-        await this.$store.dispatch('categories/update', category)
-        this.$store.commit('setIsLoading', false)
-      } catch (error) {
-        this.$store.commit('setIsLoading', false)
-        console.error(error)
-      }
+      await this.$store.dispatch('categories/update', category)
     },
 
     async saveGroup (group) {
-      this.$store.commit('setIsLoading', true)
-      try {
-        await this.$store.dispatch('categoryGroups/update', group)
-        this.$store.commit('setIsLoading', false)
-      } catch (error) {
-        this.$store.commit('setIsLoading', false)
-        console.error(error)
-      }
+      await this.$store.dispatch('categoryGroups/update', group)
     },
 
     confirmDeleteCategory (category) {
@@ -267,15 +253,7 @@ export default {
     },
 
     async deleteCategory (id) {
-      this.$store.commit('setIsLoading', true)
-
-      try {
-        await this.$store.dispatch('categories/delete', id)
-        this.$store.commit('setIsLoading', false)
-      } catch (error) {
-        this.$store.commit('setIsLoading', false)
-        console.error(error)
-      }
+      await this.$store.dispatch('categories/delete', id)
     },
 
     confirmDeleteCategoryGroup (group) {
@@ -285,26 +263,16 @@ export default {
     },
 
     async deleteCategoryGroup (id) {
-      this.$store.commit('setIsLoading', true)
-
-      try {
-        await this.$store.dispatch('categoryGroups/delete', id)
-        this.$store.commit('setIsLoading', false)
-      } catch (error) {
-        this.$store.commit('setIsLoading', false)
-        console.error(error)
-      }
+      await this.$store.dispatch('categoryGroups/delete', id)
     },
 
     async reorderCategory (category, isUp) {
-      this.$store.commit('setIsLoading', true)
       const maxSortOrder =
         this.categories
           .filter(cat => cat.categoryGroupId === category.categoryGroupId)
           .reduce((a, b) => a.sortOrder > b.sortOrder ? a : b)
       if ((isUp && category.sortOrder === 0) ||
         (!isUp && category.sortOrder === maxSortOrder)) {
-        this.$store.commit('setIsLoading', false)
         return
       }
       const newOrder = isUp ? category.sortOrder - 1 : category.sortOrder + 1
@@ -313,7 +281,6 @@ export default {
           .filter(cat => cat.categoryGroupId === category.categoryGroupId)
           .find(cat => cat.sortOrder === newOrder)
       if (!otherCategory) {
-        this.$store.commit('setIsLoading', false)
         console.error('Could not find sort order')
         return
       }
@@ -328,27 +295,18 @@ export default {
         }
       }
 
-      try {
-        await this.$store.dispatch('categories/reorder', reorderRequest)
-        this.$store.commit('setIsLoading', false)
-      } catch (error) {
-        this.$store.commit('setIsLoading', false)
-        console.error(error)
-      }
+      await this.$store.dispatch('categories/reorder', reorderRequest)
     },
 
     async reorderCategoryGroup (group, isUp) {
-      this.$store.commit('setIsLoading', true)
       if ((isUp && group.sortOrder === 0) ||
         (!isUp && group.sortOrder === this.categories.reduce((a, b) => a.sortOrder > b.sortOrder ? a : b))) {
-        this.$store.commit('setIsLoading', false)
         return
       }
       const newOrder = isUp ? group.sortOrder - 1 : group.sortOrder + 1
       const otherGroup = this.categoryGroups.find(cat => cat.sortOrder === newOrder)
       if (!otherGroup) {
         console.error('Could not find sort order')
-        this.$store.commit('setIsLoading', false)
         return
       }
       const reorderRequest = {
@@ -362,13 +320,7 @@ export default {
         }
       }
 
-      try {
-        await this.$store.dispatch('categoryGroups/reorder', reorderRequest)
-        this.$store.commit('setIsLoading', false)
-      } catch (error) {
-        this.$store.commit('setIsLoading', false)
-        console.error(error)
-      }
+      await this.$store.dispatch('categoryGroups/reorder', reorderRequest)
     },
 
     setCategoryGroupsCombined () {
