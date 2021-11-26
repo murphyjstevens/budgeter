@@ -29,10 +29,12 @@ const actions = {
       const response = await axios.post(baseUrl + '/categories', category)
       commit('addCategory', response.data)
       commit('setIsLoading', false, { root: true })
+      return response.data
     } catch (error) {
       commit('setIsLoading', false, { root: true })
       commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
       console.error(error)
+      return
     }
   },
   async update ({ commit }, category) {

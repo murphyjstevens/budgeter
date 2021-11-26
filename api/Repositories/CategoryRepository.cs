@@ -52,8 +52,8 @@ GROUP BY c.id, c.name, c.category_group_id", new { Date = date });
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
         await connection.OpenAsync();
-        string sql = $@"INSERT INTO category (name, budget, sort_order, category_group_id) 
-        VALUES (@Name, @Budget, @SortOrder, @CategoryGroupId)
+        string sql = $@"INSERT INTO category (name, sort_order, category_group_id) 
+        VALUES (@Name, @SortOrder, @CategoryGroupId)
         RETURNING {RETURN_OBJECT}";
         return await connection.QueryFirstOrDefaultAsync<Category>(sql, category);
       }
@@ -65,7 +65,7 @@ GROUP BY c.id, c.name, c.category_group_id", new { Date = date });
       {
         await connection.OpenAsync();
         string sql = $@"UPDATE category
-        SET name = @Name, budget = @Budget, sort_order = @SortOrder, category_group_id = @CategoryGroupId
+        SET name = @Name, sort_order = @SortOrder, category_group_id = @CategoryGroupId
         WHERE id = @Id
         RETURNING {RETURN_OBJECT}";
         return await connection.QueryFirstOrDefaultAsync<Category>(sql, category);

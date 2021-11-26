@@ -113,12 +113,21 @@ export default {
       const groupCategories = this.$store.state.categories.all.filter(category => category.categoryGroupId === this.categoryGroupId)
       const category = {
         name: this.name,
-        budget: this.budget,
         categoryGroupId: this.categoryGroupId,
         sortOrder: groupCategories.length + 1
       }
-      await this.$store.dispatch('categories/create', category)
-      this.close()
+      const cat = await this.$store.dispatch('categories/create', category)
+      if (cat) {
+        if (this.budget && cat) {
+          const budget = {
+            date: this.$store.state.date,
+            assigned: this.budget,
+            categoryId: cat.id
+          }
+          await this.$store.dispatch('budgets/save', budget)
+        }
+        this.close()
+      }
     },
     convertToMoney (event) {
       if (!event.target.value) { return }
