@@ -19,7 +19,7 @@ const actions = {
       console.error(error)
     }
   },
-  async create ({ commit }, budget) {
+  async save ({ commit }, budget) {
     try {
       if (!budget) {
         console.error('Empty budget object')
@@ -27,23 +27,7 @@ const actions = {
       }
       commit('setIsLoading', true, { root: true })
       const response = await axios.post(baseUrl + '/budgets', budget)
-      commit('addBudget', response.data)
-      commit('setIsLoading', false, { root: true })
-    } catch (error) {
-      commit('setIsLoading', false, { root: true })
-      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
-      console.error(error)
-    }
-  },
-  async update ({ commit }, budget) {
-    try {
-      if (!budget) {
-        console.error('Empty budget object')
-        return
-      }
-      commit('setIsLoading', true, { root: true })
-      const response = await axios.put(baseUrl + '/budgets', budget)
-      commit('updateBudget', response.data)
+      commit('setBudget', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
@@ -73,14 +57,11 @@ const mutations = {
   setBudgets (state, budgets) {
     state.all = budgets
   },
-  addBudget (state, budget) {
-    state.all = [ ...state.all, budget ]
-  },
-  updateBudget (state, budget) {
+  setBudget (state, budget) {
     state.all = [
-      ...state.all.filter(c => c.id !== budget.id),
+      ...state.all.filter(b => b.id !== budget.id),
       budget
-   ]
+    ]
   },
   deleteBudget (state, budgetId) {
     state.all = state.all

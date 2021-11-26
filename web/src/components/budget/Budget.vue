@@ -233,7 +233,7 @@ export default {
         const updatedBudget = Number.parseFloat(event.target.value)
         if (updatedBudget || updatedBudget === 0) {
           if (updatedBudget === category.budget) return
-          this.saveCategory({ ...category, budget: updatedBudget })
+          this.$store.dispatch('budgets/save', { assigned: updatedBudget, date: this.selectedDate, categoryId: category.id })
         }
       }
     },

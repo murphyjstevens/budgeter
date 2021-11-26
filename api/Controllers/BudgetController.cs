@@ -28,15 +28,9 @@ namespace BudgeterApi.Controllers
     }
 
     [HttpPost]
-    public async Task<Budget> Create(Budget budget)
+    public async Task<Budget> Save(Budget budget)
     {
-      return await _repository.Create(budget);
-    }
-
-    [HttpPut]
-    public async Task<Budget> Update(Budget budget)
-    {
-      return await _repository.Update(budget);
+      return await _repository.Save(budget);
     }
 
     [HttpDelete]
