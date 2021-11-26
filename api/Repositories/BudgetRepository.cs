@@ -30,11 +30,9 @@ namespace BudgeterApi.Repositories
       {
         await connection.OpenAsync();
         return await connection.QueryAsync<Budget>(
-          $@"SELECT b.id, b.assigned, b.date, b.category_id as CategoryId, coalesce(SUM(t.cost), 0::money) as Spent FROM budget b
+          $@"SELECT b.id, b.assigned, b.date, b.category_id as CategoryId FROM budget b
 LEFT JOIN category c ON c.id = b.category_id
-LEFT JOIN transaction t ON t.category_id = c.id AND EXTRACT(MONTH FROM b.date) = EXTRACT(MONTH FROM t.date) AND EXTRACT(YEAR FROM b.date) = EXTRACT(YEAR FROM t.date)
-WHERE EXTRACT(MONTH FROM b.date) = EXTRACT(MONTH FROM @Date) AND EXTRACT(YEAR FROM b.date) = EXTRACT(YEAR FROM @Date)
-GROUP BY b.id, b.assigned, b.date, b.category_id", new { Date = date });
+WHERE EXTRACT(MONTH FROM b.date) = EXTRACT(MONTH FROM @Date) AND EXTRACT(YEAR FROM b.date) = EXTRACT(YEAR FROM @Date)", new { Date = date });
       }
     }
 

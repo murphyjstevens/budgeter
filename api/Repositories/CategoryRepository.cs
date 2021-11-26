@@ -13,7 +13,7 @@ namespace BudgeterApi.Repositories
 {
   public interface ICategoryRepository
   {
-    Task<IEnumerable<Category>> Get();
+    Task<IEnumerable<Category>> Get(DateTime date);
     Task<IEnumerable<Category>> GetSimple();
     Task<Category> Create(Category category);
     Task<Category> Update(Category category);
@@ -26,15 +26,15 @@ namespace BudgeterApi.Repositories
 
     public CategoryRepository(IConfiguration configuration) : base(configuration) { }
 
-    public async Task<IEnumerable<Category>> Get()
+    public async Task<IEnumerable<Category>> Get(DateTime date)
     {
       using (var connection = new NpgsqlConnection(ConnectionString))
       {
         await connection.OpenAsync();
         return await connection.QueryAsync<Category>(
           $@"SELECT c.id, c.name, c.sort_order as SortOrder, c.category_group_id as CategoryGroupId, coalesce(SUM(t.cost), 0::money) as Spent FROM category c
-LEFT JOIN transaction t ON t.category_id = c.id
-GROUP BY c.id, c.name, c.category_group_id");
+LEFT JOIN transaction t ON t.category_id = c.id AND EXTRACT(MONTH FROM @Date) = EXTRACT(MONTH FROM t.date) AND EXTRACT(YEAR FROM @Date) = EXTRACT(YEAR FROM t.date)
+GROUP BY c.id, c.name, c.category_group_id", new { Date = date });
       }
     }
 

@@ -378,16 +378,14 @@ export default {
           return {
             ...group,
             isExpanded: true,
-            categories
+            categories,
+            spent: this.calculateGroupTotals(group, 'spent', categories),
+            available: this.calculateGroupTotals(group, 'available', categories)
           }
         })
       } else {
         this.categoryGroupsCombined = []
       }
-    },
-
-    async loadBudgets () {
-      await this.$store.dispatch('budgets/get')
     },
 
     fillBudgets () {
@@ -396,14 +394,11 @@ export default {
           const categoryBudget = this.budgets.find(budget => budget.categoryId === category.id)
           if (categoryBudget) {
             category.budget = categoryBudget.assigned
-            category.spent = categoryBudget.spent
           } else {
             category.budget = 0
-            category.spent = 0
           }
         })
         group.budgeted = this.calculateGroupTotals(group, 'budgeted', group.categories),
-        group.spent = this.calculateGroupTotals(group, 'spent', group.categories),
         group.available = this.calculateGroupTotals(group, 'available', group.categories)
       })
     },
@@ -430,7 +425,6 @@ export default {
       () => {
         this.$store.commit('initializeDate')
         this.$store.dispatch('categoryGroups/get')
-        this.$store.dispatch('categories/get')
       },
       { immediate: true }
     )
@@ -440,13 +434,14 @@ export default {
       this.fillBudgets()
     },
     categories () {
+      this.$store.dispatch('budgets/get')
       this.setCategoryGroupsCombined()
     },
     categoryGroups () {
       this.setCategoryGroupsCombined()
     },
     selectedDate () {
-      this.loadBudgets()
+      this.$store.dispatch('categories/get')
     }
   }
 }

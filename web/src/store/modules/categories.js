@@ -7,10 +7,10 @@ const state = () => ({
 })
 
 const actions = {
-  async get ({ commit }) {
+  async get ({ commit, rootState }) {
     try {
       commit('setIsLoading', true, { root: true })
-      const response = await axios.get(baseUrl + '/categories')
+      const response = await axios.get(baseUrl + '/categories', { params: { date: rootState.date } })
       commit('setCategories', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {

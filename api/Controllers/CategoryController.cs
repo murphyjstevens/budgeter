@@ -23,9 +23,9 @@ namespace BudgeterApi.Controllers
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Category>> Get()
+    public async Task<IEnumerable<Category>> Get([FromQuery]DateTime date)
     {
-      return await _repository.Get();
+      return await _repository.Get(date);
     }
 
     [HttpGet]
