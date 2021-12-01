@@ -112,9 +112,11 @@
                     <i class="bi bi-arrow-counterclockwise"></i>
                   </button>
                 </div>
-                <input :value="category.budget"
-                      @blur="updateBudget($event, category)" 
-                      class="form-control editable-cell-input text-end">
+                <CurrencyInput :value="category.budget"
+                               :options="{ currency: 'USD', precision: 2 }"
+                               @blur="updateBudget($event, category)"
+                               class="editable-cell-input text-end"
+                               required/>
               </div>
             </span>
             <span class="flex-row budget-category-cell budget-column-spent">
@@ -146,12 +148,14 @@ import { mapState } from 'vuex'
 import CategoryDialog from './CategoryDialog.vue'
 import CategoryGroupDialog from './CategoryGroupDialog.vue'
 import DeleteConfirmation from '../shared/DeleteConfirmation.vue'
+import CurrencyInput from '../shared/CurrencyInput.vue'
 
 export default {
   name: 'Budget',
   components: {
     CategoryDialog,
     CategoryGroupDialog,
+    CurrencyInput,
     DeleteConfirmation
   },
   computed: {

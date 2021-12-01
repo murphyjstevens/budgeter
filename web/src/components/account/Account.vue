@@ -108,13 +108,10 @@
           </td>
           <td>
             <div v-if="transaction.isEditing">
-              <input id="cost"
-                     v-model="editTransaction.cost"
-                     @blur="convertToMoney($event, editTransaction)"
-                     @keyup.enter="convertToMoney($event, editTransaction)"
-                     name="cost"
-                     class="form-control text-align-right"
-                     required>
+              <CurrencyInput v-model.number="editTransaction.cost"
+                             name="cost"
+                             :options="{ currency: 'USD', precision: 2 }"
+                             required/>
             </div>
             <div v-if="!transaction.isEditing" class="text-align-right">
               {{ $filters.toCurrency(transaction.cost) }}
@@ -163,6 +160,7 @@
 import { mapState } from 'vuex'
 import DeleteConfirmation from '../shared/DeleteConfirmation.vue'
 import TransactionDialog from './TransactionDialog.vue'
+import CurrencyInput from '../shared/CurrencyInput.vue'
 
 export default {
   name: 'Account',
@@ -173,6 +171,7 @@ export default {
     this.editTransaction = null
   },
   components: {
+    CurrencyInput,
     DeleteConfirmation,
     TransactionDialog
   },
@@ -244,11 +243,6 @@ export default {
 
     async delete (id) {
       await this.$store.dispatch('transactions/delete', id)
-      this.transactions.splice(this.transactions.findIndex(t => t.id === id), 1)
-    },
-    
-    sortTransactions () {
-      this.transactions.sort((a, b) => b.date.getTime() - a.date.getTime())
     },
 
     showAddTransactionDialog () {

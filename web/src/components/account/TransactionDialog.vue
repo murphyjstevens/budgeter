@@ -57,14 +57,11 @@
               </div>
               <div class="col-sm-12">
                 <label for="cost" class="form-label">Cost</label>
-                <input id="cost"
-                       v-model.number="cost"
-                       @blur="blurCost($event)"
-                       @keyup.enter="convertToMoney($event)"
-                       name="cost"
-                       maxLength="15"
-                       class="form-control text-right"
-                       required>
+                <CurrencyInput v-model.number="cost"
+                               name="cost"
+                               @blur="v$.cost.$touch"
+                               :options="{ currency: 'USD', precision: 2 }"
+                               required/>
                 <div class="input-errors" v-for="error of v$.cost.$errors" :key="error.$uid">
                   <div class="error-msg invalid-feedback d-block">{{ error.$message }}</div>
                 </div>
@@ -108,8 +105,13 @@ import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import { mapState } from 'vuex'
 
+import CurrencyInput from '../shared/CurrencyInput.vue'
+
 export default {
   name: 'TransactionDialog',
+  components: {
+    CurrencyInput
+  },
   computed: {
     ...mapState({
       account: state => state.accounts.account,
