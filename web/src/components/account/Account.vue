@@ -2,6 +2,7 @@
   <div class="flex-column">
     <span class="flex-row transaction-header-row">
       <h2 class="text-light">{{ account ? account.name : "All Accounts" }}</h2>
+      <h2 :class="{ 'text-success': this.total > 0, 'text-light': !this.total, 'text-danger': this.total < 0 }">{{ $filters.toCurrency(total) }}</h2>
       <div class="flex-row align-items-center">
         <button type="button"
                 class="btn btn-light mb-1 ms-2"
@@ -183,7 +184,10 @@ export default {
       categories: state => state.categories.all,
       recipients: state => state.recipients.all,
       transactions: state => state.transactions.all
-    })
+    }),
+    total () {
+      return this.transactions.reduce((total, transaction) => total - transaction.cost, 0)
+    }
   },
   data () {
     return {
