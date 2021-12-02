@@ -27,7 +27,7 @@
                 <select id="account"
                         v-model="accountId"
                         name="account"
-                        class="form-control"
+                        class="form-select"
                         required>
                   <option v-for="account in accounts" 
                           :key="account.id"
@@ -42,7 +42,7 @@
                 <select id="category" 
                         v-model="categoryId"
                         name="category"
-                        class="form-control"
+                        class="form-select"
                         required>
                   <option :value="null">Ready to Budget</option>
                   <option v-for="category in categories" 
@@ -55,10 +55,17 @@
               </div>
               <div class="col-sm-12">
                 <label for="cost" class="form-label">Cost</label>
-                <CurrencyInput v-model.number="cost"
-                               name="cost"
-                               :options="{ currency: 'USD', precision: 2 }"
-                               required/>
+                <div class="input-group">
+                  <div class="input-group-text form-switch">
+                    <input class="form-check-input mt-0 ms-0" type="checkbox" v-model="isPositive" aria-label="Checkbox for following text input">
+                    <h3 class="cost-sign ms-1"
+                        :class="{ 'text-success': isPositive, 'text-danger': !isPositive }">{{ isPositive ? '+' : '-' }}</h3>
+                  </div>
+                  <CurrencyInput v-model.number="cost"
+                                name="cost"
+                                :options="{ currency: 'USD', precision: 2 }"
+                                required/>
+                </div>
                 <div class="input-errors" v-for="error of v$.cost.$errors" :key="error.$uid">
                   <div class="error-msg invalid-feedback d-block">{{ error.$message }}</div>
                 </div>
@@ -68,7 +75,7 @@
                 <select id="recipient" 
                         v-model="recipientId"
                         name="recipient"
-                        class="form-control"
+                        class="form-select"
                         required>
                   <option v-for="recipient in recipients" 
                           :key="recipient.id"
@@ -123,7 +130,8 @@ export default {
       accountId: null,
       categoryId: null,
       cost: 0.00,
-      recipientId: null
+      recipientId: null,
+      isPositive: false
     }
   },
   methods: {
@@ -151,11 +159,12 @@ export default {
       if (this.v$.invalid) {
         return
       }
+      const signedCost = this.isPositive ? this.cost : this.cost * -1
       const transaction = {
         accountId: this.accountId,
         categoryId: this.categoryId,
         date: this.date,
-        cost: this.cost,
+        cost: signedCost,
         recipientId: this.recipientId
       }
       await this.$store.dispatch('transactions/create', transaction)
@@ -197,4 +206,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  .cost-sign {
+    line-height: 0.25;
+    width: 16px;
+  }
 </style>

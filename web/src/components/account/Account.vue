@@ -186,7 +186,7 @@ export default {
       transactions: state => state.transactions.all
     }),
     total () {
-      return this.transactions.reduce((total, transaction) => total - transaction.cost, 0)
+      return this.transactions.reduce((total, transaction) => total + transaction.cost, 0)
     }
   },
   data () {
