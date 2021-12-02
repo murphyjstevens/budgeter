@@ -199,7 +199,7 @@ export default {
   methods: {
     getCategoryName (id) {
       const category = this.categories.find(c => c.id === id)
-      return category ? category.name : ''
+      return category ? category.name : 'Ready to Budget'
     },
 
     getAccountName (id) {
