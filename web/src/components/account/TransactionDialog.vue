@@ -12,13 +12,12 @@
               <div class="col-sm-12">
                 <label for="date" class="form-label">Date</label>
                 <input v-model="date"
-                  type="date"
-                  id="date"
-                  class="form-control"
-                  :class="{ 'is-invalid': v$.date.$error }"
-                  placeholder="yyyy/MM/dd"
-                  @blur="v$.date.$touch"
-                  required>
+                       type="date"
+                       id="date"
+                       class="form-control"
+                       :class="{ 'is-invalid': v$.date.$error }"
+                       placeholder="yyyy/MM/dd"
+                       required>
                 <div class="input-errors" v-for="error of v$.date.$errors" :key="error.$uid">
                   <div class="error-msg invalid-feedback d-block">{{ error.$message }}</div>
                 </div>
@@ -29,7 +28,6 @@
                         v-model="accountId"
                         name="account"
                         class="form-control"
-                        @blur="v$.accountId.$touch"
                         required>
                   <option v-for="account in accounts" 
                           :key="account.id"
@@ -45,8 +43,8 @@
                         v-model="categoryId"
                         name="category"
                         class="form-control"
-                        @blur="v$.categoryId.$touch"
                         required>
+                  <option :value="null">Ready to Budget</option>
                   <option v-for="category in categories" 
                           :key="category.id"
                           :value="category.id">{{ category.name }}</option>
@@ -59,7 +57,6 @@
                 <label for="cost" class="form-label">Cost</label>
                 <CurrencyInput v-model.number="cost"
                                name="cost"
-                               @blur="v$.cost.$touch"
                                :options="{ currency: 'USD', precision: 2 }"
                                required/>
                 <div class="input-errors" v-for="error of v$.cost.$errors" :key="error.$uid">
@@ -72,7 +69,6 @@
                         v-model="recipientId"
                         name="recipient"
                         class="form-control"
-                        @blur="v$.recipientId.$touch"
                         required>
                   <option v-for="recipient in recipients" 
                           :key="recipient.id"
@@ -139,13 +135,16 @@ export default {
       this.modal.hide()
     },
     reset (accountId) {
-      this.date = new Date()
+      this.date = this.$filters.toShortDate(new Date(), 'yyyy-MM-dd')
       this.accountId = accountId
       this.categoryId = null
       this.cost = 0.00
       this.recipientId = null
       this.$nextTick(() => {
         this.v$.$reset()
+        if (this.date) this.v$.date.$touch()
+        if (this.accountId) this.v$.accountId.$touch()
+        this.v$.categoryId.$touch()
       })
     },
     async save () {
@@ -187,11 +186,11 @@ export default {
   },
   validations () {
     return {
-      date: { required },
-      accountId: { required },
-      categoryId: { required },
-      cost: { required },
-      recipientId: { required }
+      date: { required, $autoDirty: true },
+      accountId: { required, $autoDirty: true },
+      categoryId: { $autoDirty: true },
+      cost: { required, $autoDirty: true },
+      recipientId: { required, $autoDirty: true }
     }
   }
 }

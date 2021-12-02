@@ -8,6 +8,6 @@ namespace BudgeterApi.Models
     public DateTime Date { get; set; }
     public int RecipientId { get; set; }
     public decimal Cost { get; set; }
-    public int CategoryId { get; set; }
+    public int? CategoryId { get; set; }
   }
 }

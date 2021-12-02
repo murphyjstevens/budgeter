@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import { watch } from 'vue'
 import { useCurrencyInput } from 'vue-currency-input'
 
 export default {
@@ -17,21 +16,7 @@ export default {
     options: Object
   },
   setup (props) {
-    const { formattedValue, inputRef, setOptions, setValue } = useCurrencyInput(props.options)
-    
-    watch(
-      () => props.modelValue,
-      (value) => {
-        setValue(value)
-      }
-    )
-
-    watch(
-      () => props.options,
-      (options) => {
-        setOptions(options)
-      }
-    )
+    const { formattedValue, inputRef } = useCurrencyInput(props.options)
 
     return { inputRef, formattedValue }
   }

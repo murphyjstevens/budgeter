@@ -109,7 +109,7 @@
           </td>
           <td>
             <div v-if="transaction.isEditing">
-              <CurrencyInput v-model.number="editTransaction.cost"
+              <CurrencyInput v-model="editTransaction.cost"
                              name="cost"
                              :options="{ currency: 'USD', precision: 2 }"
                              required/>
