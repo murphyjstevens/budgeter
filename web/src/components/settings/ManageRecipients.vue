@@ -65,7 +65,7 @@
                     v-model="name"
                     name="name"
                     class="form-control form-control-sm"
-                    @keyup.enter="saveNew()"
+                    @keyup.enter="save(recipient)"
                     required>
               <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
                 <div class="error-msg invalid-feedback d-block">{{ error.$message }}</div>
@@ -92,7 +92,7 @@
               <button v-if="recipient.isEditing" 
                       type="button" 
                       class="btn link-success" 
-                      @click="save(editRecipient)"
+                      @click="save(recipient)"
                       :disabled="!v$.$dirty || v$.$invalid">
                 <i class="bi bi-check-circle-fill"></i>
               </button>
@@ -164,7 +164,7 @@ export default {
       if (!this.v$.$dirty || this.v$.$invalid) {
         return
       }
-      await this.$store.dispatch('recipients/update', recipient)
+      await this.$store.dispatch('recipients/update', { ...recipient, name: this.name })
     },
 
     async saveNew () {
