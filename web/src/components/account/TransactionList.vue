@@ -90,9 +90,10 @@
                            v-select-all
                            name="cost"
                            :options="{ currency: 'USD', precision: 2 }"
+                           class="text-end"
                            required/>
           </div>
-          <div v-if="!transaction.isEditing" class="text-align-right">
+          <div v-if="!transaction.isEditing" class="text-end">
             {{ $filters.toCurrency(transaction.cost) }}
           </div>
         </td>
