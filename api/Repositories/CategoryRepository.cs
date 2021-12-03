@@ -32,8 +32,25 @@ namespace BudgeterApi.Repositories
       {
         await connection.OpenAsync();
         return await connection.QueryAsync<Category>(
-          $@"SELECT c.id, c.name, c.sort_order as SortOrder, c.category_group_id as CategoryGroupId, coalesce(SUM(t.cost), 0::money) as Spent FROM category c
+          $@"SELECT c.id, c.name, c.sort_order as SortOrder, c.category_group_id as CategoryGroupId, coalesce(SUM(t.cost), 0::money) as Spent,
+(SUM(b.assigned) + SUM(at.cost)) as Available FROM category c
 LEFT JOIN transaction t ON t.category_id = c.id AND EXTRACT(MONTH FROM @Date) = EXTRACT(MONTH FROM t.date) AND EXTRACT(YEAR FROM @Date) = EXTRACT(YEAR FROM t.date)
+LEFT JOIN
+( 
+  SELECT category_id, SUM(cost) as Cost
+  FROM transaction
+  WHERE date < cast(date_trunc('month', @Date + interval '1 month') as date)
+  GROUP BY category_id
+) as at
+ON at.category_id = c.id
+LEFT JOIN
+( 
+  SELECT category_id, SUM(assigned) as Assigned
+  FROM budget
+  WHERE date < cast(date_trunc('month', @Date + interval '1 month') as date)
+  GROUP BY category_id
+) as b
+ON b.category_id = c.id
 GROUP BY c.id, c.name, c.category_group_id", new { Date = date });
       }
     }

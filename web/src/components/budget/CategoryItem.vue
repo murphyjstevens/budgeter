@@ -41,7 +41,7 @@
       <span>{{ $filters.toCurrency(category.spent) }}</span>
     </span>
     <span class="flex-row budget-category-cell budget-column-available">
-      <span>{{ $filters.toCurrency(calculateAvailable(category)) }}</span>
+      <span>{{ $filters.toCurrency(category.available) }}</span>
     </span>
     <span class="flex-row budget-category-cell budget-column-actions">
       <button type="button"
@@ -76,15 +76,6 @@ export default {
     }
   },
   methods: {
-    calculateAvailable (category) {
-      if (category.budget === undefined
-          || category.budget === null
-          || category.spent === undefined
-          || category.spent === null) { return undefined }
-
-      return (category.budget - category.spent)
-    },
-
     rename (event, item) {
       if (event.target?.value) {
         const updatedName = event.target.value.trim()
