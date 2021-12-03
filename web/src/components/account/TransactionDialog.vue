@@ -62,9 +62,10 @@
                         :class="{ 'text-success': isPositive, 'text-danger': !isPositive }">{{ isPositive ? '+' : '-' }}</h3>
                   </div>
                   <CurrencyInput v-model.number="cost"
-                                name="cost"
-                                :options="{ currency: 'USD', precision: 2 }"
-                                required/>
+                                 v-select-all
+                                 name="cost"
+                                 :options="{ currency: 'USD', precision: 2 }"
+                                 required/>
                 </div>
                 <div class="input-errors" v-for="error of v$.cost.$errors" :key="error.$uid">
                   <div class="error-msg invalid-feedback d-block">{{ error.$message }}</div>

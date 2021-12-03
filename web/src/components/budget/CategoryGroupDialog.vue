@@ -13,6 +13,7 @@
                 <label for="name" class="form-label">Name</label>
                 <input id="name"
                        v-model="name"
+                       v-select-all
                        type="text"
                        name="name"
                        class="form-control"

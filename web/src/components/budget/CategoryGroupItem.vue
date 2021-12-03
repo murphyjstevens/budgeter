@@ -6,10 +6,11 @@
           <i class="bi" :class="{ 'bi-caret-down-fill': isExpanded, 'bi-caret-right-fill': !isExpanded }"></i>
         </button>
         <input :value="group.name" 
-                class="form-control margin-bottom-sm editable-cell-input category-name-input me-2"
-                :class="{ 'is-invalid': group.isNameInvalid }"
-                @blur="rename($event, group)"
-                maxlength="100">
+               v-select-all
+               class="form-control margin-bottom-sm editable-cell-input category-name-input me-2"
+               :class="{ 'is-invalid': group.isNameInvalid }"
+               @blur="rename($event, group)"
+               maxlength="100">
         <button type="button"
                 @click="showAddCategoryDialog(group.id)"
                 class="btn btn-primary btn-sm category-hover-action me-2"

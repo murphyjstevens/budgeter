@@ -31,6 +31,7 @@
                   ref="nameAddInput"
                   type="text"
                   v-model="name"
+                  v-select-all
                   name="name"
                   class="form-control form-control-sm"
                   @keyup.enter="saveNew()"
@@ -63,6 +64,7 @@
                     ref="nameInput"
                     type="text"
                     v-model="name"
+                    v-select-all
                     name="name"
                     class="form-control form-control-sm"
                     @keyup.enter="save(recipient)"

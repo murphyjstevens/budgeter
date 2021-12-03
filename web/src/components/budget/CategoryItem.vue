@@ -1,11 +1,12 @@
 <template>
   <div class="flex-row category-row">
     <span class="flex-row budget-category-cell budget-column-category editable-cell">
-      <input :value="category.name" 
-              class="form-control margin-bottom-sm editable-cell-input category-name-input me-2"
-              :class="{ 'is-invalid': category.isNameInvalid }"
-              @blur="rename($event, category)"
-              maxlength="100">
+      <input :value="category.name"
+             v-select-all
+             class="form-control margin-bottom-sm editable-cell-input category-name-input me-2"
+             :class="{ 'is-invalid': category.isNameInvalid }"
+             @blur="rename($event, category)"
+             maxlength="100">
       <button type="button"
               @click="reorderCategory(category, true)"
               class="btn btn-outline-light btn-sm category-hover-action me-2"
@@ -29,10 +30,11 @@
           </button>
         </div>
         <CurrencyInput :value="category.budget"
-                        :options="{ currency: 'USD', precision: 2 }"
-                        @blur="updateBudget($event, category)"
-                        class="editable-cell-input text-end"
-                        required/>
+                       v-select-all
+                       :options="{ currency: 'USD', precision: 2 }"
+                       @blur="updateBudget($event, category)"
+                       class="editable-cell-input text-end"
+                       required/>
       </div>
     </span>
     <span class="flex-row budget-category-cell budget-column-spent">

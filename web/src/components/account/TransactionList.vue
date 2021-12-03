@@ -41,7 +41,7 @@
             <select id="account"
                     v-model="editTransaction.accountId"
                     name="account"
-                    class="form-control"
+                    class="form-select"
                     required>
               <option v-for="acc in accounts"
                       :key="acc.id"
@@ -57,7 +57,7 @@
             <select id="recipient"
                     v-model="editTransaction.recipientId"
                     name="recipient"
-                    class="form-control"
+                    class="form-select"
                     required>
               <option v-for="rec in recipients"
                       :key="rec.id"
@@ -73,7 +73,7 @@
             <select id="category"
                     v-model="editTransaction.categoryId"
                     name="category"
-                    class="form-control"
+                    class="form-select"
                     required>
               <option v-for="category in categories"
                       :key="category.id" 
@@ -87,9 +87,10 @@
         <td>
           <div v-if="transaction.isEditing">
             <CurrencyInput v-model="editTransaction.cost"
-                            name="cost"
-                            :options="{ currency: 'USD', precision: 2 }"
-                            required/>
+                           v-select-all
+                           name="cost"
+                           :options="{ currency: 'USD', precision: 2 }"
+                           required/>
           </div>
           <div v-if="!transaction.isEditing" class="text-align-right">
             {{ $filters.toCurrency(transaction.cost) }}
