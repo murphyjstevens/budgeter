@@ -22,135 +22,7 @@
         </button>
       </div>
     </span>
-    <table class="table table-dark">
-      <colgroup>
-        <col style="width: 15%; min-width: 175px;">
-        <col v-if="!account" style="width: 20%">
-        <col style="width: 25%">
-        <col style="width: 20%">
-        <col style="width: 15%; min-width: 110px;">
-        <col style="width: 25%">
-        <col style="width: 50px">
-      </colgroup>
-      <thead class="thead-dark">
-        <tr>
-          <th>Date</th>
-          <th v-if="!account">Account</th>
-          <th>Recipient</th>
-          <th>Category</th>
-          <th class="text-align-right">Cost</th>
-          <th>Tags</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="transaction in transactions"
-            :key="transaction.id">
-          <td>
-            <div v-if="transaction.isEditing">
-              <input class="form-control"
-                      type="date"
-                      name="date"
-                      v-model="editTransaction.date"
-                      placeholder="yyyy/MM/dd"
-                      required />
-            </div>
-            <div v-if="!transaction.isEditing">
-              {{ $filters.toShortDate(new Date(transaction.date))}}
-            </div>
-          </td>
-          <td v-if="!account">
-            <div v-if="transaction.isEditing">
-              <select id="account"
-                      v-model="editTransaction.accountId"
-                      name="account"
-                      class="form-control"
-                      required>
-                <option v-for="acc in accounts"
-                        :key="acc.id"
-                        :value="acc.id">{{ acc.name }}</option>
-              </select>
-            </div>
-            <div v-if="!transaction.isEditing">
-              {{ getAccountName(transaction.accountId) }}
-            </div>
-          </td>
-          <td>
-            <div v-if="transaction.isEditing">
-              <select id="recipient"
-                      v-model="editTransaction.recipientId"
-                      name="recipient"
-                      class="form-control"
-                      required>
-                <option v-for="rec in recipients"
-                        :key="rec.id"
-                        :value="rec.id">{{ rec.name }}</option>
-              </select>
-            </div>
-            <div v-if="!transaction.isEditing">
-              {{ getRecipientName(transaction.recipientId) }}
-            </div>
-          </td>
-          <td>
-            <div v-if="transaction.isEditing">
-              <select id="category"
-                      v-model="editTransaction.categoryId"
-                      name="category"
-                      class="form-control"
-                      required>
-                <option v-for="category in categories"
-                        :key="category.id" 
-                        :value="category.id">{{ category.name }}</option>
-              </select>
-            </div>
-            <div v-if="!transaction.isEditing">
-              {{ getCategoryName(transaction.categoryId) }}
-            </div>
-          </td>
-          <td>
-            <div v-if="transaction.isEditing">
-              <CurrencyInput v-model="editTransaction.cost"
-                             name="cost"
-                             :options="{ currency: 'USD', precision: 2 }"
-                             required/>
-            </div>
-            <div v-if="!transaction.isEditing" class="text-align-right">
-              {{ $filters.toCurrency(transaction.cost) }}
-            </div>
-          </td>
-          <td>
-          </td>
-          <td class="icons-cell">
-            <div class="icons-container">
-              <button v-if="!transaction.isEditing" 
-                      type="button" 
-                      class="btn link-primary" 
-                      @click="startEditing(transaction)">
-                <i class="bi bi-pencil-fill"></i>
-              </button>
-              <button v-if="!transaction.isEditing" 
-                      type="button" 
-                      class="btn link-danger"
-                      @click="confirmDelete(transaction)">
-                <i class="bi bi-trash-fill"></i>
-              </button>
-              <button v-if="transaction.isEditing" 
-                      type="button" 
-                      class="btn link-success" 
-                      @click="save(editTransaction)">
-                <i class="bi bi-check-circle-fill"></i>
-              </button>
-              <button v-if="transaction.isEditing" 
-                      type="button" 
-                      class="btn link-secondary" 
-                      @click="cancelEditing(transaction)">
-                <i class="bi bi-x-circle-fill"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <TransactionList />
   </div>
 
   <DeleteConfirmation ref="deleteConfirmationModal" />
@@ -159,9 +31,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import DeleteConfirmation from '../shared/DeleteConfirmation.vue'
 import TransactionDialog from './TransactionDialog.vue'
-import CurrencyInput from '../shared/CurrencyInput.vue'
+import TransactionList from './TransactionList.vue'
 
 export default {
   name: 'Account',
@@ -172,9 +43,8 @@ export default {
     this.editTransaction = null
   },
   components: {
-    CurrencyInput,
-    DeleteConfirmation,
-    TransactionDialog
+    TransactionDialog,
+    TransactionList
   },
   computed: {
     ...mapState({
@@ -210,14 +80,6 @@ export default {
     getRecipientName (id) {
       const recipient = this.recipients?.find(r => r.id === id)
       return recipient ? recipient.name : ''
-    },
-
-    convertToMoney (event, transaction) {
-      if (!event.target.value) { return }
-
-      transaction.cost = Math.round(event.target.value * 100) / 100
-
-      event.target.value = transaction.cost
     },
 
     startEditing (transaction) {
@@ -287,11 +149,5 @@ export default {
 <style scoped lang="scss">
   .transaction-header-row {
     justify-content: space-between;
-  }
-
-  .account-header-button {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-    margin-left: 0.5em;
   }
 </style>

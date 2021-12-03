@@ -34,129 +34,25 @@
         <span class="budget-header budget-column-available">Available</span>
         <span class="budget-header budget-column-actions"></span>
       </div>
-      <div v-for="group in categoryGroupsCombined"
+      <CategoryGroupItem v-for="group in categoryGroupsCombined"
            :key="group.id"
-           class="flex-column group-row-container">
-        <div class="flex-row group-header-row">
-          <span class="budget-group-cell budget-column-category editable-cell">
-            <button type="button" @click="group.isExpanded = !group.isExpanded" class="btn link-light">
-              <i class="bi" :class="{ 'bi-caret-down-fill': group.isExpanded, 'bi-caret-right-fill': !group.isExpanded }"></i>
-            </button>
-            <input :value="group.name" 
-                    class="form-control margin-bottom-sm editable-cell-input category-name-input me-2"
-                    :class="{ 'is-invalid': group.isNameInvalid }"
-                    @blur="rename($event, group, true)"
-                    maxlength="100">
-            <button type="button"
-                    @click="showAddCategoryDialog(group.id)"
-                    class="btn btn-primary btn-sm category-hover-action me-2"
-                    title="Add Category">
-              <i class="bi bi-plus-lg me-2"></i>
-              <span>Category</span>
-            </button>
-            <button type="button"
-                    @click="reorderCategoryGroup(group, true)"
-                    class="btn btn-outline-light btn-sm category-hover-action me-2"
-                    title="Reorder Down"
-                    :disabled="group.sortOrder === 1">
-              <i class="bi bi-arrow-up"></i>
-            </button>
-            <button type="button"
-                    @click="reorderCategoryGroup(group, false)"
-                    class="btn btn-outline-light btn-sm category-hover-action me-2"
-                    title="Reorder Down"
-                    :disabled="group.sortOrder === categoryGroups.length">
-              <i class="bi bi-arrow-down"></i>
-            </button>
-          </span>
-          <span class="budget-group-cell budget-column-budget">{{ $filters.toCurrency(group.budgeted) }}</span>
-          <span class="budget-group-cell budget-column-spent">{{ $filters.toCurrency(group.spent) }}</span>
-          <span class="budget-group-cell budget-column-available">{{ $filters.toCurrency(group.available) }}</span>
-          <span class="budget-group-cell budget-column-actions">
-            <button type="button"
-                    @click="confirmDeleteCategoryGroup(group)"
-                    class="btn category-hover-action link-danger">
-              <i class="bi bi-trash-fill"></i>
-            </button>
-          </span>
-        </div>
-        <div v-if="group.isExpanded">
-          <div v-for="category in group.categories"
-               :key="category.id"
-               class="flex-row category-row">
-            <span class="flex-row budget-category-cell budget-column-category editable-cell">
-              <input :value="category.name" 
-                     class="form-control margin-bottom-sm editable-cell-input category-name-input me-2"
-                     :class="{ 'is-invalid': category.isNameInvalid }"
-                     @blur="rename($event, category, false)"
-                     maxlength="100">
-              <button type="button"
-                      @click="reorderCategory(category, true)"
-                      class="btn btn-outline-light btn-sm category-hover-action me-2"
-                      title="Reorder Down"
-                      :disabled="category.sortOrder === 1">
-                <i class="bi bi-arrow-up"></i>
-              </button>
-              <button type="button"
-                      @click="reorderCategory(category, false)"
-                      class="btn btn-outline-light btn-sm category-hover-action me-2"
-                      title="Reorder Down"
-                      :disabled="category.sortOrder === group.categories.length">
-                <i class="bi bi-arrow-down"></i>
-              </button>
-            </span>
-            <span class="flex-row budget-category-cell budget-column-budget editable-cell">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <button class="btn btn-warning" type="button" name="undo-budget-button">
-                    <i class="bi bi-arrow-counterclockwise"></i>
-                  </button>
-                </div>
-                <CurrencyInput :value="category.budget"
-                               :options="{ currency: 'USD', precision: 2 }"
-                               @blur="updateBudget($event, category)"
-                               class="editable-cell-input text-end"
-                               required/>
-              </div>
-            </span>
-            <span class="flex-row budget-category-cell budget-column-spent">
-              <span>{{ $filters.toCurrency(category.spent) }}</span>
-            </span>
-            <span class="flex-row budget-category-cell budget-column-available">
-              <span>{{ $filters.toCurrency(calculateAvailable(category)) }}</span>
-            </span>
-            <span class="flex-row budget-category-cell budget-column-actions">
-              <button type="button"
-                      @click="confirmDeleteCategory(category)"
-                      class="btn category-hover-action link-danger">
-                <i class="bi bi-trash-fill"></i>
-              </button>
-            </span>
-          </div>
-        </div>
-      </div>
+           :group="group" />
     </div>
   </div>
 
-  <CategoryDialog ref="categoryDialog" />
   <CategoryGroupDialog ref="categoryGroupDialog" />
-  <DeleteConfirmation ref="deleteConfirmationModal" />
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import CategoryDialog from './CategoryDialog.vue'
 import CategoryGroupDialog from './CategoryGroupDialog.vue'
-import DeleteConfirmation from '../shared/DeleteConfirmation.vue'
-import CurrencyInput from '../shared/CurrencyInput.vue'
+import CategoryGroupItem from './CategoryGroupItem.vue'
 
 export default {
   name: 'Budget',
   components: {
-    CategoryDialog,
     CategoryGroupDialog,
-    CurrencyInput,
-    DeleteConfirmation
+    CategoryGroupItem
   },
   computed: {
     ...mapState({
@@ -174,9 +70,7 @@ export default {
   },
   data () {
     return {
-      categoryGroupsCombined: [],
-      isEditingRow: false,
-      renameText: ''
+      categoryGroupsCombined: []
     }
   },
   methods: {
@@ -208,123 +102,6 @@ export default {
           break
       }
       return numberArray.reduce((previous, current) => previous + current)
-    },
-
-    rename (event, item, isGroup) {
-      if (event.target?.value) {
-        const updatedName = event.target.value.trim()
-        if (updatedName) {
-          if (updatedName === item.name) {
-            item.isNameInvalid = false
-            return
-          }
-          if (isGroup) {
-            this.saveGroup({ ...item, name: updatedName })
-          } else {
-            this.saveCategory({ ...item, name: updatedName })
-          }
-          item.isNameInvalid = false
-          return
-        }
-      }
-      item.isNameInvalid = true
-    },
-
-    updateBudget (event, category) {
-      if (event.relatedTarget && event.relatedTarget.name === 'undo-budget-button') return
-
-      if (event.target) {
-        const updatedBudget = Number.parseFloat(event.target.value)
-        if (updatedBudget || updatedBudget === 0) {
-          if (updatedBudget === category.budget) return
-          this.$store.dispatch('budgets/save', { assigned: updatedBudget, date: this.selectedDate, categoryId: category.id })
-        }
-      }
-    },
-
-    async saveCategory (category) {
-      await this.$store.dispatch('categories/update', category)
-    },
-
-    async saveGroup (group) {
-      await this.$store.dispatch('categoryGroups/update', group)
-    },
-
-    confirmDeleteCategory (category) {
-      if (this.$refs.deleteConfirmationModal && category) {
-        this.$refs.deleteConfirmationModal.open(this.deleteCategory, category.id, category.name)
-      }
-    },
-
-    async deleteCategory (id) {
-      await this.$store.dispatch('categories/delete', id)
-    },
-
-    confirmDeleteCategoryGroup (group) {
-      if (this.$refs.deleteConfirmationModal && group) {
-        this.$refs.deleteConfirmationModal.open(this.deleteCategoryGroup, group.id, group.name)
-      }
-    },
-
-    async deleteCategoryGroup (id) {
-      await this.$store.dispatch('categoryGroups/delete', id)
-    },
-
-    async reorderCategory (category, isUp) {
-      const maxSortOrder =
-        this.categories
-          .filter(cat => cat.categoryGroupId === category.categoryGroupId)
-          .reduce((a, b) => a.sortOrder > b.sortOrder ? a : b)
-      if ((isUp && category.sortOrder === 0) ||
-        (!isUp && category.sortOrder === maxSortOrder)) {
-        return
-      }
-      const newOrder = isUp ? category.sortOrder - 1 : category.sortOrder + 1
-      const otherCategory = 
-        this.categories
-          .filter(cat => cat.categoryGroupId === category.categoryGroupId)
-          .find(cat => cat.sortOrder === newOrder)
-      if (!otherCategory) {
-        console.error('Could not find sort order')
-        return
-      }
-      const reorderRequest = {
-        item1: {
-          id: category.id,
-          sortOrder: newOrder
-        },
-        item2: {
-          id: otherCategory.id,
-          sortOrder: category.sortOrder
-        }
-      }
-
-      await this.$store.dispatch('categories/reorder', reorderRequest)
-    },
-
-    async reorderCategoryGroup (group, isUp) {
-      if ((isUp && group.sortOrder === 0) ||
-        (!isUp && group.sortOrder === this.categories.reduce((a, b) => a.sortOrder > b.sortOrder ? a : b))) {
-        return
-      }
-      const newOrder = isUp ? group.sortOrder - 1 : group.sortOrder + 1
-      const otherGroup = this.categoryGroups.find(cat => cat.sortOrder === newOrder)
-      if (!otherGroup) {
-        console.error('Could not find sort order')
-        return
-      }
-      const reorderRequest = {
-        item1: {
-          id: group.id,
-          sortOrder: newOrder
-        },
-        item2: {
-          id: otherGroup.id,
-          sortOrder: group.sortOrder
-        }
-      }
-
-      await this.$store.dispatch('categoryGroups/reorder', reorderRequest)
     },
 
     setCategoryGroupsCombined () {
@@ -367,12 +144,6 @@ export default {
       if (this.$refs.categoryGroupDialog) {
         this.$refs.categoryGroupDialog.open()
       }
-    },
-
-    showAddCategoryDialog (groupId) {
-      if (this.$refs.categoryDialog) {
-        this.$refs.categoryDialog.open(groupId)
-      }
     }
   },
   mounted () {
@@ -403,7 +174,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   .budget-container {
     width: 100%;
 
@@ -466,13 +237,6 @@ export default {
       padding: 0 0.75rem;
       min-height: 48px;
       font-weight: 700;
-    }
-    
-    .budget-category-cell {
-      align-items: center;
-      padding: 0 0.75rem;
-      background-color: #212529bb;
-      color: #dee2e6;
     }
 
     .editable-cell {
