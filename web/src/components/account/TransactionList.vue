@@ -135,7 +135,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import DeleteConfirmation from '../shared/DeleteConfirmation.vue'
+import { DeleteConfirmation } from '../shared'
 import CurrencyInput from '../shared/CurrencyInput.vue'
 
 export default {

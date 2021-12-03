@@ -25,7 +25,6 @@
     <TransactionList />
   </div>
 
-  <DeleteConfirmation ref="deleteConfirmationModal" />
   <TransactionDialog ref="transactionDialog" />
 </template>
 
@@ -36,12 +35,6 @@ import TransactionList from './TransactionList.vue'
 
 export default {
   name: 'Account',
-  beforeRouteLeave () {
-    this.transactions.filter(transaction => transaction.isEditing).forEach(transaction => {
-      this.$store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: false })
-    })
-    this.editTransaction = null
-  },
   components: {
     TransactionDialog,
     TransactionList
@@ -49,10 +42,6 @@ export default {
   computed: {
     ...mapState({
       account: state => state.accounts.account,
-      accounts: state => state.accounts.all,
-      categoryGroups: state => state.categoryGroups.all,
-      categories: state => state.categories.all,
-      recipients: state => state.recipients.all,
       transactions: state => state.transactions.all
     }),
     total () {
@@ -61,56 +50,10 @@ export default {
   },
   data () {
     return {
-      editTransaction: null,
-      renameText: '',
       accountUrl: null
     }
   },
   methods: {
-    getCategoryName (id) {
-      const category = this.categories.find(c => c.id === id)
-      return category ? category.name : 'Ready to Budget'
-    },
-
-    getAccountName (id) {
-      const account = this.accounts?.find(a => a.id === id)
-      return account ? account.name : ''
-    },
-
-    getRecipientName (id) {
-      const recipient = this.recipients?.find(r => r.id === id)
-      return recipient ? recipient.name : ''
-    },
-
-    startEditing (transaction) {
-      const unsavedTransaction = this.transactions.find(t => t.isEditing)
-      if (unsavedTransaction) {
-        this.cancelEditing(unsavedTransaction)
-      }
-      const dateString = this.$filters.toShortDate(new Date(transaction.date), 'yyyy-MM-dd')
-      this.editTransaction = { ...transaction, date: dateString }
-      this.$store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: true })
-    },
-
-    cancelEditing (transaction) {
-      this.$store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: false })
-    },
-
-    async save (transaction) {
-      this.$store.commit('setIsLoading', true)
-      await this.$store.dispatch('transactions/update', transaction)
-    },
-
-    confirmDelete (transaction) {
-      if (this.$refs.deleteConfirmationModal && transaction) {
-        this.$refs.deleteConfirmationModal.open(this.delete, transaction.id, null)
-      }
-    },
-
-    async delete (id) {
-      await this.$store.dispatch('transactions/delete', id)
-    },
-
     showAddTransactionDialog () {
       if (this.$refs.transactionDialog) {
         this.$refs.transactionDialog.open(this.account?.id)
