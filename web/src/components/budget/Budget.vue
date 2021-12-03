@@ -16,6 +16,7 @@
           <i class="bi bi-caret-right-fill"></i>
         </button>
       </div>
+      <h2 :class="{ 'text-success': this.readyToBudget > 0, 'text-light': !this.readyToBudget, 'text-danger': this.readyToBudget < 0 }">{{ $filters.toCurrency(readyToBudget) }}</h2>
       <button type="button"
               class="btn btn-primary align-self-center"
               @click="showAddCategoryGroupDialog()"
@@ -59,6 +60,7 @@ export default {
       budgets: state => state.budgets.all,
       categoryGroups: state => state.categoryGroups.all,
       categories: state => state.categories.all,
+      readyToBudget: state => state.budgets.readyToBudget,
       selectedDate: state => state.date
     }),
     selectedDateDisplay: function () {
@@ -152,6 +154,7 @@ export default {
       () => {
         this.$store.commit('initializeDate')
         this.$store.dispatch('categoryGroups/get')
+        this.$store.dispatch('budgets/getReadyToBudget')
       },
       { immediate: true }
     )

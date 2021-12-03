@@ -1,11 +1,9 @@
 using BudgeterApi.Models;
-using BudgeterApi.Requests;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using static Dapper.SqlMapper;
 
@@ -14,6 +12,7 @@ namespace BudgeterApi.Repositories
   public interface IBudgetRepository
   {
     Task<IEnumerable<Budget>> Get(DateTime date);
+    Task<double> GetReadyToBudget();
     Task<Budget> Save(Budget budget);
     Task Delete(int id);
   }
@@ -32,6 +31,17 @@ namespace BudgeterApi.Repositories
           $@"SELECT b.id, b.assigned, b.date, b.category_id as CategoryId FROM budget b
 LEFT JOIN category c ON c.id = b.category_id
 WHERE EXTRACT(MONTH FROM b.date) = EXTRACT(MONTH FROM @Date) AND EXTRACT(YEAR FROM b.date) = EXTRACT(YEAR FROM @Date)", new { Date = date });
+      }
+    }
+
+    public async Task<double> GetReadyToBudget() {
+      using (var connection = new NpgsqlConnection(ConnectionString))
+      {
+        await connection.OpenAsync();
+        return await connection.QuerySingleAsync<double>(
+          $@"SELECT (SUM(t.cost) - SUM(b.assigned)) FROM budget b
+          LEFT JOIN transaction t ON t.category_id IS NULL"
+        );
       }
     }
 

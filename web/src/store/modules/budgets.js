@@ -3,7 +3,8 @@ import axios from 'axios'
 const baseUrl = process.env.VUE_APP_ROOT_API
 
 const state = () => ({
-  all: []
+  all: [],
+  readyToBudget: 0
 })
 
 const actions = {
@@ -12,6 +13,18 @@ const actions = {
       commit('setIsLoading', true, { root: true })
       const response = await axios.get(baseUrl + '/budgets', { params: { date: rootState.date } })
       commit('setBudgets', response.data)
+      commit('setIsLoading', false, { root: true })
+    } catch (error) {
+      commit('setIsLoading', false, { root: true })
+      commit('setToast', { toastMessage: error.message, isError: true }, { root: true })
+      console.error(error)
+    }
+  },
+  async getReadyToBudget ({ commit }) {
+    try {
+      commit('setIsLoading', true, { root: true })
+      const response = await axios.get(`${baseUrl}/budgets/ready-to-budget`)
+      commit('setReadyToBudget', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
@@ -62,6 +75,9 @@ const mutations = {
       ...state.all.filter(b => b.id !== budget.id),
       budget
     ]
+  },
+  setReadyToBudget (state, readyToBudget) {
+    state.readyToBudget = readyToBudget
   },
   deleteBudget (state, budgetId) {
     state.all = state.all

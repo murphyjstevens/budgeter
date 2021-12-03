@@ -27,6 +27,13 @@ namespace BudgeterApi.Controllers
       return await _repository.Get(date);
     }
 
+    [HttpGet]
+    [Route("ready-to-budget")]
+    public async Task<double> GetReadyToBudget()
+    {
+      return await _repository.GetReadyToBudget();
+    }
+
     [HttpPost]
     public async Task<Budget> Save(Budget budget)
     {
