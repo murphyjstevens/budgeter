@@ -28,12 +28,12 @@
         </div>
         <div class="modal-footer">
           <button type="button"
+            class="btn btn-secondary"
+            @click="close()">Close</button>
+          <button type="button"
             class="btn btn-primary"
             :disabled="!v$.$dirty || v$.$invalid"
             @click="save()">Save</button>
-          <button type="button"
-            class="btn btn-secondary"
-            @click="close()">Close</button>
         </div>
       </div>
     </div>

@@ -14,11 +14,11 @@
         </div>
         <div class="modal-footer">
           <button type="button"
-            class="btn btn-danger"
-            @click="callDelete()">Delete</button>
-          <button type="button"
             class="btn btn-secondary"
             @click="close()">Cancel</button>
+          <button type="button"
+            class="btn btn-danger"
+            @click="callDelete()">Delete</button>
         </div>
       </div>
     </div>
