@@ -32,7 +32,7 @@ const actions = {
       console.error(error)
     }
   },
-  async save ({ commit }, budget) {
+  async save ({ commit, dispatch }, budget) {
     try {
       if (!budget) {
         console.error('Empty budget object')
@@ -41,6 +41,8 @@ const actions = {
       commit('setIsLoading', true, { root: true })
       const response = await axios.post(baseUrl + '/budgets', budget)
       commit('setBudget', response.data)
+      dispatch('categories/get', false, { root: true })
+      dispatch('getReadyToBudget')
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
