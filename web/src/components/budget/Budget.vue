@@ -8,7 +8,7 @@
                 title="Previous Month">
           <i class="bi bi-caret-left-fill"></i>
         </button>
-        <h2 class="text-light me-2">{{ selectedDateDisplay }}</h2>
+        <h2 class="text-light text-center me-2" width="145">{{ selectedDateDisplay }}</h2>
         <button type="button"
                 @click="changeMonth(true)"
                 class="btn btn-outline-light btn-sm me-2"
