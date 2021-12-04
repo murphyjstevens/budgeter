@@ -67,7 +67,8 @@ export default {
   },
   computed: {
     ...mapState({
-      categories: state => state.categories.all
+      categories: state => state.categories.all,
+      selectedDate: state => state.date
     })
   },
   data () {
