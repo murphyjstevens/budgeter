@@ -40,11 +40,12 @@ export const filters = {
   },
 
   getMonthString (month) {
-    if (!month || month < 0 || month > 11) {
+    if ((!month && month !== 0) || month < 0 || month > 11) {
       console.error(`Month is not valid: ${month ?? 'null'}`)
+      return ''
     }
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December']
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
     return monthNames[month]
   }
