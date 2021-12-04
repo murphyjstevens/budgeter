@@ -82,15 +82,6 @@ export default {
     }
   },
   methods: {
-    calculateAvailable (category) {
-      if (category.budget === undefined
-          || category.budget === null
-          || category.spent === undefined
-          || category.spent === null) { return undefined }
-
-      return (category.budget - category.spent)
-    },
-
     rename (event, item) {
       if (event.target?.value) {
         const updatedName = event.target.value.trim()
