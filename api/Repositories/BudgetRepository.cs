@@ -39,8 +39,15 @@ WHERE EXTRACT(MONTH FROM b.date) = EXTRACT(MONTH FROM @Date) AND EXTRACT(YEAR FR
       {
         await connection.OpenAsync();
         return await connection.QuerySingleAsync<double>(
-          $@"SELECT (SUM(t.cost) - SUM(b.assigned)) FROM budget b
-          LEFT JOIN transaction t ON t.category_id IS NULL"
+          $@"SELECT SUM(amount) AS ReadyToBudget
+FROM
+(
+SELECT SUM(cost) AS amount FROM transaction WHERE category_id IS null
+
+UNION ALL
+
+SELECT (SUM(assigned) * -1) AS amount FROM budget
+) AS derived"
         );
       }
     }
