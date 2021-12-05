@@ -70,12 +70,12 @@ const actions = {
 
 const mutations = {
   setBudgets (state, budgets) {
-    state.all = budgets
+    state.all = budgets.map(budget => ({ ...budget, date: new Date(budget.date) }))
   },
   setBudget (state, budget) {
     state.all = [
       ...state.all.filter(b => b.id !== budget.id),
-      budget
+      { ...budget, date: new Date(budget.date) }
     ]
   },
   setReadyToBudget (state, readyToBudget) {

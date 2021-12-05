@@ -95,16 +95,16 @@ const actions = {
 
 const mutations = {
   setTransactions (state, transactions) {
-    state.all = transactions
+    state.all = transactions.map(transaction => ({ ...transaction, date: new Date(transaction.date)}))
     this.commit('transactions/sortTransactions')
   },
   addTransaction (state, transaction) {
-    state.all.push(transaction)
+    state.all.push({ ...transaction, date: new Date(transaction.date)})
     this.commit('transactions/sortTransactions')
   },
   updateTransaction (state, transaction) {
     const index = state.all.findIndex(p => p.id === transaction.id)
-    state.all[index] = transaction
+    state.all[index] = { ...transaction, date: new Date(transaction.date) }
     this.commit('transactions/sortTransactions')
   },
   deleteTransaction (state, transactionId) {

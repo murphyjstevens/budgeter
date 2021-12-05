@@ -48,5 +48,12 @@ export const filters = {
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
     return monthNames[month]
+  },
+
+  datesAreSameMonth (date, date2) {
+    if (!date || !date2) return false
+
+    return date.getMonth() === date2.getMonth()
+      && date.getFullYear() === date2.getFullYear()
   }
 }

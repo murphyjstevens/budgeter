@@ -5,6 +5,7 @@
         <button type="button"
                 @click="changeMonth(false)"
                 class="btn btn-outline-light btn-sm me-2"
+                :disabled="!canSelectPreviousMonth"
                 title="Previous Month">
           <i class="bi bi-caret-left-fill"></i>
         </button>
@@ -12,6 +13,7 @@
         <button type="button"
                 @click="changeMonth(true)"
                 class="btn btn-outline-light btn-sm me-2"
+                :disabled="!canSelectNextMonth"
                 title="Next Month">
           <i class="bi bi-caret-right-fill"></i>
         </button>
@@ -63,11 +65,21 @@ export default {
       readyToBudget: state => state.budgets.readyToBudget,
       selectedDate: state => state.date
     }),
-    selectedDateDisplay: function () {
+    selectedDateDisplay () {
       if (!this.selectedDate) return ''
       const monthName = this.$filters.getMonthString(this.selectedDate.getMonth())
       const year = this.selectedDate.getFullYear()
       return `${monthName} ${year}`
+    },
+    canSelectNextMonth () {
+      if (!this.budgets || !this.selectedDate) return false
+      return this.budgets.some(budget => this.$filters.datesAreSameMonth(budget.date, this.selectedDate))
+        || this.selectedDate < new Date()
+    },
+    canSelectPreviousMonth () {
+      if (!this.budgets || !this.selectedDate) return false
+      return this.budgets.some(budget => this.$filters.datesAreSameMonth(budget.date, this.selectedDate))
+        || this.selectedDate > new Date()
     }
   },
   data () {
@@ -100,7 +112,7 @@ export default {
           numberArray = categories.map(category => category.spent)
           break
         case 'available':
-          numberArray = categories.map(category => this.calculateAvailable(category))
+          numberArray = categories.map(category => category.available)
           break
       }
       return numberArray.reduce((previous, current) => previous + current)
