@@ -1,8 +1,7 @@
-namespace BudgeterApi.Models
+namespace BudgeterApi.Models;
+
+public class Recipient
 {
-  public class Recipient
-  {
-    public int Id { get; set; }
-    public string Name { get; set; }
-  }
+  public int Id { get; set; }
+  public string Name { get; set; } = string.Empty;
 }
