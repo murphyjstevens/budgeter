@@ -1,7 +1,7 @@
-﻿using BudgeterApi.Exceptions;
-using BudgeterApi.Models;
-using BudgeterApi.Repositories;
-using BudgeterApi.Requests;
+﻿using Api.Exceptions;
+using Api.Models;
+using Api.Repositories;
+using Api.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace BudgeterApi.Controllers;
+namespace Api.Controllers;
 
 [ApiController]
 [Route("categories")]

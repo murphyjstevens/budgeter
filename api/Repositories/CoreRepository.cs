@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace BudgeterApi.Repositories;
+namespace Api.Repositories;
 
 public abstract class CoreRepository
 {

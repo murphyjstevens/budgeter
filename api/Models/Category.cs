@@ -1,4 +1,4 @@
-namespace BudgeterApi.Models;
+namespace Api.Models;
 
 public class Category {
   public int Id { get; set; }

@@ -1,6 +1,6 @@
 using System;
 
-namespace BudgeterApi.Models;
+namespace Api.Models;
 
 public class Transaction {
   public int Id { get; set; }

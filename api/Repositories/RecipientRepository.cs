@@ -1,4 +1,4 @@
-using BudgeterApi.Models;
+using Api.Models;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BudgeterApi.Repositories;
+namespace Api.Repositories;
 
 public interface IRecipientRepository
 {

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using BudgeterApi.Models;
+using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BudgeterApi.Repositories;
+using Api.Repositories;
 using System.Threading.Tasks;
 
-namespace BudgeterApi.Controllers;
+namespace Api.Controllers;
 
 [ApiController]
 public class RecipientController : ControllerBase

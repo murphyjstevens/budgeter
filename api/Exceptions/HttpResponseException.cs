@@ -1,7 +1,7 @@
 using System;
 using System.Net;
 
-namespace BudgeterApi.Exceptions;
+namespace Api.Exceptions;
 
 public class HttpResponseException : Exception
 {

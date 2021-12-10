@@ -1,4 +1,4 @@
-namespace BudgeterApi.Requests;
+namespace Api.Requests;
 
 public class ReorderItemRequest
 {

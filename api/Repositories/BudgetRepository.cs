@@ -1,4 +1,4 @@
-using BudgeterApi.Models;
+using Api.Models;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Dapper.SqlMapper;
 
-namespace BudgeterApi.Repositories;
+namespace Api.Repositories;
 
 public interface IBudgetRepository
 {

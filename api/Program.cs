@@ -1,5 +1,5 @@
 using System;
-using BudgeterApi.Repositories;
+using Api.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +14,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
-  c.SwaggerDoc("v1", new OpenApiInfo { Title = "BudgeterApi", Version = "v1" });
+  c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
 });
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -30,7 +30,7 @@ if (builder.Environment.IsDevelopment())
 {
   app.UseDeveloperExceptionPage();
   app.UseSwagger();
-  app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BudgeterApi v1"));
+  app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1"));
 }
 
 app.UseCors(cors => 

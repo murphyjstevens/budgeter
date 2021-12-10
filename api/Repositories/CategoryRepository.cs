@@ -1,5 +1,5 @@
-using BudgeterApi.Models;
-using BudgeterApi.Requests;
+using Api.Models;
+using Api.Requests;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Dapper.SqlMapper;
 
-namespace BudgeterApi.Repositories;
+namespace Api.Repositories;
 
 public interface ICategoryRepository
 {
