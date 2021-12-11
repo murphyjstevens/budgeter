@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = process.env.VUE_APP_ROOT_API
+const baseUrl = process.env.VUE_APP_API_URL
 
 const state = () => ({
   all: [],
