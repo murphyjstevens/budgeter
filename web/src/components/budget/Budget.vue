@@ -18,7 +18,7 @@
           <i class="bi bi-caret-right-fill"></i>
         </button>
       </div>
-      <h2 :class="{ 'text-success': this.readyToBudget > 0, 'text-light': !this.readyToBudget, 'text-danger': this.readyToBudget < 0 }">{{ $filters.toCurrency(readyToBudget) }}</h2>
+      <h2 :class="{ 'text-success': readyToBudget > 0, 'text-light': !readyToBudget, 'text-danger': readyToBudget < 0 }">{{ toCurrency(readyToBudget) }}</h2>
       <button type="button"
               class="btn btn-primary align-self-center"
               @click="showAddCategoryGroupDialog()"
@@ -46,147 +46,144 @@
   <CategoryGroupDialog ref="categoryGroupDialog" />
 </template>
 
-<script lang="ts">
-import { mapState } from 'vuex'
+<script setup lang="ts">
+import { computed, ref, watch, type ComputedRef, type Ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { useStore } from 'vuex'
+
+import { datesAreSameMonth, getMonthString, toCurrency } from '@/helpers/helpers';
 import CategoryGroupDialog from './CategoryGroupDialog.vue'
 import CategoryGroupItem from './CategoryGroupItem.vue'
 
-export default {
-  name: 'Budget',
-  components: {
-    CategoryGroupDialog,
-    CategoryGroupItem
-  },
-  computed: {
-    ...mapState({
-      budgets: state => state.budgets.all,
-      categoryGroups: state => state.categoryGroups.all,
-      categories: state => state.categories.all,
-      readyToBudget: state => state.budgets.readyToBudget,
-      selectedDate: state => state.date
-    }),
-    selectedDateDisplay () {
-      if (!this.selectedDate) return ''
-      const monthName = this.$filters.getMonthString(this.selectedDate.getMonth())
-      const year = this.selectedDate.getFullYear()
-      return `${monthName} ${year}`
-    },
-    canSelectNextMonth () {
-      if (!this.budgets || !this.selectedDate) return false
-      return this.budgets.some(budget => this.$filters.datesAreSameMonth(budget.date, this.selectedDate))
-        || this.selectedDate < new Date()
-    },
-    canSelectPreviousMonth () {
-      if (!this.budgets || !this.selectedDate) return false
-      return this.budgets.some(budget => this.$filters.datesAreSameMonth(budget.date, this.selectedDate))
-        || this.selectedDate > new Date()
-    }
-  },
-  data () {
-    return {
-      categoryGroupsCombined: []
-    }
-  },
-  methods: {
-    calculateAvailable (category) {
-      if (category.budget === undefined
-          || category.budget === null
-          || category.spent === undefined
-          || category.spent === null) { return undefined }
+const route = useRoute()
+const store = useStore()
 
-      return (category.budget - category.spent)
-    },
+const categoryGroupDialog = ref()
+const categoryGroupsCombined: Ref<Array<any>> = ref([])
 
-    calculateGroupTotals (group, column, groupCategories) {
-      const categories = groupCategories ?? group.categories
-      if (!categories?.length) {
-        return undefined
+const budgets: ComputedRef<Array<any>> = computed(() => store.state.budgets.all)
+const categoryGroups: ComputedRef<Array<any>> = computed(() => store.state.categoryGroups.all)
+const categories: ComputedRef<Array<any>> = computed(() => store.state.categories.all)
+const readyToBudget: ComputedRef<number> = computed(() => store.state.budgets.readyToBudget)
+const selectedDate: ComputedRef<Date> = computed(() => store.state.date)
+
+const selectedDateDisplay: ComputedRef<string> = computed(() => {
+  if (!selectedDate.value) return ''
+  const monthName = getMonthString(selectedDate.value.getMonth())
+  const year = selectedDate.value.getFullYear()
+  return `${monthName} ${year}`
+})
+
+const canSelectNextMonth: ComputedRef<boolean> = computed(() => {
+  if (!budgets.value || !selectedDate.value) return false
+  return budgets.value.some((budget: any) => datesAreSameMonth(budget.date, selectedDate.value))
+    || selectedDate.value < new Date()
+})
+
+const canSelectPreviousMonth: ComputedRef<boolean> = computed(() => {
+  if (!budgets.value || !selectedDate.value) return false
+  return budgets.value.some((budget: any) => datesAreSameMonth(budget.date, selectedDate.value))
+    || selectedDate.value > new Date()
+})
+
+function calculateAvailable (category: any): number {
+  if (category.budget === undefined
+      || category.budget === null
+      || category.spent === undefined
+      || category.spent === null) { return 0 }
+
+  return (category.budget - category.spent)
+}
+
+function calculateGroupTotals (group: any, column: string, groupCategories: Array<any>) {
+  const categories = groupCategories ?? group.categories
+  if (!categories?.length) {
+    return undefined
+  }
+
+  let numberArray = []
+  switch (column) {
+    case 'budgeted':
+      numberArray = categories.map(category => category.budget)
+      break
+    case 'spent':
+      numberArray = categories.map(category => category.spent)
+      break
+    case 'available':
+      numberArray = categories.map(category => category.available)
+      break
+  }
+  return numberArray.reduce((previous, current) => previous + current)
+}
+
+function setCategoryGroupsCombined () {
+  if (categoryGroups.value?.length) {
+    categoryGroupsCombined.value = categoryGroups.value.map(group => {
+      const combinedCategories = categories.value
+        .filter((category: any) => category.categoryGroupId === group.id)
+        .map((category: any) => ({ ...category }))
+
+      return {
+        ...group,
+        isExpanded: true,
+        combinedCategories,
+        spent: calculateGroupTotals(group, 'spent', categories.value),
+        available: calculateGroupTotals(group, 'available', categories.value)
       }
-
-      let numberArray = []
-      switch (column) {
-        case 'budgeted':
-          numberArray = categories.map(category => category.budget)
-          break
-        case 'spent':
-          numberArray = categories.map(category => category.spent)
-          break
-        case 'available':
-          numberArray = categories.map(category => category.available)
-          break
-      }
-      return numberArray.reduce((previous, current) => previous + current)
-    },
-
-    setCategoryGroupsCombined () {
-      if (this.categoryGroups?.length) {
-        this.categoryGroupsCombined = this.categoryGroups.map(group => {
-          const categories = this.categories.filter(category => category.categoryGroupId === group.id).map(category => ({ ...category }))
-          return {
-            ...group,
-            isExpanded: true,
-            categories,
-            spent: this.calculateGroupTotals(group, 'spent', categories),
-            available: this.calculateGroupTotals(group, 'available', categories)
-          }
-        })
-      } else {
-        this.categoryGroupsCombined = []
-      }
-    },
-
-    fillBudgets () {
-      this.categoryGroupsCombined.forEach(group => {
-        group.categories.forEach(category => {
-          const categoryBudget = this.budgets.find(budget => budget.categoryId === category.id)
-          if (categoryBudget) {
-            category.budget = categoryBudget.assigned
-          } else {
-            category.budget = 0
-          }
-        })
-        group.budgeted = this.calculateGroupTotals(group, 'budgeted', group.categories),
-        group.available = this.calculateGroupTotals(group, 'available', group.categories)
-      })
-    },
-
-    changeMonth (isIncrement) {
-      this.$store.commit('changeDate', isIncrement)
-    },
-
-    showAddCategoryGroupDialog () {
-      if (this.$refs.categoryGroupDialog) {
-        this.$refs.categoryGroupDialog.open()
-      }
-    }
-  },
-  mounted () {
-    this.$watch(
-      () => this.$route.params,
-      () => {
-        this.$store.commit('initializeDate')
-        this.$store.dispatch('categoryGroups/get')
-        this.$store.dispatch('budgets/getReadyToBudget')
-      },
-      { immediate: true }
-    )
-  },
-  watch: {
-    budgets () {
-      this.fillBudgets()
-    },
-    categories () {
-      this.$store.dispatch('budgets/get')
-      this.setCategoryGroupsCombined()
-    },
-    categoryGroups () {
-      this.setCategoryGroupsCombined()
-    },
-    selectedDate () {
-      this.$store.dispatch('categories/get')
-    }
+    })
+  } else {
+    categoryGroupsCombined.value = []
   }
 }
+
+function fillBudgets () {
+  categoryGroupsCombined.value.forEach((group: any) => {
+    group.categories.forEach((category: any) => {
+      const categoryBudget = budgets.value.find((budget: any) => budget.categoryId === category.id)
+      if (categoryBudget) {
+        category.budget = categoryBudget.assigned
+      } else {
+        category.budget = 0
+      }
+    })
+    group.budgeted = calculateGroupTotals(group, 'budgeted', group.categories),
+    group.available = calculateGroupTotals(group, 'available', group.categories)
+  })
+}
+
+function changeMonth (isIncrement: boolean) {
+  store.commit('changeDate', isIncrement)
+}
+
+function showAddCategoryGroupDialog () {
+  if (categoryGroupDialog.value) {
+    categoryGroupDialog.value.open()
+  }
+}
+
+watch(() => route.params, () => {
+    store.commit('initializeDate')
+    store.dispatch('categoryGroups/get')
+    store.dispatch('budgets/getReadyToBudget')
+  }, { immediate: true }
+)
+
+watch(budgets.value, () => {
+  fillBudgets()
+})
+
+watch(categories.value, () => {
+  store.dispatch('budgets/get')
+  setCategoryGroupsCombined()
+})
+
+watch(categoryGroups.value, () => {
+  setCategoryGroupsCombined()
+})
+
+watch(selectedDate.value, () => {
+  store.dispatch('categories/get')
+})
 </script>
 
 <style scoped>

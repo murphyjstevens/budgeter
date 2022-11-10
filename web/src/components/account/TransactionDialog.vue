@@ -1,5 +1,5 @@
 <template>
-  <div class="modal fade" id="exampleModal" ref="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="exampleModal" ref="modalRef" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -11,7 +11,7 @@
             <div class="row gy-3">
               <div class="col-sm-12">
                 <label for="date" class="form-label">Date</label>
-                <input v-model="date"
+                <input v-model="v$.date.$model"
                        type="date"
                        id="date"
                        class="form-control"
@@ -25,7 +25,7 @@
               <div class="col-sm-12">
                 <label for="account" class="form-label">Account</label>
                 <select id="account"
-                        v-model="accountId"
+                        v-model="v$.accountId.$model"
                         name="account"
                         class="form-select"
                         required>
@@ -40,7 +40,7 @@
               <div class="col-sm-12">
                 <label for="category" class="form-label">Category</label>
                 <select id="category" 
-                        v-model="categoryId"
+                        v-model="v$.categoryId.$model"
                         name="category"
                         class="form-select"
                         required>
@@ -61,7 +61,7 @@
                     <h3 class="cost-sign ms-1"
                         :class="{ 'text-success': isPositive, 'text-danger': !isPositive }">{{ isPositive ? '+' : '-' }}</h3>
                   </div>
-                  <CurrencyInput v-model.number="cost"
+                  <CurrencyInput v-model.number="v$.cost.$model"
                                  v-select-all
                                  name="cost"
                                  :options="{ currency: 'USD', precision: 2 }"
@@ -74,7 +74,7 @@
               <div class="col-sm-12">
                 <label for="recipient" class="form-label">Recipient</label>
                 <select id="recipient" 
-                        v-model="recipientId"
+                        v-model="v$.recipientId.$model"
                         name="recipient"
                         class="form-select"
                         required>
@@ -103,107 +103,94 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { Modal } from 'bootstrap'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
-import { mapState } from 'vuex'
+import { useStore } from 'vuex'
+
+import { toShortDate } from '@/helpers/helpers';
 
 import CurrencyInput from '../shared/CurrencyInput.vue'
+import { type Ref, ref, computed, type ComputedRef, reactive, onMounted, nextTick } from 'vue'
 
-export default {
-  name: 'TransactionDialog',
-  components: {
-    CurrencyInput
-  },
-  computed: {
-    ...mapState({
-      account: state => state.accounts.account,
-      accounts: state => state.accounts.all,
-      categories: state => state.categories.all,
-      recipients: state => state.recipients.all
-    })
-  },
-  data () {
-    return {
-      modal: undefined,
-      date: null,
-      accountId: null,
-      categoryId: null,
-      cost: 0.00,
-      recipientId: null,
-      isPositive: false
-    }
-  },
-  methods: {
-    open (defaultAccountId) {
-      this.modal.show()
-      this.reset(defaultAccountId)
-    },
-    close () {
-      this.modal.hide()
-    },
-    reset (accountId) {
-      this.date = this.$filters.toShortDate(new Date(), 'yyyy-MM-dd')
-      this.accountId = accountId
-      this.categoryId = null
-      this.cost = 0.00
-      this.recipientId = null
-      this.$nextTick(() => {
-        this.v$.$reset()
-        if (this.date) this.v$.date.$touch()
-        if (this.accountId) this.v$.accountId.$touch()
-        this.v$.categoryId.$touch()
-      })
-    },
-    async save () {
-      if (this.v$.invalid) {
-        return
-      }
-      const signedCost = this.isPositive ? this.cost : this.cost * -1
-      const transaction = {
-        accountId: this.accountId,
-        categoryId: this.categoryId,
-        date: this.date,
-        cost: signedCost,
-        recipientId: this.recipientId
-      }
-      await this.$store.dispatch('transactions/create', transaction)
-      this.close()
-    },
-    convertToMoney (event) {
-      if (!event.target.value) { return }
+const store = useStore()
 
-      const cost = Math.round(event.target.value * 100) / 100
-      this.cost = cost
-    },
-    blurCost (event) {
-      this.v$.cost.$touch()
-      this.convertToMoney(event)
-    }
-  },
-  mounted () {
-    this.modal = new Modal(this.$refs.modal, {})
-    if (!this.categories?.length) {
-      this.$store.dispatch('categories/get')
-    }
-    if (!this.recipients?.length) {
-      this.$store.dispatch('recipients/get')
-    }
-  },
-  setup () {
-    return { v$: useVuelidate() }
-  },
-  validations () {
-    return {
-      date: { required, $autoDirty: true },
-      accountId: { required, $autoDirty: true },
-      categoryId: { $autoDirty: true },
-      cost: { required, $autoDirty: true },
-      recipientId: { required, $autoDirty: true }
-    }
-  }
+const state = reactive({
+  date: null as string | null,
+  accountId: null as number | null,
+  categoryId: null as number | null,
+  cost: 0.00 as number,
+  recipientId: null as number | null
+})
+
+const rules = {
+  date: { required, $autoDirty: true },
+  accountId: { required, $autoDirty: true },
+  categoryId: { $autoDirty: true },
+  cost: { required, $autoDirty: true },
+  recipientId: { required, $autoDirty: true }
 }
+
+const v$ = useVuelidate(rules, state)
+
+const modalRef = ref()
+const modal: Ref = ref(null)
+const isPositive: Ref<boolean> = ref(false);
+
+const account: ComputedRef<any> = computed(() => store.state.accounts.account)
+const accounts: ComputedRef<Array<any>> = computed(() => store.state.accounts.all)
+const categories: ComputedRef<Array<any>> = computed(() => store.state.categories.all)
+const recipients: ComputedRef<Array<any>> = computed(() => store.state.recipients.all)
+
+function open (defaultAccountId: number) {
+  modal.value.show()
+  reset(defaultAccountId)
+}
+
+function close () {
+  modal.value.hide()
+}
+
+function reset (newAccountId: number) {
+  state.date = toShortDate(new Date(), 'yyyy-MM-dd')
+  state.accountId = newAccountId
+  state.categoryId = null
+  state.cost = 0.00
+  state.recipientId = null
+  nextTick(() => {
+    v$.value.$reset()
+    if (state.date) v$.value.date.$touch()
+    if (state.accountId) v$.value.accountId.$touch()
+    v$.value.categoryId.$touch()
+  })
+}
+
+async function save () {
+  if (v$.value.invalid) {
+    return
+  }
+  const signedCost = isPositive.value ? state.cost : state.cost * -1
+  const transaction = {
+    accountId: state.accountId,
+    categoryId: state.categoryId,
+    date: state.date,
+    cost: signedCost,
+    recipientId: state.recipientId
+  }
+  await store.dispatch('transactions/create', transaction)
+  close()
+}
+
+onMounted(() => {
+  modal.value = new Modal(modalRef.value, {})
+  if (!categories.value?.length) {
+    store.dispatch('categories/get')
+  }
+  if (!recipients.value?.length) {
+    store.dispatch('recipients/get')
+  }
+})
 </script>
 
 <style scoped>

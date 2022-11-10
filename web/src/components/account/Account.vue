@@ -2,7 +2,7 @@
   <div class="flex-column">
     <span class="flex-row transaction-header-row">
       <h2 class="text-light">{{ account ? account.name : "All Accounts" }}</h2>
-      <h2 :class="{ 'text-success': this.total > 0, 'text-light': !this.total, 'text-danger': this.total < 0 }">{{ $filters.toCurrency(total) }}</h2>
+      <h2 :class="{ 'text-success': total > 0, 'text-light': !total, 'text-danger': total < 0 }">{{ toCurrency(total) }}</h2>
       <div class="flex-row align-items-center">
         <button type="button"
                 class="btn btn-light mb-1 ms-2"
@@ -28,65 +28,53 @@
   <TransactionDialog ref="transactionDialog" />
 </template>
 
-<script lang="ts">
-import { mapState } from 'vuex'
+<script setup lang="ts">
+import { type ComputedRef, computed, ref, type Ref, watch } from 'vue'
+import { useRoute } from 'vue-router';
+import { useStore } from 'vuex'
+
+import { toCurrency } from '@/helpers/helpers';
 import TransactionDialog from './TransactionDialog.vue'
 import TransactionList from './TransactionList.vue'
 
-export default {
-  name: 'Account',
-  components: {
-    TransactionDialog,
-    TransactionList
-  },
-  computed: {
-    ...mapState({
-      account: state => state.accounts.account,
-      transactions: state => state.transactions.all
-    }),
-    total () {
-      return this.transactions.reduce((total, transaction) => total + transaction.cost, 0)
-    }
-  },
-  data () {
-    return {
-      accountUrl: null
-    }
-  },
-  methods: {
-    showAddTransactionDialog () {
-      if (this.$refs.transactionDialog) {
-        this.$refs.transactionDialog.open(this.account?.id)
-      }
-    }
-  },
-  mounted () {
-    this.$watch(
-      () => this.$route.params,
-      () => {
-        this.accountUrl = this.$route.params.url
-        this.name = null
-        this.description = null
+const route = useRoute()
+const store = useStore()
 
-        if (this.accountUrl) {
-          this.$store.dispatch('accounts/find', this.accountUrl)
-        } else {
-          this.$store.commit('accounts/setAccount', undefined)
-        }
-      },
-      { immediate: true }
-    )
-  },
-  watch: {
-    account (value) {
-      if (value) {
-        this.$store.dispatch('transactions/getByAccount', value.id)
-      } else {
-        this.$store.dispatch('transactions/get')
-      }
-    }
+const accountUrl: Ref<any | null> = ref(null)
+const transactionDialog: Ref = ref()
+
+const account: ComputedRef<any> = computed(() => store.state.accounts.account)
+const transactions: ComputedRef<any> = computed(() => store.state.transactions.all)
+
+const total: ComputedRef<number> = computed(() => transactions.value.reduce((total: number, transaction: any) => total + transaction.cost, 0))
+
+function showAddTransactionDialog(): void {
+  if (transactionDialog.value) {
+    transactionDialog.value.open(account.value?.id)
   }
 }
+
+function showImportDialog() {
+
+}
+
+watch(() => route.params.id, () => {
+  accountUrl.value = route.params.url
+
+  if (accountUrl) {
+    store.dispatch('accounts/find', accountUrl)
+  } else {
+    store.commit('accounts/setAccount', undefined)
+  }
+}, { immediate: true })
+
+watch(account.value, (newValue: any) => {
+  if (newValue) {
+    store.dispatch('transactions/getByAccount', newValue.id)
+  } else {
+    store.dispatch('transactions/get')
+  }
+})
 </script>
 
 <style scoped>

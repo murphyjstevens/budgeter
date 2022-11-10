@@ -33,7 +33,7 @@
                     required />
           </div>
           <div v-if="!transaction.isEditing">
-            {{ $filters.toShortDate(new Date(transaction.date))}}
+            {{ toShortDate(new Date(transaction.date))}}
           </div>
         </td>
         <td v-if="!account">
@@ -94,7 +94,7 @@
                            required/>
           </div>
           <div v-if="!transaction.isEditing" class="text-end">
-            {{ $filters.toCurrency(transaction.cost) }}
+            {{ toCurrency(transaction.cost) }}
           </div>
         </td>
         <td>
@@ -134,108 +134,94 @@
   <DeleteConfirmation ref="deleteConfirmationModal" />
 </template>
 
-<script>
-import { mapState } from 'vuex'
-import { DeleteConfirmation } from '../shared'
-import CurrencyInput from '../shared/CurrencyInput.vue'
+<script setup lang="ts">
+import { type ComputedRef, computed, ref, type Ref, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute } from 'vue-router';
+import { useStore } from 'vuex'
 
-export default {
-  name: 'TransactionList',
-  beforeRouteLeave () {
-    this.transactions.filter(transaction => transaction.isEditing).forEach(transaction => {
-      this.$store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: false })
-    })
-    this.editTransaction = null
-  },
-  components: {
-    CurrencyInput,
-    DeleteConfirmation
-  },
-  computed: {
-    ...mapState({
-      account: state => state.accounts.account,
-      accounts: state => state.accounts.all,
-      categories: state => state.categories.all,
-      recipients: state => state.recipients.all,
-      transactions: state => state.transactions.all
-    })
-  },
-  data () {
-    return {
-      editTransaction: null,
-      accountUrl: null
-    }
-  },
-  methods: {
-    getCategoryName (id) {
-      const category = this.categories.find(c => c.id === id)
-      return category ? category.name : 'Ready to Budget'
-    },
+import { toCurrency, toShortDate } from '@/helpers/helpers';
+import { CurrencyInput, DeleteConfirmation } from '@/components/shared'
 
-    getAccountName (id) {
-      const account = this.accounts?.find(a => a.id === id)
-      return account ? account.name : ''
-    },
+const route = useRoute()
+const store = useStore()
 
-    getRecipientName (id) {
-      const recipient = this.recipients?.find(r => r.id === id)
-      return recipient ? recipient.name : ''
-    },
+const deleteConfirmationModal = ref()
 
-    startEditing (transaction) {
-      const unsavedTransaction = this.transactions.find(t => t.isEditing)
-      if (unsavedTransaction) {
-        this.cancelEditing(unsavedTransaction)
-      }
-      const dateString = this.$filters.toShortDate(new Date(transaction.date), 'yyyy-MM-dd')
-      this.editTransaction = { ...transaction, date: dateString }
-      this.$store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: true })
-    },
+const editTransaction: Ref<any | null> = ref(null)
+const accountUrl: Ref<string | null> = ref(null)
 
-    cancelEditing (transaction) {
-      this.$store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: false })
-    },
+const account: ComputedRef<any> = computed(() => store.state.accounts.account)
+const accounts: ComputedRef<Array<any>> = computed(() => store.state.accounts.all)
+const categories: ComputedRef<Array<any>> = computed(() => store.state.categories.all)
+const recipients: ComputedRef<Array<any>> = computed(() => store.state.recipients.all)
+const transactions: ComputedRef<Array<any>> = computed(() => store.state.transactions.all)
 
-    async save (transaction) {
-      this.$store.commit('setIsLoading', true)
-      await this.$store.dispatch('transactions/update', transaction)
-    },
+function getCategoryName(id: number) {
+  const category = categories.value.find(c => c.id === id)
+  return category ? category.name : 'Ready to Budget'
+}
 
-    confirmDelete (transaction) {
-      if (this.$refs.deleteConfirmationModal && transaction) {
-        this.$refs.deleteConfirmationModal.open(this.delete, transaction.id, null)
-      }
-    },
+function getAccountName (id: number) {
+  const account = accounts.value?.find(a => a.id === id)
+  return account ? account.name : ''
+}
 
-    async delete (id) {
-      await this.$store.dispatch('transactions/delete', id)
-    }
-  },
-  mounted () {
-    this.$watch(
-      () => this.$route.params,
-      () => {
-        this.accountUrl = this.$route.params.url
-        this.name = null
-        this.description = null
+function getRecipientName (id: number) {
+  const recipient = recipients.value?.find(r => r.id === id)
+  return recipient ? recipient.name : ''
+}
 
-        if (this.accountUrl) {
-          this.$store.dispatch('accounts/find', this.accountUrl)
-        } else {
-          this.$store.commit('accounts/setAccount', undefined)
-        }
-      },
-      { immediate: true }
-    )
-  },
-  watch: {
-    account (value) {
-      if (value) {
-        this.$store.dispatch('transactions/getByAccount', value.id)
-      } else {
-        this.$store.dispatch('transactions/get')
-      }
-    }
+function startEditing (transaction: any) {
+  const unsavedTransaction = transactions.value.find(t => t.isEditing)
+  if (unsavedTransaction) {
+    cancelEditing(unsavedTransaction)
+  }
+  const dateString = toShortDate(new Date(transaction.date), 'yyyy-MM-dd')
+  editTransaction.value = { ...transaction, date: dateString }
+  store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: true })
+}
+
+function cancelEditing (transaction: any) {
+  store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: false })
+}
+
+async function save (transaction: any) {
+  store.commit('setIsLoading', true)
+  await store.dispatch('transactions/update', transaction)
+}
+
+function confirmDelete (transaction: any) {
+  if (deleteConfirmationModal.value && transaction) {
+    deleteConfirmationModal.value.open(deleteTransaction, transaction.id, null)
   }
 }
+
+async function deleteTransaction (id: number) {
+  await store.dispatch('transactions/delete', id)
+}
+
+onBeforeRouteLeave(() => {
+  transactions.value.filter(transaction => transaction.isEditing).forEach(transaction => {
+    store.commit('transactions/setTransactionIsEditing', { ...transaction, isEditing: false })
+  })
+  editTransaction.value = null
+})
+
+watch(() => route.params, () => {
+  accountUrl.value = route.params.url as string
+
+  if (accountUrl.value) {
+    store.dispatch('accounts/find', accountUrl.value)
+  } else {
+    store.commit('accounts/setAccount', undefined)
+  }
+})
+
+watch(account.value, (newValue: any) => {
+  if (newValue) {
+    store.dispatch('transactions/getByAccount', newValue.id)
+  } else {
+    store.dispatch('transactions/get')
+  }
+})
 </script>
