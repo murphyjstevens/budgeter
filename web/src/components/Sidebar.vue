@@ -13,7 +13,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapState } from 'vuex'
 
 export default {
@@ -29,32 +29,32 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
   .sidebar {
     height: 100%;
     background-color: #1b1b1b;
     padding: 1em 0;
     border-right: 1px solid #262b30;
+  }
 
-    .sidebar-item {
-      font-size: 18px;
-      padding: 0.5em 1em;
-      text-decoration: none;
-      color: white;
+  .sidebar-item {
+    font-size: 18px;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    color: white;
 
-      :hover {
-        background-color: #454d55;
-      }
-    }
+  }
+  .sidebar-item:hover {
+    background-color: #454d55;
+  }
 
-    .sidebar-section {
-      margin-top: 2em;
-    }
+  .sidebar-section {
+    margin-top: 2em;
+  }
 
-    .sidebar-section-header {
-      color: rgba(245, 245, 245, 0.8);
-      text-align: left;
-      font-size: 1em;
-    }
+  .sidebar-section-header {
+    color: rgba(245, 245, 245, 0.8);
+    text-align: left;
+    font-size: 1em;
   }
 </style>

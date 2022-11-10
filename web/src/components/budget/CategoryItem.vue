@@ -55,7 +55,7 @@
   <DeleteConfirmation ref="deleteConfirmationModal" />
 </template>
 
-<script>
+<script lang="ts">
 import { mapState } from 'vuex'
 import { CurrencyInput, DeleteConfirmation } from '../shared'
 
@@ -155,7 +155,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
   .budget-category-cell {
     align-items: center;
     padding: 0 0.75rem;

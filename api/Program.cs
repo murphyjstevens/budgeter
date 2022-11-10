@@ -26,6 +26,7 @@ builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IRecipientRepository, RecipientRepository>();
 
 builder.Configuration.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), false, true);
+builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true);
 builder.Configuration.AddEnvironmentVariables();
 
 var app = builder.Build();

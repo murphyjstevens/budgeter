@@ -46,7 +46,7 @@
   <CategoryGroupDialog ref="categoryGroupDialog" />
 </template>
 
-<script>
+<script lang="ts">
 import { mapState } from 'vuex'
 import CategoryGroupDialog from './CategoryGroupDialog.vue'
 import CategoryGroupItem from './CategoryGroupItem.vue'
@@ -189,109 +189,108 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped>
   .budget-container {
     width: 100%;
+  }
 
-    .budget-header {
-      background-color: #212529;
-      padding: 0.75rem;
-      color: white;
-      font-weight: 700;
-      border-bottom: 1px solid #dee2e6;
-    }
+  .budget-header {
+    background-color: #212529;
+    padding: 0.75rem;
+    color: white;
+    font-weight: 700;
+    border-bottom: 1px solid #dee2e6;
+  }
 
-    .budget-category-money {
-      width: 10%;
-      text-align: right;
-      margin-left: 1em;
-    }
-    
-    .budget-column-category {
-      width: 55%;
-    }
-    
-    .budget-column-budget {
-      width: 15%;
-      text-align: right;
-      justify-content: flex-end;
-    }
-    
-    .budget-column-spent {
-      width: 15%;
-      text-align: right;
-      justify-content: flex-end;
-    }
-    
-    .budget-column-available {
-      width: 15%;
-      text-align: right;
-      justify-content: flex-end;
-    }
-    
-    .budget-column-actions {
-      width: 100px;
-      text-align: center;
-      justify-content: center;
-    }
+  .budget-category-money {
+    width: 10%;
+    text-align: right;
+    margin-left: 1em;
+  }
+  
+  .budget-column-category {
+    width: 55%;
+  }
+  
+  .budget-column-budget {
+    width: 15%;
+    text-align: right;
+    justify-content: flex-end;
+  }
+  
+  .budget-column-spent {
+    width: 15%;
+    text-align: right;
+    justify-content: flex-end;
+  }
+  
+  .budget-column-available {
+    width: 15%;
+    text-align: right;
+    justify-content: flex-end;
+  }
+  
+  .budget-column-actions {
+    width: 100px;
+    text-align: center;
+    justify-content: center;
+  }
 
-    .category-hover-action {
-      display: none;
-    }
-    
-    .group-header-row:hover .category-hover-action,
-    .category-row:hover .category-hover-action {
-      display: inline-flex;
-    }
+  .category-hover-action {
+    display: none;
+  }
+  
+  .group-header-row:hover .category-hover-action,
+  .category-row:hover .category-hover-action {
+    display: inline-flex;
+  }
 
-    .budget-group-cell {
-      background-color: #212529;
-      color: #dee2e6;
-      display: flex;
-      align-items: center;
-      padding: 0 0.75rem;
-      min-height: 48px;
-      font-weight: 700;
-    }
+  .budget-group-cell {
+    background-color: #212529;
+    color: #dee2e6;
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    min-height: 48px;
+    font-weight: 700;
+  }
 
-    .editable-cell {
-      display: flex;
-      align-items: center;
-      padding: 0 0.75rem;
-    
-      .editable-cell-input {
-        background-color: transparent;
-        color: white;
-        border-color: transparent;
-        margin-top: 5px;
-        margin-bottom: 5px;
-      }
+  .editable-cell {
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+  }
+  
+  .editable-cell-input {
+    background-color: transparent;
+    color: white;
+    border-color: transparent;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 
-      .category-name-input {
-        width: 400px;
-        max-width: 100%;
-      }
-    }
+  .category-name-input {
+    width: 400px;
+    max-width: 100%;
+  }
 
-    .editable-cell .input-group .input-group-prepend {
-      display: none;
-    }
+  .editable-cell .input-group .input-group-prepend {
+    display: none;
+  }
 
-    .editable-cell:hover, .editable-cell:focus-within {
-      .editable-cell-input {
-        border-color: inherit;
-      }
-    }
+  .editable-cell:hover .editable-cell-input, .editable-cell:focus-within .editable-cell-input {
+    border-color: inherit;
+  }
 
-    .editable-cell:focus-within .input-group .input-group-prepend {
-      display: flex;
-    }
+  .editable-cell:focus-within .input-group .input-group-prepend {
+    display: flex;
   }
 
   .rename-button {
     color: #dee2e6;
-    :hover {
-      color: dodgerblue;
-    }
+  }
+
+  .rename-button:hover {
+    color: dodgerblue;
   }
 </style>

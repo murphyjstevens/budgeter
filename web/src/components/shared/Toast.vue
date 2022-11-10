@@ -13,7 +13,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapState } from 'vuex'
 
 export default {
@@ -50,7 +50,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
   .toast {
     width: auto;
     min-width: 350px;

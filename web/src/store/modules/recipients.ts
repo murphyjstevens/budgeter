@@ -1,18 +1,17 @@
 import axios from 'axios'
 
-const baseUrl = process.env.VUE_APP_API_URL
+const baseUrl = import.meta.env.VITE_API_API_URL
 
 const state = () => ({
-  all: [],
-  readyToBudget: 0
+  all: []
 })
 
 const actions = {
-  async get ({ commit, rootState }) {
+  async get ({ commit }) {
     try {
       commit('setIsLoading', true, { root: true })
-      const response = await axios.get(baseUrl + '/budgets', { params: { date: rootState.date } })
-      commit('setBudgets', response.data)
+      const response = await axios.get(baseUrl + '/recipients')
+      commit('setRecipients', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
@@ -20,11 +19,11 @@ const actions = {
       console.error(error)
     }
   },
-  async getReadyToBudget ({ commit }) {
+  async create ({ commit }, recipient) {
     try {
       commit('setIsLoading', true, { root: true })
-      const response = await axios.get(`${baseUrl}/budgets/ready-to-budget`)
-      commit('setReadyToBudget', response.data)
+      const response = await axios.post(baseUrl + '/recipients', recipient)
+      commit('addRecipient', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
@@ -32,17 +31,15 @@ const actions = {
       console.error(error)
     }
   },
-  async save ({ commit, dispatch }, budget) {
+  async update ({ commit }, recipient) {
     try {
-      if (!budget) {
-        console.error('Empty budget object')
+      if (!recipient) {
+        console.error('Empty recipient object')
         return
       }
       commit('setIsLoading', true, { root: true })
-      const response = await axios.post(baseUrl + '/budgets', budget)
-      commit('setBudget', response.data)
-      dispatch('categories/get', false, { root: true })
-      dispatch('getReadyToBudget')
+      const response = await axios.put(baseUrl + '/recipients', recipient)
+      commit('updateRecipient', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
@@ -50,15 +47,15 @@ const actions = {
       console.error(error)
     }
   },
-  async delete ({ commit }, budgetId) {
+  async delete ({ commit }, id) {
     try {
-      if (!budgetId) {
-        console.error('Empty budgetId')
+      if (!id) {
+        console.error('Empty recipientId')
         return
       }
       commit('setIsLoading', true, { root: true })
-      await axios.delete(baseUrl + '/budgets/' + budgetId)
-      commit('deleteBudget', budgetId)
+      await axios.delete(`${baseUrl}/recipients/${id}`)
+      commit('deleteRecipient', id)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
@@ -69,21 +66,25 @@ const actions = {
 }
 
 const mutations = {
-  setBudgets (state, budgets) {
-    state.all = budgets.map(budget => ({ ...budget, date: new Date(budget.date) }))
+  setRecipients (state, recipients) {
+    state.all = recipients.sort((a, b) => a.name.localeCompare(b.name))
   },
-  setBudget (state, budget) {
+  addRecipient (state, recipient) {
+    state.all = [ ...state.all, recipient ].sort((a, b) => a.name.localeCompare(b.name))
+  },
+  updateRecipient (state, recipient) {
     state.all = [
-      ...state.all.filter(b => b.id !== budget.id),
-      { ...budget, date: new Date(budget.date) }
-    ]
+      ...state.all.filter(c => c.id !== recipient.id),
+      recipient
+   ].sort((a, b) => a.name.localeCompare(b.name))
   },
-  setReadyToBudget (state, readyToBudget) {
-    state.readyToBudget = readyToBudget
+  setRecipientIsEditing (state, recipient) {
+    const index = state.all.findIndex(p => p.id === recipient.id)
+    state.all[index].isEditing = recipient.isEditing
   },
-  deleteBudget (state, budgetId) {
+  deleteRecipient (state, id) {
     state.all = state.all
-      .filter(budget => budget.id !== budgetId)
+      .filter(recipient => recipient.id !== id)
   }
 }
 

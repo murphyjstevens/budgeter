@@ -56,7 +56,7 @@
   <DeleteConfirmation ref="deleteConfirmationModal" />
 </template>
 
-<script>
+<script lang="ts">
 import { mapState } from 'vuex'
 import { DeleteConfirmation } from '../shared'
 import CategoryDialog from './CategoryDialog.vue'
@@ -146,6 +146,3 @@ export default {
   props: ['group']
 }
 </script>
-
-<style lang="scss">
-</style>

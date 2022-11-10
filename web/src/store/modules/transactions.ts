@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = process.env.VUE_APP_API_URL
+const baseUrl = import.meta.env.VITE_API_API_URL
 
 const state = () => ({
   all: []

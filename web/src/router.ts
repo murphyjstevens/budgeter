@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
-import Account from './components/account/Account'
-import Budget from './components/budget/Budget'
-import ManageRecipients from './components/settings/ManageRecipients'
+import Account from './components/account/Account.vue'
+import Budget from './components/budget/Budget.vue'
+import ManageRecipients from './components/settings/ManageRecipients.vue'
 
 const routes = [
   { path: '/', name: 'Budget', component: Budget },

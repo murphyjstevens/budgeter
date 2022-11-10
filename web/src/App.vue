@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapState } from 'vuex'
 import Sidebar from './components/Sidebar.vue'
 import Toast from './components/shared/Toast.vue'

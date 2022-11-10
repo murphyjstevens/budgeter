@@ -69,7 +69,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Modal } from 'bootstrap'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
@@ -155,6 +155,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-</style>

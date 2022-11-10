@@ -114,7 +114,7 @@
   <DeleteConfirmation ref="deleteConfirmationModal" />
 </template>
 
-<script>
+<script lang="ts">
 import { mapState } from 'vuex'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
@@ -213,14 +213,15 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
   .recipient-table tr {
     height: 41px;
-
-    td {
-      vertical-align: middle;
-    }
   }
+
+  .recipient-table tr td {
+    vertical-align: middle;
+  }
+
   .recipients-container {
     width: 500px;
     margin: 0 auto;

@@ -38,7 +38,7 @@ WHERE EXTRACT(MONTH FROM b.date) = EXTRACT(MONTH FROM @Date) AND EXTRACT(YEAR FR
     using (var connection = new NpgsqlConnection(ConnectionString))
     {
       await connection.OpenAsync();
-      return await connection.QuerySingleAsync<double>(
+      return await connection.QuerySingleOrDefaultAsync<double?>(
         $@"SELECT SUM(amount) AS ReadyToBudget
 FROM
 (
@@ -48,7 +48,7 @@ UNION ALL
 
 SELECT (SUM(assigned) * -1) AS amount FROM budget
 ) AS derived"
-      );
+      ) ?? 0;
     }
   }
 

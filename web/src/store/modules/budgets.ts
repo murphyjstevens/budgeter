@@ -1,17 +1,18 @@
 import axios from 'axios'
 
-const baseUrl = process.env.VUE_APP_API_URL
+const baseUrl = import.meta.env.VITE_API_API_URL
 
 const state = () => ({
-  all: []
+  all: [],
+  readyToBudget: 0
 })
 
 const actions = {
-  async get ({ commit }) {
+  async get ({ commit, rootState }) {
     try {
       commit('setIsLoading', true, { root: true })
-      const response = await axios.get(baseUrl + '/recipients')
-      commit('setRecipients', response.data)
+      const response = await axios.get(baseUrl + '/budgets', { params: { date: rootState.date } })
+      commit('setBudgets', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
@@ -19,11 +20,11 @@ const actions = {
       console.error(error)
     }
   },
-  async create ({ commit }, recipient) {
+  async getReadyToBudget ({ commit }) {
     try {
       commit('setIsLoading', true, { root: true })
-      const response = await axios.post(baseUrl + '/recipients', recipient)
-      commit('addRecipient', response.data)
+      const response = await axios.get(`${baseUrl}/budgets/ready-to-budget`)
+      commit('setReadyToBudget', response.data)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
@@ -31,15 +32,17 @@ const actions = {
       console.error(error)
     }
   },
-  async update ({ commit }, recipient) {
+  async save ({ commit, dispatch }, budget) {
     try {
-      if (!recipient) {
-        console.error('Empty recipient object')
+      if (!budget) {
+        console.error('Empty budget object')
         return
       }
       commit('setIsLoading', true, { root: true })
-      const response = await axios.put(baseUrl + '/recipients', recipient)
-      commit('updateRecipient', response.data)
+      const response = await axios.post(baseUrl + '/budgets', budget)
+      commit('setBudget', response.data)
+      dispatch('categories/get', false, { root: true })
+      dispatch('getReadyToBudget')
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
@@ -47,15 +50,15 @@ const actions = {
       console.error(error)
     }
   },
-  async delete ({ commit }, id) {
+  async delete ({ commit }, budgetId) {
     try {
-      if (!id) {
-        console.error('Empty recipientId')
+      if (!budgetId) {
+        console.error('Empty budgetId')
         return
       }
       commit('setIsLoading', true, { root: true })
-      await axios.delete(`${baseUrl}/recipients/${id}`)
-      commit('deleteRecipient', id)
+      await axios.delete(baseUrl + '/budgets/' + budgetId)
+      commit('deleteBudget', budgetId)
       commit('setIsLoading', false, { root: true })
     } catch (error) {
       commit('setIsLoading', false, { root: true })
@@ -66,25 +69,21 @@ const actions = {
 }
 
 const mutations = {
-  setRecipients (state, recipients) {
-    state.all = recipients.sort((a, b) => a.name.localeCompare(b.name))
+  setBudgets (state, budgets) {
+    state.all = budgets.map(budget => ({ ...budget, date: new Date(budget.date) }))
   },
-  addRecipient (state, recipient) {
-    state.all = [ ...state.all, recipient ].sort((a, b) => a.name.localeCompare(b.name))
-  },
-  updateRecipient (state, recipient) {
+  setBudget (state, budget) {
     state.all = [
-      ...state.all.filter(c => c.id !== recipient.id),
-      recipient
-   ].sort((a, b) => a.name.localeCompare(b.name))
+      ...state.all.filter(b => b.id !== budget.id),
+      { ...budget, date: new Date(budget.date) }
+    ]
   },
-  setRecipientIsEditing (state, recipient) {
-    const index = state.all.findIndex(p => p.id === recipient.id)
-    state.all[index].isEditing = recipient.isEditing
+  setReadyToBudget (state, readyToBudget) {
+    state.readyToBudget = readyToBudget
   },
-  deleteRecipient (state, id) {
+  deleteBudget (state, budgetId) {
     state.all = state.all
-      .filter(recipient => recipient.id !== id)
+      .filter(budget => budget.id !== budgetId)
   }
 }
 

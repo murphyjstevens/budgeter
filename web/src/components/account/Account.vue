@@ -28,7 +28,7 @@
   <TransactionDialog ref="transactionDialog" />
 </template>
 
-<script>
+<script lang="ts">
 import { mapState } from 'vuex'
 import TransactionDialog from './TransactionDialog.vue'
 import TransactionList from './TransactionList.vue'
@@ -89,7 +89,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
   .transaction-header-row {
     justify-content: space-between;
   }
