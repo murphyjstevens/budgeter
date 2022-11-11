@@ -1,33 +1,40 @@
-export function toCurrency (value: number): string {
+export function toCurrency(value: number | null): string {
+  if (value === null) {
+    return ''
+  }
   if (typeof value !== 'number') {
     return value
   }
-  var formatter = new Intl.NumberFormat('en-US', {
+  const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: 2
+    minimumFractionDigits: 2,
   })
   return formatter.format(value)
 }
 
-export function toShortDate(value: Date, format: string = 'MM/dd/yyyy'): string {
+export function toShortDate(
+  value: Date,
+  format: string = 'MM/dd/yyyy'
+): string {
   if (!(value instanceof Date) || !format) {
     return value.toString()
   }
 
-  const monthString = padZeros(value.getMonth()+1, 2)
+  const monthString = padZeros(value.getMonth() + 1, 2)
   const dayString = padZeros(value.getDate(), 2)
   const yearString = padZeros(value.getFullYear(), 4)
 
-  let result = format 
+  let result = format
   result = result.replace('MM', monthString)
   result = result.replace('dd', dayString)
   result = result.replace('yyyy', yearString)
   return result
 }
 
-function padZeros (value: number, numberOfDigits: number): string {
-  if (value === null || value === undefined || isNaN(value) || !numberOfDigits) return ''
+function padZeros(value: number, numberOfDigits: number): string {
+  if (value === null || value === undefined || isNaN(value) || !numberOfDigits)
+    return ''
 
   const valueString = value.toString()
   const characterCount = valueString.length
@@ -38,20 +45,34 @@ function padZeros (value: number, numberOfDigits: number): string {
   return zeroString + valueString
 }
 
-export function getMonthString (month: number): string {
+export function getMonthString(month: number): string {
   if ((!month && month !== 0) || month < 0 || month > 11) {
     console.error(`Month is not valid: ${month ?? 'null'}`)
     return ''
   }
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
 
   return monthNames[month]
 }
 
-export function datesAreSameMonth (date: Date, date2: Date) {
+export function datesAreSameMonth(date: Date, date2: Date) {
   if (!date || !date2) return false
 
-  return date.getMonth() === date2.getMonth()
-    && date.getFullYear() === date2.getFullYear()
+  return (
+    date.getMonth() === date2.getMonth() &&
+    date.getFullYear() === date2.getFullYear()
+  )
 }
