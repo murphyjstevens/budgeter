@@ -1,24 +1,18 @@
 <template>
-  <input 
+  <input
     ref="inputRef"
     type="text"
     :value="formattedValue"
     class="form-control text-right">
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useCurrencyInput } from 'vue-currency-input'
 
-export default {
-  name: 'CurrencyInput',
-  props: {
-    modelValue: Number,
-    options: Object
-  },
-  setup (props) {
-    const { formattedValue, inputRef } = useCurrencyInput(props.options)
+const props = defineProps<{
+  modelValue: number
+  options: any
+}>()
 
-    return { inputRef, formattedValue }
-  }
-}
+const { formattedValue, inputRef } = useCurrencyInput(props.options)
 </script>
