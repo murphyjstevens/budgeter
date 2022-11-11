@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { type ComputedRef, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import type { Account } from '@/models';
+import type { Account } from '@/models'
 
 const store = useStore()
 

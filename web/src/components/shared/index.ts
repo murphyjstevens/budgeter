@@ -1,9 +1,5 @@
 import CurrencyInput from './CurrencyInput.vue'
 import DeleteConfirmation from './DeleteConfirmation.vue'
-import Toast from './Toast.vue'
+import ToastList from './ToastList.vue'
 
-export {
-  CurrencyInput,
-  DeleteConfirmation,
-  Toast
-}
+export { CurrencyInput, DeleteConfirmation, ToastList }

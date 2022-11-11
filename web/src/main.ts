@@ -1,6 +1,5 @@
 import { createApp, h } from 'vue'
 
-import { filters } from './filters'
 import { router } from './router'
 import store from './store'
 
@@ -14,12 +13,10 @@ import './assets/global.css'
 import './assets/bootstrap-override.css'
 
 const app = createApp({
-  render: () => h(App)
+  render: () => h(App),
 })
 
-app.config.globalProperties.$filters = filters
-
-app.directive('select-all', el => {
+app.directive('select-all', (el) => {
   el.onfocus = () => el.select()
 })
 

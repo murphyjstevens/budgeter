@@ -1,83 +1,74 @@
 <template>
-  <Sidebar class="sidebar-wrapper"></Sidebar>
+  <TheSidebar class="sidebar-wrapper"></TheSidebar>
 
   <div class="content-wrapper">
-    <Toast></Toast>
+    <ToastList></ToastList>
     <div v-if="isLoading" class="loading-overlay">
       <div class="loading-dialog flex-column">
-        <div class="spinner-border" role="status">
-        </div>
+        <div class="spinner-border" role="status"></div>
         <h4 class="mt-3">Loading...</h4>
       </div>
     </div>
     <div class="content">
-      <router-view/>
+      <router-view />
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { mapState } from 'vuex'
-import Sidebar from './components/Sidebar.vue'
-import Toast from './components/shared/Toast.vue'
+<script setup lang="ts">
+import { type ComputedRef, computed } from 'vue'
+import { useStore } from 'vuex'
+import TheSidebar from '@/components/TheSidebar.vue'
+import ToastList from '@/components/shared/ToastList.vue'
 
-export default {
-  name: 'App',
-  components: {
-    Sidebar,
-    Toast
-  },
-  computed: {
-    ...mapState({
-      isLoading: state => state.isLoading
-    })
-  }
-}
+const store = useStore()
+
+const isLoading: ComputedRef<boolean> = computed(() => store.state.isLoading)
 </script>
 
 <style scoped lang="scss">
-  .sidebar-wrapper {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 15em;
-  }
+.sidebar-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 15em;
+}
 
-  .content-wrapper {
-    margin-left: 15em;
-  }
+.content-wrapper {
+  margin-left: 15em;
+}
 
-  .content {
-    padding: 5em;
-  }
+.content {
+  padding: 5em;
+}
 
-  .loading-overlay {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    align-items: center;
-  }
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  align-items: center;
+}
 
-  .loading-dialog {
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-    border-radius: 10px;
-    background-color: white;
-    width: 300px;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 8px;
-    margin-top: 190px;
-  }
+.loading-dialog {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  border-radius: 10px;
+  background-color: white;
+  width: 300px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  margin-top: 190px;
+}
 
-  .loading-message {
-    margin-top: 0.5em;
-  }
+.loading-message {
+  margin-top: 0.5em;
+}
 </style>

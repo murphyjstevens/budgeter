@@ -46,8 +46,8 @@ import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 
 import { toCurrency } from '@/helpers/helpers'
-import TransactionDialog from './TransactionDialog.vue'
-import TransactionList from './TransactionList.vue'
+import TransactionDialog from '../components/account/TransactionDialog.vue'
+import TransactionList from '../components/account/TransactionList.vue'
 import type { Account, Transaction } from '@/models'
 
 const route = useRoute()

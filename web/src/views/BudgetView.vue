@@ -74,8 +74,8 @@ import {
   getMonthString,
   toCurrency,
 } from '@/helpers/helpers'
-import CategoryGroupDialog from './CategoryGroupDialog.vue'
-import CategoryGroupItem from './CategoryGroupItem.vue'
+import CategoryGroupDialog from '../components/budget/CategoryGroupDialog.vue'
+import CategoryGroupItem from '../components/budget/CategoryGroupItem.vue'
 import type { Budget, Category, CategoryGroup } from '@/models'
 
 const route = useRoute()
