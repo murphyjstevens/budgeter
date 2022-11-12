@@ -20,15 +20,15 @@
 
 <script setup lang="ts">
 import { type ComputedRef, computed, onMounted } from 'vue'
-import { useStore } from 'vuex'
 import type { Account } from '@/models'
+import { useAccountStore } from '@/store'
 
-const store = useStore()
+const accountStore = useAccountStore()
 
-const accounts: ComputedRef<Array<Account>> = computed(store.state.accounts.all)
+const accounts: ComputedRef<Array<Account>> = computed(() => accountStore.all)
 
 onMounted(() => {
-  store.dispatch('accounts/get')
+  accountStore.get()
 })
 </script>
 

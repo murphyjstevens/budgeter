@@ -127,11 +127,19 @@ import {
 } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
-import { useStore } from 'vuex'
 import { Modal } from 'bootstrap'
-import type { Category } from '@/models'
+import type { Budget, Category } from '@/models'
+import {
+  useBudgetStore,
+  useCategoryGroupStore,
+  useCategoryStore,
+  useDateStore,
+} from '@/store'
 
-const store = useStore()
+const budgetStore = useBudgetStore()
+const categoryGroupStore = useCategoryGroupStore()
+const categoryStore = useCategoryStore()
+const dateStore = useDateStore()
 
 const state = reactive({
   name: null as string | null,
@@ -151,7 +159,7 @@ const modalRef = ref()
 const modal: Ref<Modal | null> = ref(null)
 
 const categoryGroups: ComputedRef<Array<any>> = computed(
-  () => store.state.categoryGroups.all
+  () => categoryGroupStore.all
 )
 
 defineExpose({
@@ -186,7 +194,7 @@ async function save() {
 
   if (!state.name || !state.categoryGroupId) return
 
-  const groupCategories = store.state.categories.all.filter(
+  const groupCategories = categoryStore.all.filter(
     (category: any) => category.categoryGroupId === state.categoryGroupId
   )
   const category: Category = {
@@ -198,15 +206,15 @@ async function save() {
     available: 0,
     budget: 0,
   }
-  const cat = await store.dispatch('categories/create', category)
+  const cat = await categoryStore.create(category)
   if (cat) {
     if (state.budget && cat) {
-      const budget = {
-        date: store.state.date,
+      const budget: Budget = {
+        date: dateStore.date,
         assigned: state.budget,
         categoryId: cat.id,
-      }
-      await store.dispatch('budgets/save', budget)
+      } as Budget
+      await budgetStore.save(budget)
     }
     close()
   }

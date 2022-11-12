@@ -86,25 +86,26 @@
 
 <script setup lang="ts">
 import { computed, ref, type ComputedRef, type Ref } from 'vue'
-import { useStore } from 'vuex'
 
 import type { Category, CategoryGroup } from '@/models'
 import { DeleteConfirmation } from '@/components/shared'
 import CategoryDialog from './CategoryDialog.vue'
 import CategoryItem from './CategoryItem.vue'
 import { toCurrency } from '@/helpers/helpers'
+import { useCategoryGroupStore, useCategoryStore } from '@/store'
 
-const store = useStore()
+const categoryGroupStore = useCategoryGroupStore()
+const categoryStore = useCategoryStore()
 
 const deleteConfirmationModal = ref()
 const categoryDialog = ref()
 const isExpanded: Ref<boolean> = ref(true)
 
 const categoryGroups: ComputedRef<Array<CategoryGroup>> = computed(
-  () => store.state.categoryGroups.all
+  () => categoryGroupStore.all
 )
 const categories: ComputedRef<Array<Category>> = computed(
-  () => store.state.categories.all
+  () => categoryStore.all
 )
 
 defineProps<{
@@ -128,7 +129,7 @@ function rename(event: any, item: CategoryGroup) {
 }
 
 async function saveGroup(group: CategoryGroup) {
-  await store.dispatch('categoryGroups/update', group)
+  await categoryGroupStore.update(group)
 }
 
 function confirmDeleteCategoryGroup(group: CategoryGroup) {
@@ -142,7 +143,7 @@ function confirmDeleteCategoryGroup(group: CategoryGroup) {
 }
 
 async function deleteCategoryGroup(id: number) {
-  await store.dispatch('categoryGroups/delete', id)
+  await categoryGroupStore.remove(id)
 }
 
 async function reorderCategoryGroup(group: CategoryGroup, isUp: boolean) {
@@ -175,7 +176,7 @@ async function reorderCategoryGroup(group: CategoryGroup, isUp: boolean) {
     },
   }
 
-  await store.dispatch('categoryGroups/reorder', reorderRequest)
+  await categoryGroupStore.reorder(reorderRequest)
 }
 
 function showAddCategoryDialog(groupId: number) {

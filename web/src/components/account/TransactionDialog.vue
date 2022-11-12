@@ -187,7 +187,6 @@
 import { Modal } from 'bootstrap'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
-import { useStore } from 'vuex'
 
 import { toShortDate } from '@/helpers/helpers'
 
@@ -201,9 +200,18 @@ import {
   onMounted,
   nextTick,
 } from 'vue'
-import type { Account, Category, Recipient } from '@/models'
+import type { Account, Category, Recipient, Transaction } from '@/models'
+import {
+  useAccountStore,
+  useCategoryStore,
+  useRecipientStore,
+  useTransactionStore,
+} from '@/store'
 
-const store = useStore()
+const accountStore = useAccountStore()
+const categoryStore = useCategoryStore()
+const recipientStore = useRecipientStore()
+const transactionStore = useTransactionStore()
 
 const state = reactive({
   date: null as string | null,
@@ -227,14 +235,12 @@ const modalRef = ref()
 const modal: Ref = ref(null)
 const isPositive: Ref<boolean> = ref(false)
 
-const accounts: ComputedRef<Array<Account>> = computed(
-  () => store.state.accounts.all
-)
+const accounts: ComputedRef<Array<Account>> = computed(() => accountStore.all)
 const categories: ComputedRef<Array<Category>> = computed(
-  () => store.state.categories.all
+  () => categoryStore.all
 )
 const recipients: ComputedRef<Array<Recipient>> = computed(
-  () => store.state.recipients.all
+  () => recipientStore.all
 )
 
 defineExpose({
@@ -275,18 +281,18 @@ async function save() {
     date: state.date,
     cost: signedCost,
     recipientId: state.recipientId,
-  }
-  await store.dispatch('transactions/create', transaction)
+  } as Transaction
+  await transactionStore.create(transaction)
   close()
 }
 
 onMounted(() => {
   modal.value = new Modal(modalRef.value)
   if (!categories.value?.length) {
-    store.dispatch('categories/get')
+    categoryStore.get()
   }
   if (!recipients.value?.length) {
-    store.dispatch('recipients/get')
+    recipientStore.get()
   }
 })
 </script>

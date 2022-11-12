@@ -43,24 +43,26 @@
 <script setup lang="ts">
 import { type ComputedRef, computed, ref, type Ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useStore } from 'vuex'
 
 import { toCurrency } from '@/helpers/helpers'
 import TransactionDialog from '../components/account/TransactionDialog.vue'
 import TransactionList from '../components/account/TransactionList.vue'
 import type { Account, Transaction } from '@/models'
+import { useAccountStore, useTransactionStore } from '@/store'
+
+const accountStore = useAccountStore()
+const transactionStore = useTransactionStore()
 
 const route = useRoute()
-const store = useStore()
 
 const accountUrl: Ref<string | null> = ref(null)
 const transactionDialog: Ref = ref()
 
-const account: ComputedRef<Account> = computed(
-  () => store.state.accounts.account
+const account: ComputedRef<Account | null> = computed(
+  () => accountStore.account
 )
 const transactions: ComputedRef<Array<Transaction>> = computed(
-  () => store.state.transactions.all
+  () => transactionStore.all
 )
 
 const total: ComputedRef<number> = computed(() =>
@@ -84,21 +86,24 @@ watch(
     accountUrl.value = route.params.url as string
 
     if (accountUrl.value) {
-      store.dispatch('accounts/find', accountUrl)
+      accountStore.find(accountUrl.value)
     } else {
-      store.commit('accounts/setAccount', undefined)
+      accountStore.account = null
     }
   },
   { immediate: true }
 )
 
-watch(account.value, (newValue: Account) => {
-  if (newValue) {
-    store.dispatch('transactions/getByAccount', newValue.id)
-  } else {
-    store.dispatch('transactions/get')
+watch(
+  () => account.value,
+  (newValue: Account) => {
+    if (newValue) {
+      transactionStore.getByAccount(newValue.id)
+    } else {
+      transactionStore.get()
+    }
   }
-})
+)
 </script>
 
 <style scoped>

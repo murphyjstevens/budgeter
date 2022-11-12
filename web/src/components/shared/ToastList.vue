@@ -22,10 +22,10 @@
 
 <script setup lang="ts">
 import { type ComputedRef, computed, type Ref, ref, watch } from 'vue'
-import { useStore } from 'vuex'
 import type { Toast } from '@/models'
+import { useToastStore } from '@/store'
 
-const store = useStore()
+const toastStore = useToastStore()
 
 let timeout: number | undefined = undefined
 
@@ -33,19 +33,22 @@ const toastMessage: Ref<string> = ref('')
 const showToast: Ref<boolean> = ref(false)
 const isError: Ref<boolean> = ref(false)
 
-const toast: ComputedRef<Toast> = computed(() => store.state.toast)
+const toast: ComputedRef<Toast | null> = computed(() => toastStore.toast)
 
-watch(toast.value, () => {
-  toastMessage.value = toast.value.toastMessage
-  isError.value = toast.value.isError
-  showToast.value = true
+watch(
+  () => toast.value,
+  () => {
+    toastMessage.value = toast.value?.toastMessage ?? ''
+    isError.value = toast.value?.isError ?? false
+    showToast.value = true
 
-  clearTimeout(timeout)
+    clearTimeout(timeout)
 
-  timeout = setTimeout(() => {
-    showToast.value = false
-  }, 5000)
-})
+    timeout = setTimeout(() => {
+      showToast.value = false
+    }, 5000)
+  }
+)
 </script>
 
 <style scoped>

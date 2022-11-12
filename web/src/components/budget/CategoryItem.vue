@@ -75,21 +75,23 @@
 
 <script setup lang="ts">
 import { type ComputedRef, computed, type Ref, ref } from 'vue'
-import { useStore } from 'vuex'
 import { CurrencyInput, DeleteConfirmation } from '@/components/shared'
 import { toCurrency } from '@/helpers/helpers'
 import type { Budget, Category } from '@/models'
+import { useBudgetStore, useCategoryStore, useDateStore } from '@/store'
 
-const store = useStore()
+const budgetStore = useBudgetStore()
+const categoryStore = useCategoryStore()
+const dateStore = useDateStore()
 
 const deleteConfirmationModal = ref()
 
 const isNameInvalid: Ref<boolean> = ref(false)
 
 const categories: ComputedRef<Array<Category>> = computed(
-  () => store.state.categories.all
+  () => categoryStore.all
 )
-const selectedDate: ComputedRef<Date> = computed(() => store.state.date)
+const selectedDate: ComputedRef<Date> = computed(() => dateStore.date)
 
 defineProps<{
   category: Category
@@ -120,7 +122,7 @@ function updateBudget(event: any, category: Category) {
     const updatedBudget = Number.parseFloat(event.target.value)
     if (updatedBudget || updatedBudget === 0) {
       if (updatedBudget === category.budget) return
-      store.dispatch('budgets/save', {
+      budgetStore.save({
         assigned: updatedBudget,
         date: selectedDate.value,
         categoryId: category.id,
@@ -130,7 +132,7 @@ function updateBudget(event: any, category: Category) {
 }
 
 async function saveCategory(category: Category) {
-  await store.dispatch('categories/update', category)
+  await categoryStore.update(category)
 }
 
 function confirmDeleteCategory(category: Category) {
@@ -144,7 +146,7 @@ function confirmDeleteCategory(category: Category) {
 }
 
 async function deleteCategory(id: number) {
-  await store.dispatch('categories/delete', id)
+  await categoryStore.remove(id)
 }
 
 async function reorderCategory(category: Category, isUp: boolean) {
@@ -177,7 +179,7 @@ async function reorderCategory(category: Category, isUp: boolean) {
     },
   }
 
-  await store.dispatch('categories/reorder', reorderRequest)
+  await categoryStore.reorder(reorderRequest)
 }
 </script>
 

@@ -66,12 +66,13 @@
 
 <script setup lang="ts">
 import { nextTick, onMounted, reactive, ref, type Ref } from 'vue'
-import { useStore } from 'vuex'
 import { Modal } from 'bootstrap'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
+import { useCategoryGroupStore } from '@/store'
+import type { CategoryGroup } from '@/models'
 
-const store = useStore()
+const categoryGroupStore = useCategoryGroupStore()
 
 const state = reactive({
   name: null as string | null,
@@ -114,11 +115,11 @@ async function save() {
   if (v$.value.invalid) {
     return
   }
-  const group = {
+  const group: CategoryGroup = {
     name: state.name,
-    sortOrder: store.state.categoryGroups.all.length + 1,
-  }
-  await store.dispatch('categoryGroups/create', group)
+    sortOrder: categoryGroupStore.all.length + 1,
+  } as CategoryGroup
+  await categoryGroupStore.create(group)
   close()
 }
 </script>
