@@ -157,34 +157,42 @@
 <script setup lang="ts">
 import { type ComputedRef, computed, ref, type Ref, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import { useStore } from 'vuex'
 
 import { toCurrency, toShortDate } from '@/helpers/helpers'
 import { CurrencyInput, DeleteConfirmation } from '@/components/shared'
 import type { Account, Category, Recipient, Transaction } from '@/models'
+import {
+  useAccountStore,
+  useCategoryStore,
+  useLoadingStore,
+  useRecipientStore,
+  useTransactionStore,
+} from '@/store'
 
 const route = useRoute()
-const store = useStore()
+const accountStore = useAccountStore()
+const categoryStore = useCategoryStore()
+const loadingStore = useLoadingStore()
+const recipientStore = useRecipientStore()
+const transactionStore = useTransactionStore()
 
 const deleteConfirmationModal = ref()
 
 const editTransaction: Ref<Transaction | null> = ref(null)
 const accountUrl: Ref<string | null> = ref(null)
 
-const account: ComputedRef<Account> = computed(
-  () => store.state.accounts.account
+const account: ComputedRef<Account | null> = computed(
+  () => accountStore.account
 )
-const accounts: ComputedRef<Array<Account>> = computed(
-  () => store.state.accounts.all
-)
+const accounts: ComputedRef<Array<Account>> = computed(() => accountStore.all)
 const categories: ComputedRef<Array<Category>> = computed(
-  () => store.state.categories.all
+  () => categoryStore.all
 )
 const recipients: ComputedRef<Array<Recipient>> = computed(
-  () => store.state.recipients.all
+  () => recipientStore.all
 )
 const transactions: ComputedRef<Array<Transaction>> = computed(
-  () => store.state.transactions.all
+  () => transactionStore.all
 )
 
 function getCategoryName(id: number | null): string {
@@ -213,7 +221,7 @@ function startEditing(transaction: Transaction | null) {
   }
   const dateString = toShortDate(new Date(transaction.date), 'yyyy-MM-dd')
   editTransaction.value = { ...transaction, date: dateString }
-  store.commit('transactions/setTransactionIsEditing', {
+  transactionStore.setTransactionIsEditing({
     ...transaction,
     isEditing: true,
   })
@@ -221,7 +229,7 @@ function startEditing(transaction: Transaction | null) {
 
 function cancelEditing(transaction: Transaction | null) {
   if (transaction) {
-    store.commit('transactions/setTransactionIsEditing', {
+    transactionStore.setTransactionIsEditing({
       ...transaction,
       isEditing: false,
     })
@@ -230,8 +238,8 @@ function cancelEditing(transaction: Transaction | null) {
 
 async function save(transaction: Transaction | null) {
   if (transaction) {
-    store.commit('setIsLoading', true)
-    await store.dispatch('transactions/update', transaction)
+    loadingStore.setIsLoading(true)
+    await transactionStore.update(transaction)
   }
 }
 
@@ -242,14 +250,14 @@ function confirmDelete(transaction: Transaction) {
 }
 
 async function deleteTransaction(id: number) {
-  await store.dispatch('transactions/delete', id)
+  await transactionStore.remove(id)
 }
 
 onBeforeRouteLeave(() => {
   transactions.value
     .filter((transaction) => transaction.isEditing)
     .forEach((transaction) => {
-      store.commit('transactions/setTransactionIsEditing', {
+      transactionStore.setTransactionIsEditing({
         ...transaction,
         isEditing: false,
       })
@@ -263,18 +271,21 @@ watch(
     accountUrl.value = route.params.url as string
 
     if (accountUrl.value) {
-      store.dispatch('accounts/find', accountUrl.value)
+      accountStore.find(accountUrl.value)
     } else {
-      store.commit('accounts/setAccount', undefined)
+      accountStore.account = null
     }
   }
 )
 
-watch(account.value, (newValue: Account) => {
-  if (newValue) {
-    store.dispatch('transactions/getByAccount', newValue.id)
-  } else {
-    store.dispatch('transactions/get')
+watch(
+  () => account.value,
+  (newValue: Account | null) => {
+    if (newValue) {
+      transactionStore.getByAccount(newValue.id)
+    } else {
+      transactionStore.get()
+    }
   }
-})
+)
 </script>

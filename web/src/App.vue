@@ -17,16 +17,16 @@
 
 <script setup lang="ts">
 import { type ComputedRef, computed } from 'vue'
-import { useStore } from 'vuex'
 import TheSidebar from '@/components/TheSidebar.vue'
 import ToastList from '@/components/shared/ToastList.vue'
+import { useLoadingStore } from './store'
 
-const store = useStore()
+const loadingStore = useLoadingStore()
 
-const isLoading: ComputedRef<boolean> = computed(() => store.state.isLoading)
+const isLoading: ComputedRef<boolean> = computed(() => loadingStore.isLoading)
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .sidebar-wrapper {
   position: fixed;
   left: 0;

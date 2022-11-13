@@ -153,14 +153,14 @@ import {
   onMounted,
   nextTick,
 } from 'vue'
-import { useStore } from 'vuex'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 import { DeleteConfirmation } from '@/components/shared'
 import type { Recipient } from '@/models'
+import { useRecipientStore } from '@/store'
 
-const store = useStore()
+const recipientStore = useRecipientStore()
 
 const state = reactive({
   name: null as string | null,
@@ -179,11 +179,11 @@ const deleteConfirmationModal = ref()
 const isAddingRow: Ref<boolean> = ref(false)
 
 const recipients: ComputedRef<Array<Recipient>> = computed(
-  () => store.state.recipients.all
+  () => recipientStore.all
 )
 
 onMounted(() => {
-  store.dispatch('recipients/get')
+  recipientStore.get()
 })
 
 function startEditing(recipient: Recipient) {
@@ -192,7 +192,7 @@ function startEditing(recipient: Recipient) {
 
   state.name = recipient.name
   v$.value.$reset()
-  store.commit('recipients/setRecipientIsEditing', {
+  recipientStore.setRecipientIsEditing({
     ...recipient,
     isEditing: true,
   })
@@ -204,7 +204,7 @@ function startEditing(recipient: Recipient) {
 
 function cancelEditing(recipient: Recipient | null = null) {
   if (recipient) {
-    store.commit('recipients/setRecipientIsEditing', {
+    recipientStore.setRecipientIsEditing({
       ...recipient,
       isEditing: false,
     })
@@ -217,18 +217,22 @@ async function save(recipient: Recipient) {
   if (!v$.value.$dirty || v$.value.$invalid) {
     return
   }
-  await store.dispatch('recipients/update', {
-    ...recipient,
-    name: name,
-  })
+  if (state.name) {
+    await recipientStore.update({
+      ...recipient,
+      name: state.name,
+    })
+  }
 }
 
 async function saveNew() {
   if (!v$.value.$dirty || v$.value.$invalid) {
     return
   }
-  await store.dispatch('recipients/create', { name: name })
-  isAddingRow.value = false
+  if (state.name) {
+    await recipientStore.create({ name: state.name } as Recipient)
+    isAddingRow.value = false
+  }
 }
 
 function confirmDelete(recipient: Recipient) {
@@ -238,7 +242,7 @@ function confirmDelete(recipient: Recipient) {
 }
 
 async function deleteRecipient(id: number) {
-  await store.dispatch('recipients/delete', id)
+  await recipientStore.remove(id)
 }
 
 function addRow() {

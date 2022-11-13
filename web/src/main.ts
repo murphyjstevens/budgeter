@@ -1,7 +1,7 @@
 import { createApp, h } from 'vue'
+import { createPinia } from 'pinia'
 
 import { router } from './router'
-import store from './store'
 
 import App from './App.vue'
 
@@ -22,6 +22,6 @@ app.directive('select-all', (el) => {
 
 app.use(router)
 
-app.use(store)
+app.use(createPinia())
 
 app.mount('#app')

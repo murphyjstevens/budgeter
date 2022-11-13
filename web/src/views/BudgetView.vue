@@ -67,7 +67,6 @@
 <script setup lang="ts">
 import { computed, ref, watch, type ComputedRef, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useStore } from 'vuex'
 
 import {
   datesAreSameMonth,
@@ -77,26 +76,33 @@ import {
 import CategoryGroupDialog from '../components/budget/CategoryGroupDialog.vue'
 import CategoryGroupItem from '../components/budget/CategoryGroupItem.vue'
 import type { Budget, Category, CategoryGroup } from '@/models'
+import {
+  useBudgetStore,
+  useCategoryGroupStore,
+  useCategoryStore,
+  useDateStore,
+} from '@/store'
 
 const route = useRoute()
-const store = useStore()
+const budgetStore = useBudgetStore()
+const categoryGroupStore = useCategoryGroupStore()
+const categoryStore = useCategoryStore()
+const dateStore = useDateStore()
 
 const categoryGroupDialog = ref()
 const categoryGroupsCombined: Ref<Array<CategoryGroup>> = ref([])
 
-const budgets: ComputedRef<Array<Budget>> = computed(
-  () => store.state.budgets.all
-)
+const budgets: ComputedRef<Array<Budget>> = computed(() => budgetStore.all)
 const categoryGroups: ComputedRef<Array<CategoryGroup>> = computed(
-  () => store.state.categoryGroups.all
+  () => categoryGroupStore.all
 )
 const categories: ComputedRef<Array<Category>> = computed(
-  () => store.state.categories.all
+  () => categoryStore.all
 )
 const readyToBudget: ComputedRef<number> = computed(
-  () => store.state.budgets.readyToBudget
+  () => budgetStore.readyToBudget
 )
-const selectedDate: ComputedRef<Date> = computed(() => store.state.date)
+const selectedDate: ComputedRef<Date> = computed(() => dateStore.date)
 
 const selectedDateDisplay: ComputedRef<string> = computed(() => {
   if (!selectedDate.value) return ''
@@ -187,7 +193,7 @@ function fillBudgets() {
 }
 
 function changeMonth(isIncrement: boolean) {
-  store.commit('changeDate', isIncrement)
+  dateStore.changeDate(isIncrement)
 }
 
 function showAddCategoryGroupDialog() {
@@ -199,9 +205,8 @@ function showAddCategoryGroupDialog() {
 watch(
   () => route.params,
   () => {
-    store.commit('initializeDate')
-    store.dispatch('categoryGroups/get')
-    store.dispatch('budgets/getReadyToBudget')
+    categoryGroupStore.get()
+    budgetStore.getReadyToBudget()
   },
   { immediate: true }
 )
@@ -211,7 +216,7 @@ watch(budgets.value, () => {
 })
 
 watch(categories.value, () => {
-  store.dispatch('budgets/get')
+  budgetStore.get()
   setCategoryGroupsCombined()
 })
 
@@ -220,7 +225,7 @@ watch(categoryGroups.value, () => {
 })
 
 watch(selectedDate.value, () => {
-  store.dispatch('categories/get')
+  categoryStore.get()
 })
 </script>
 
