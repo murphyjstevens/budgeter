@@ -1,0 +1,60 @@
+.editable-cell {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+}
+
+.editable-cell-input {
+  background-color: transparent;
+  color: white;
+  border-color: transparent;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.editable-cell:hover .editable-cell-input,
+.editable-cell:focus-within .editable-cell-input {
+  border-color: inherit;
+}
+
+.budget-column-category {
+  width: 55%;
+}
+
+.budget-column-budget {
+  width: 15%;
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.budget-column-spent {
+  width: 15%;
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.budget-column-available {
+  width: 15%;
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.budget-column-actions {
+  width: 100px;
+  text-align: center;
+  justify-content: center;
+}
+
+.category-name-input {
+  width: 400px;
+  max-width: 100%;
+}
+
+.category-hover-action {
+  display: none;
+}
+
+.group-header-row:hover .category-hover-action,
+.category-row:hover .category-hover-action {
+  display: inline-flex;
+}

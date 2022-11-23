@@ -190,4 +190,12 @@ async function reorderCategory(category: Category, isUp: boolean) {
   background-color: #212529bb;
   color: #dee2e6;
 }
+
+.editable-cell .input-group .input-group-prepend {
+  display: none;
+}
+
+.editable-cell:focus-within .input-group .input-group-prepend {
+  display: flex;
+}
 </style>

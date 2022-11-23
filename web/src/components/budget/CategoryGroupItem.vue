@@ -94,6 +94,10 @@ import CategoryItem from './CategoryItem.vue'
 import { toCurrency } from '@/helpers/helpers'
 import { useCategoryGroupStore, useCategoryStore } from '@/store'
 
+const props = defineProps<{
+  group: CategoryGroup
+}>()
+
 const categoryGroupStore = useCategoryGroupStore()
 const categoryStore = useCategoryStore()
 
@@ -104,13 +108,12 @@ const isExpanded: Ref<boolean> = ref(true)
 const categoryGroups: ComputedRef<Array<CategoryGroup>> = computed(
   () => categoryGroupStore.all
 )
-const categories: ComputedRef<Array<Category>> = computed(
-  () => categoryStore.all
-)
 
-defineProps<{
-  group: CategoryGroup
-}>()
+const categories: ComputedRef<Array<Category>> = computed(() =>
+  categoryStore.all.filter(
+    (category) => category.categoryGroupId === props.group.id
+  )
+)
 
 function rename(event: any, item: CategoryGroup) {
   if (event.target?.value) {
@@ -185,3 +188,15 @@ function showAddCategoryDialog(groupId: number) {
   }
 }
 </script>
+
+<style scoped>
+.budget-group-cell {
+  background-color: #212529;
+  color: #dee2e6;
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  min-height: 48px;
+  font-weight: 700;
+}
+</style>

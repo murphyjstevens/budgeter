@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ComputedRef, computed } from 'vue'
+import { type ComputedRef, computed, watch } from 'vue'
 import TheSidebar from '@/components/TheSidebar.vue'
 import ToastList from '@/components/shared/ToastList.vue'
 import { useLoadingStore } from './store'
@@ -24,6 +24,8 @@ import { useLoadingStore } from './store'
 const loadingStore = useLoadingStore()
 
 const isLoading: ComputedRef<boolean> = computed(() => loadingStore.isLoading)
+
+watch(isLoading, (value) => console.log(value))
 </script>
 
 <style scoped>

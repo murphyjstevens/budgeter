@@ -96,7 +96,7 @@ watch(
 
 watch(
   () => account.value,
-  (newValue: Account) => {
+  (newValue: Account | null) => {
     if (newValue) {
       transactionStore.getByAccount(newValue.id)
     } else {

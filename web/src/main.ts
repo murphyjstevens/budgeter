@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import './assets/global.css'
+import './assets/budget.css'
 import './assets/bootstrap-override.css'
 
 const app = createApp({

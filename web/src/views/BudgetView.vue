@@ -164,7 +164,7 @@ function setCategoryGroupsCombined() {
       return {
         ...group,
         isExpanded: true,
-        combinedCategories,
+        categories: combinedCategories,
         spent: calculateGroupTotals(group, 'spent', categories.value),
         available: calculateGroupTotals(group, 'available', categories.value),
       }
@@ -211,22 +211,26 @@ watch(
   { immediate: true }
 )
 
-watch(budgets.value, () => {
+watch(budgets, () => {
   fillBudgets()
 })
 
-watch(categories.value, () => {
+watch(categories, () => {
   budgetStore.get()
   setCategoryGroupsCombined()
 })
 
-watch(categoryGroups.value, () => {
+watch(categoryGroups, () => {
   setCategoryGroupsCombined()
 })
 
-watch(selectedDate.value, () => {
-  categoryStore.get()
-})
+watch(
+  selectedDate,
+  () => {
+    categoryStore.get()
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>
@@ -240,98 +244,5 @@ watch(selectedDate.value, () => {
   color: white;
   font-weight: 700;
   border-bottom: 1px solid #dee2e6;
-}
-
-.budget-category-money {
-  width: 10%;
-  text-align: right;
-  margin-left: 1em;
-}
-
-.budget-column-category {
-  width: 55%;
-}
-
-.budget-column-budget {
-  width: 15%;
-  text-align: right;
-  justify-content: flex-end;
-}
-
-.budget-column-spent {
-  width: 15%;
-  text-align: right;
-  justify-content: flex-end;
-}
-
-.budget-column-available {
-  width: 15%;
-  text-align: right;
-  justify-content: flex-end;
-}
-
-.budget-column-actions {
-  width: 100px;
-  text-align: center;
-  justify-content: center;
-}
-
-.category-hover-action {
-  display: none;
-}
-
-.group-header-row:hover .category-hover-action,
-.category-row:hover .category-hover-action {
-  display: inline-flex;
-}
-
-.budget-group-cell {
-  background-color: #212529;
-  color: #dee2e6;
-  display: flex;
-  align-items: center;
-  padding: 0 0.75rem;
-  min-height: 48px;
-  font-weight: 700;
-}
-
-.editable-cell {
-  display: flex;
-  align-items: center;
-  padding: 0 0.75rem;
-}
-
-.editable-cell-input {
-  background-color: transparent;
-  color: white;
-  border-color: transparent;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
-.category-name-input {
-  width: 400px;
-  max-width: 100%;
-}
-
-.editable-cell .input-group .input-group-prepend {
-  display: none;
-}
-
-.editable-cell:hover .editable-cell-input,
-.editable-cell:focus-within .editable-cell-input {
-  border-color: inherit;
-}
-
-.editable-cell:focus-within .input-group .input-group-prepend {
-  display: flex;
-}
-
-.rename-button {
-  color: #dee2e6;
-}
-
-.rename-button:hover {
-  color: dodgerblue;
 }
 </style>
