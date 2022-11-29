@@ -8,6 +8,7 @@ import App from './App.vue'
 import 'normalize.css/normalize.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'bootstrap-dark-5/dist/css/bootstrap-dark.css'
 
 import './assets/global.css'
 import './assets/budget.css'

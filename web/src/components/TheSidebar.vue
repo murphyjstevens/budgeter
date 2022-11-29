@@ -1,10 +1,10 @@
 <template>
-  <div class="flex-column sidebar">
+  <div class="sidebar-wrapper flex-column sidebar">
     <router-link to="/" class="sidebar-item">Budget</router-link>
     <router-link to="/accounts/" class="sidebar-item">All Accounts</router-link>
     <div class="sidebar-section flex-column">
-      <span class="flex-row">
-        <h4 class="sidebar-section-header flex-grow-1 align-self-end">
+      <span class="flex-row mb-1 border-bottom border-top py-1">
+        <h4 class="sidebar-section-header flex-grow-1 align-self-end mb-0 ms-2">
           Accounts
         </h4>
         <button
@@ -12,7 +12,7 @@
           @click="showAddAccountDialog()"
           class="btn btn-outline-light btn-sm me-2"
         >
-          <i class="bi bi-plus"></i>
+          <i class="bi bi-plus-lg"></i>
         </button>
       </span>
       <router-link
@@ -26,9 +26,9 @@
     <router-link to="/recipients" class="sidebar-item mt-auto"
       >Recipients</router-link
     >
-
-    <AccountDialog ref="accountDialog" />
   </div>
+
+  <AccountDialog ref="accountDialog" />
 </template>
 
 <script setup lang="ts">
@@ -44,7 +44,9 @@ const accountDialog = ref()
 const accounts: ComputedRef<Array<Account>> = computed(() => accountStore.all)
 
 function showAddAccountDialog() {
-  accountDialog.value.open()
+  if (accountDialog.value) {
+    accountDialog.value.open()
+  }
 }
 
 onMounted(() => {
@@ -53,6 +55,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.sidebar-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 15em;
+}
+
 .sidebar {
   height: 100%;
   background-color: #1b1b1b;
@@ -76,7 +86,6 @@ onMounted(() => {
 
 .sidebar-section-header {
   color: rgba(245, 245, 245, 0.8);
-  text-align: left;
-  font-size: 1em;
+  font-size: 1.5em;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <TheSidebar class="sidebar-wrapper"></TheSidebar>
+  <TheSidebar></TheSidebar>
 
   <div class="content-wrapper">
     <ToastList></ToastList>
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ComputedRef, computed, watch } from 'vue'
+import { type ComputedRef, computed } from 'vue'
 import TheSidebar from '@/components/TheSidebar.vue'
 import ToastList from '@/components/shared/ToastList.vue'
 import { useLoadingStore } from './store'
@@ -27,14 +27,6 @@ const isLoading: ComputedRef<boolean> = computed(() => loadingStore.isLoading)
 </script>
 
 <style scoped>
-.sidebar-wrapper {
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 15em;
-}
-
 .content-wrapper {
   margin-left: 15em;
 }
