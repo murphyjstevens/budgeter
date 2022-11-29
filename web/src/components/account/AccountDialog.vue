@@ -1,7 +1,7 @@
 <template>
   <div
     class="modal fade"
-    id="categoryGroupDialog"
+    id="accountDialog"
     ref="modalRef"
     tabindex="-1"
     aria-labelledby="modalTitle"
@@ -10,7 +10,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalTitle">Add Category Group</h5>
+          <h5 class="modal-title" id="modalTitle">Add Account</h5>
           <button
             type="button"
             class="btn-close"
@@ -28,9 +28,10 @@
                   v-model="v$.name.$model"
                   v-select-all
                   type="text"
-                  name="name"
                   class="form-control"
+                  :class="{ 'is-invalid': v$.name.$error }"
                   @blur="v$.name.$touch"
+                  :pattern="`${accountStore.accountNameRegex}`"
                   required
                 />
                 <div
@@ -65,17 +66,17 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, reactive, ref, type Ref } from 'vue'
+import { type Ref, ref, reactive, onMounted, nextTick } from 'vue'
 import { Modal } from 'bootstrap'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
-import { useCategoryGroupStore } from '@/store'
-import type { CategoryGroup } from '@/models'
 
-const categoryGroupStore = useCategoryGroupStore()
+import { useAccountStore } from '@/store'
+
+const accountStore = useAccountStore()
 
 const state = reactive({
-  name: null as string | null,
+  name: '',
 })
 
 const rules = {
@@ -91,10 +92,6 @@ defineExpose({
   open,
 })
 
-onMounted(() => {
-  modal.value = new Modal(modalRef.value)
-})
-
 function open() {
   modal.value?.show()
   reset()
@@ -105,7 +102,7 @@ function close() {
 }
 
 function reset() {
-  state.name = null
+  state.name = ''
   nextTick(() => {
     v$.value.$reset()
   })
@@ -115,11 +112,11 @@ async function save() {
   if (v$.value.invalid) {
     return
   }
-  const group: CategoryGroup = {
-    name: state.name,
-    sortOrder: categoryGroupStore.all.length + 1,
-  } as CategoryGroup
-  await categoryGroupStore.create(group)
+  await accountStore.create(state.name)
   close()
 }
+
+onMounted(() => {
+  modal.value = new Modal(modalRef.value)
+})
 </script>

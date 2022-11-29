@@ -32,4 +32,10 @@ public class AccountController : ControllerBase
   {
     return await _repository.FindByUrl(url);
   }
+
+  [HttpPost]
+  public async Task<Account> Create(Account account)
+  {
+    return await _repository.Create(account);
+  }
 }

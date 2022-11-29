@@ -57,7 +57,6 @@
                   id="name"
                   v-model="v$.name.$model"
                   type="text"
-                  name="name"
                   class="form-control"
                   @blur="v$.name.$touch"
                   required

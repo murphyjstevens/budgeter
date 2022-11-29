@@ -3,7 +3,18 @@
     <router-link to="/" class="sidebar-item">Budget</router-link>
     <router-link to="/accounts/" class="sidebar-item">All Accounts</router-link>
     <div class="sidebar-section flex-column">
-      <h4 class="sidebar-section-header">Accounts</h4>
+      <span class="flex-row">
+        <h4 class="sidebar-section-header flex-grow-1 align-self-end">
+          Accounts
+        </h4>
+        <button
+          type="button"
+          @click="showAddAccountDialog()"
+          class="btn btn-outline-light btn-sm me-2"
+        >
+          <i class="bi bi-plus"></i>
+        </button>
+      </span>
       <router-link
         v-for="account in accounts"
         :key="account.id"
@@ -15,17 +26,26 @@
     <router-link to="/recipients" class="sidebar-item mt-auto"
       >Recipients</router-link
     >
+
+    <AccountDialog ref="accountDialog" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { type ComputedRef, computed, onMounted } from 'vue'
+import { type ComputedRef, computed, ref, onMounted } from 'vue'
+import AccountDialog from './account/AccountDialog.vue'
 import type { Account } from '@/models'
 import { useAccountStore } from '@/store'
 
 const accountStore = useAccountStore()
 
+const accountDialog = ref()
+
 const accounts: ComputedRef<Array<Account>> = computed(() => accountStore.all)
+
+function showAddAccountDialog() {
+  accountDialog.value.open()
+}
 
 onMounted(() => {
   accountStore.get()

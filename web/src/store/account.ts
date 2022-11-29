@@ -11,6 +11,8 @@ export const useAccountStore = defineStore('account', () => {
   const loadingStore = useLoadingStore()
   const toastStore = useToastStore()
 
+  const accountNameRegex = /^[a-zA-Z '0-9]+$/
+
   const all: Ref<Array<Account>> = ref([])
   const account: Ref<Account | null> = ref(null)
 
@@ -44,5 +46,42 @@ export const useAccountStore = defineStore('account', () => {
     }
   }
 
-  return { all, account, get, find }
+  async function create(name: string): Promise<Account | null> {
+    try {
+      if (!name?.length) {
+        throw new Error('Name is required')
+      }
+
+      if (!accountNameRegex.test(name)) {
+        throw new Error(
+          'Name must only container letters, numbers, and hyphens'
+        )
+      }
+
+      const url = name.replace("'", '').replace(' ', '-')
+
+      if (
+        all.value.some(
+          (account) =>
+            account.name.trim() === name.trim() || account.url === url
+        )
+      ) {
+        throw new Error('Name is already taken by another account')
+      }
+
+      const request = {
+        name: name,
+        url: url,
+      }
+
+      const response = await axios.post(`${baseUrl}/accounts`, request)
+      return response.data as Account
+    } catch (error: any) {
+      toastStore.setToast(error.message, true)
+      console.error(error)
+      throw error
+    }
+  }
+
+  return { accountNameRegex, all, account, get, find, create }
 })
