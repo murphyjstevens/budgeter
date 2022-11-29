@@ -175,21 +175,26 @@ function setCategoryGroupsCombined() {
 }
 
 function fillBudgets() {
-  categoryGroupsCombined.value.forEach((group: CategoryGroup) => {
-    group.categories.forEach((category: Category) => {
-      const categoryBudget = budgets.value.find(
-        (budget: Budget) => budget.categoryId === category.id
-      )
-      if (categoryBudget) {
-        category.budget = categoryBudget.assigned
-      } else {
-        category.budget = 0
-      }
-    })
+  categoryGroupsCombined.value = [
+    ...categoryGroupsCombined.value.map((group: CategoryGroup) => {
+      // Categories need to be mapped first to get budgeted totals
+      group.categories = group.categories.map((category: Category) => {
+        const categoryBudget = budgets.value.find(
+          (budget: Budget) => budget.categoryId === category.id
+        )
 
-    group.budgeted = calculateGroupTotals(group, 'budgeted', group.categories)
-    group.available = calculateGroupTotals(group, 'available', group.categories)
-  })
+        return {
+          ...category,
+          budget: categoryBudget?.assigned ?? 0,
+        }
+      })
+      return {
+        ...group,
+        budgeted: calculateGroupTotals(group, 'budgeted', group.categories),
+        available: calculateGroupTotals(group, 'available', group.categories),
+      }
+    }),
+  ]
 }
 
 function changeMonth(isIncrement: boolean) {

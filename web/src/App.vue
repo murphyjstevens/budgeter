@@ -24,8 +24,6 @@ import { useLoadingStore } from './store'
 const loadingStore = useLoadingStore()
 
 const isLoading: ComputedRef<boolean> = computed(() => loadingStore.isLoading)
-
-watch(isLoading, (value) => console.log(value))
 </script>
 
 <style scoped>

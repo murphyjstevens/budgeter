@@ -44,9 +44,9 @@
           </button>
         </div>
         <CurrencyInput
-          :value="category.budget"
+          v-model="categoryModel.budget"
           v-select-all
-          :options="{ currency: 'USD', precision: 2 }"
+          :options="{ currency: 'USD', precision: 2, autoDecimalDigits: true }"
           @blur="updateBudget($event, category)"
           class="editable-cell-input text-end"
           required
@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ComputedRef, computed, type Ref, ref } from 'vue'
+import { type ComputedRef, computed, type Ref, ref, watch } from 'vue'
 import { CurrencyInput, DeleteConfirmation } from '@/components/shared'
 import { toCurrency } from '@/helpers/helpers'
 import type { Budget, Category } from '@/models'
@@ -87,13 +87,14 @@ const dateStore = useDateStore()
 const deleteConfirmationModal = ref()
 
 const isNameInvalid: Ref<boolean> = ref(false)
+const categoryModel: Ref<Category> = ref({} as Category)
 
 const categories: ComputedRef<Array<Category>> = computed(
   () => categoryStore.all
 )
 const selectedDate: ComputedRef<Date> = computed(() => dateStore.date)
 
-defineProps<{
+const props = defineProps<{
   category: Category
   categoriesLength: number
 }>()
@@ -181,6 +182,14 @@ async function reorderCategory(category: Category, isUp: boolean) {
 
   await categoryStore.reorder(reorderRequest)
 }
+
+watch(
+  () => props.category,
+  (category) => {
+    categoryModel.value = { ...category } as Category
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>
