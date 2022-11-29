@@ -10,7 +10,7 @@
         <button
           type="button"
           @click="showAddAccountDialog()"
-          class="btn btn-outline-light btn-sm me-2"
+          class="btn btn-outline-primary btn-sm me-2"
         >
           <i class="bi bi-plus-lg"></i>
         </button>

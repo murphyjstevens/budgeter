@@ -14,7 +14,7 @@
       <div class="flex-row align-items-center">
         <button
           type="button"
-          class="btn btn-light mb-1 ms-2"
+          class="btn btn-secondary mb-1 ms-2"
           @click="showImportDialog()"
           title="Import Transactions"
           data-bs-toggle="tooltip"
