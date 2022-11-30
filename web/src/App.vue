@@ -49,7 +49,7 @@ const isLoading: ComputedRef<boolean> = computed(() => loadingStore.isLoading)
 .loading-dialog {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   border-radius: 10px;
-  background-color: white;
+  background-color: var(--bs-gray);
   width: 300px;
   height: 200px;
   display: flex;

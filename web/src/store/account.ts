@@ -75,6 +75,7 @@ export const useAccountStore = defineStore('account', () => {
       }
 
       const response = await axios.post(`${baseUrl}/accounts`, request)
+      all.value = [...all.value, response.data as Account]
       return response.data as Account
     } catch (error: any) {
       toastStore.setToast(error.message, true)
