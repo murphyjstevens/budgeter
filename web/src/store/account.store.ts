@@ -2,8 +2,8 @@ import { type Ref, ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import type { Account } from '@/models'
-import { useLoadingStore } from './loading'
-import { useToastStore } from './toast'
+import { useLoadingStore } from './loading.store'
+import { useToastStore } from './toast.store'
 
 export const useAccountStore = defineStore('account', () => {
   const baseUrl = import.meta.env.VITE_API_API_URL

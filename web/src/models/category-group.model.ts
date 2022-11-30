@@ -1,4 +1,4 @@
-import type Category from './category'
+import type Category from './category.model'
 
 export default interface CategoryGroup {
   id: number
