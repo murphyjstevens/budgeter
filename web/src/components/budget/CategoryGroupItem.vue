@@ -51,15 +51,19 @@
           <i class="bi bi-arrow-down"></i>
         </button>
       </span>
-      <span class="budget-group-cell budget-column-budget">{{
-        toCurrency(group.budgeted)
-      }}</span>
-      <span class="budget-group-cell budget-column-spent">{{
-        toCurrency(group.spent)
-      }}</span>
-      <span class="budget-group-cell budget-column-available">{{
-        toCurrency(group.available)
-      }}</span>
+      <span class="budget-group-cell budget-column-budget">
+        <span class="category-hover-action">{{
+          toCurrency(group.budgeted)
+        }}</span>
+      </span>
+      <span class="budget-group-cell budget-column-spent">
+        <span class="category-hover-action">{{ toCurrency(group.spent) }}</span>
+      </span>
+      <span class="budget-group-cell budget-column-available">
+        <span class="category-hover-action">{{
+          toCurrency(group.available)
+        }}</span>
+      </span>
       <span class="budget-group-cell budget-column-actions">
         <button
           type="button"

@@ -58,3 +58,17 @@
 .category-row:hover .category-hover-action {
   display: inline-flex;
 }
+
+.budget-available-wrapper {
+  border-radius: 15px;
+  padding: 0 5px;
+}
+
+.budget-available-wrapper.budget-over {
+  background-color: var(--bs-red);
+}
+
+.budget-available-wrapper.budget-under {
+  background-color: var(--bs-green);
+  color: var(--bs-dark);
+}

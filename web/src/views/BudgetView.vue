@@ -165,6 +165,7 @@ function setCategoryGroupsCombined() {
         ...group,
         isExpanded: true,
         categories: combinedCategories,
+        budgeted: calculateGroupTotals(group, 'budgeted', categories.value),
         spent: calculateGroupTotals(group, 'spent', categories.value),
         available: calculateGroupTotals(group, 'available', categories.value),
       }
@@ -191,6 +192,7 @@ function fillBudgets() {
       return {
         ...group,
         budgeted: calculateGroupTotals(group, 'budgeted', group.categories),
+        spent: calculateGroupTotals(group, 'spent', group.categories),
         available: calculateGroupTotals(group, 'available', group.categories),
       }
     }),

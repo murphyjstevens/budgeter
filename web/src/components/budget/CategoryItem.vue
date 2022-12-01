@@ -57,7 +57,14 @@
       <span>{{ toCurrency(category.spent) }}</span>
     </span>
     <span class="flex-row budget-category-cell budget-column-available">
-      <span>{{ toCurrency(category.available) }}</span>
+      <span
+        class="budget-available-wrapper"
+        :class="{
+          'budget-over': category.available < 0,
+          'budget-under': category.available > 0,
+        }"
+        >{{ toCurrency(category.available) }}</span
+      >
     </span>
     <span class="flex-row budget-category-cell budget-column-actions">
       <button
