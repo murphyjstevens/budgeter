@@ -122,11 +122,7 @@ const canSelectNextMonth: ComputedRef<boolean> = computed(() => {
 
 const canSelectPreviousMonth: ComputedRef<boolean> = computed(() => {
   if (!budgets.value || !selectedDate.value) return false
-  return (
-    budgets.value.some((budget: any) =>
-      datesAreSameMonth(budget.date, selectedDate.value)
-    ) || selectedDate.value > new Date()
-  )
+  return budgetStore.hasPreviousMonthBudget || selectedDate.value > new Date()
 })
 
 function calculateGroupTotals(
@@ -234,6 +230,7 @@ watch(categoryGroups, () => {
 watch(
   selectedDate,
   () => {
+    budgetStore.getHasPreviousMonthBudget()
     categoryStore.get()
   },
   { immediate: true }

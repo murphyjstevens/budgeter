@@ -17,11 +17,12 @@ export const useBudgetStore = defineStore('budget', () => {
 
   const all: Ref<Array<Budget>> = ref([])
   const readyToBudget: Ref<number> = ref(0)
+  const hasPreviousMonthBudget: Ref<boolean> = ref(false)
 
   async function get() {
     try {
       loadingStore.setIsLoading(true)
-      const response = await axios.get(baseUrl + '/budgets', {
+      const response = await axios.get(`${baseUrl}/budgets`, {
         params: { date: dateStore.date },
       })
       all.value = response.data.map((budget: Budget) => ({
@@ -47,6 +48,25 @@ export const useBudgetStore = defineStore('budget', () => {
     } finally {
       loadingStore.setIsLoading(false)
     }
+  }
+
+  async function getHasPreviousMonthBudget(): Promise<boolean> {
+    try {
+      loadingStore.setIsLoading(true)
+      const lastMonthDate = new Date(dateStore.date)
+      lastMonthDate.setMonth(lastMonthDate.getMonth() - 1)
+      const response = await axios.get(`${baseUrl}/budgets`, {
+        params: { date: lastMonthDate },
+      })
+      hasPreviousMonthBudget.value = !!response.data?.length
+      return hasPreviousMonthBudget.value
+    } catch (error: any) {
+      toastStore.setToast(error.message, true)
+      console.error(error)
+    } finally {
+      loadingStore.setIsLoading(false)
+    }
+    return false
   }
 
   async function save(budget: Budget) {
@@ -92,5 +112,14 @@ export const useBudgetStore = defineStore('budget', () => {
     }
   }
 
-  return { all, readyToBudget, get, getReadyToBudget, save, remove }
+  return {
+    all,
+    readyToBudget,
+    hasPreviousMonthBudget,
+    get,
+    getReadyToBudget,
+    getHasPreviousMonthBudget,
+    save,
+    remove,
+  }
 })
