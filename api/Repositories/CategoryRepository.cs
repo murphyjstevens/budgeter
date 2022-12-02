@@ -33,11 +33,11 @@ public class CategoryRepository : CoreRepository, ICategoryRepository
       await connection.OpenAsync();
       return await connection.QueryAsync<Category>(
         $@"
-SELECT t.category_id, SUM(cost) as cost
+SELECT category_id, SUM(cost) as cost
   INTO TEMP temp_transaction
-  FROM transaction t
-  WHERE EXTRACT(MONTH FROM @Date) = EXTRACT(MONTH FROM t.date) AND EXTRACT(YEAR FROM @Date) = EXTRACT(YEAR FROM t.date)
-  GROUP BY t.category_id;
+  FROM transaction
+  WHERE EXTRACT(MONTH FROM @Date) = EXTRACT(MONTH FROM date) AND EXTRACT(YEAR FROM @Date) = EXTRACT(YEAR FROM date)
+  GROUP BY category_id;
 
 SELECT category_id, SUM(cost) AS cost
   INTO TEMP temp_all_transaction
@@ -48,15 +48,28 @@ SELECT category_id, SUM(cost) AS cost
 SELECT category_id, SUM(assigned) AS assigned
   INTO TEMP temp_budget
   FROM budget
+  WHERE EXTRACT(MONTH FROM @Date) = EXTRACT(MONTH FROM date) AND EXTRACT(YEAR FROM @Date) = EXTRACT(YEAR FROM date)
+  GROUP BY category_id;
+
+SELECT category_id, SUM(assigned) AS assigned
+  INTO TEMP temp_all_budget
+  FROM budget
   WHERE date < CAST(DATE_TRUNC('month', @Date + interval '1 month') AS date)
   GROUP BY category_id;
 
-SELECT c.id, c.name, c.sort_order AS SortOrder, c.category_group_id AS CategoryGroupId, COALESCE(SUM(t.cost), 0::money) AS Spent,
-(SUM(b.assigned) + COALESCE(SUM(at.cost), 0::money)) AS Available FROM category c
+SELECT
+    c.id,
+    c.name,
+    c.sort_order AS SortOrder,
+    c.category_group_id AS CategoryGroupId,
+    COALESCE(t.cost, 0::money) AS Spent,
+    (ab.assigned + COALESCE(at.cost, 0::money)) AS Available,
+    b.assigned AS Budget
+  FROM category c
   LEFT JOIN temp_transaction t ON t.category_id = c.id
   LEFT JOIN temp_all_transaction at ON at.category_id = c.id
   LEFT JOIN temp_budget b ON b.category_id = c.id
-  GROUP BY c.id, c.name, c.category_group_id;", new { Date = date });
+  LEFT JOIN temp_all_budget ab ON ab.category_id = c.id;", new { Date = date });
     }
   }
 

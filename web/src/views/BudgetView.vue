@@ -121,7 +121,7 @@ const canSelectNextMonth: ComputedRef<boolean> = computed(() => {
 })
 
 const canSelectPreviousMonth: ComputedRef<boolean> = computed(() => {
-  if (!budgets.value || !selectedDate.value) return false
+  if (!selectedDate.value) return false
   return budgetStore.hasPreviousMonthBudget || selectedDate.value > new Date()
 })
 
@@ -153,46 +153,22 @@ function calculateGroupTotals(
 function setCategoryGroupsCombined() {
   if (categoryGroups.value?.length) {
     categoryGroupsCombined.value = categoryGroups.value.map((group) => {
-      const combinedCategories = categories.value
-        .filter((category: Category) => category.categoryGroupId === group.id)
-        .map((category: Category) => ({ ...category }))
+      const combinedCategories = categories.value.filter(
+        (category: Category) => category.categoryGroupId === group.id
+      )
 
       return {
         ...group,
         isExpanded: true,
         categories: combinedCategories,
-        budgeted: calculateGroupTotals(group, 'budgeted', categories.value),
-        spent: calculateGroupTotals(group, 'spent', categories.value),
-        available: calculateGroupTotals(group, 'available', categories.value),
+        budgeted: calculateGroupTotals(group, 'budgeted', combinedCategories),
+        spent: calculateGroupTotals(group, 'spent', combinedCategories),
+        available: calculateGroupTotals(group, 'available', combinedCategories),
       }
     })
   } else {
     categoryGroupsCombined.value = []
   }
-}
-
-function fillBudgets() {
-  categoryGroupsCombined.value = [
-    ...categoryGroupsCombined.value.map((group: CategoryGroup) => {
-      // Categories need to be mapped first to get budgeted totals
-      group.categories = group.categories.map((category: Category) => {
-        const categoryBudget = budgets.value.find(
-          (budget: Budget) => budget.categoryId === category.id
-        )
-
-        return {
-          ...category,
-          budget: categoryBudget?.assigned ?? 0,
-        }
-      })
-      return {
-        ...group,
-        budgeted: calculateGroupTotals(group, 'budgeted', group.categories),
-        spent: calculateGroupTotals(group, 'spent', group.categories),
-        available: calculateGroupTotals(group, 'available', group.categories),
-      }
-    }),
-  ]
 }
 
 function changeMonth(isIncrement: boolean) {
@@ -214,12 +190,7 @@ watch(
   { immediate: true }
 )
 
-watch(budgets, () => {
-  fillBudgets()
-})
-
 watch(categories, () => {
-  budgetStore.get()
   setCategoryGroupsCombined()
 })
 
