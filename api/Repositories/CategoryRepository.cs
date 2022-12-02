@@ -32,26 +32,31 @@ public class CategoryRepository : CoreRepository, ICategoryRepository
     {
       await connection.OpenAsync();
       return await connection.QueryAsync<Category>(
-        $@"SELECT c.id, c.name, c.sort_order AS SortOrder, c.category_group_id AS CategoryGroupId, COALESCE(SUM(t.cost), 0::money) AS Spent,
+        $@"
+SELECT t.category_id, SUM(cost) as cost
+  INTO TEMP temp_transaction
+  FROM transaction t
+  WHERE EXTRACT(MONTH FROM @Date) = EXTRACT(MONTH FROM t.date) AND EXTRACT(YEAR FROM @Date) = EXTRACT(YEAR FROM t.date)
+  GROUP BY t.category_id;
+
+SELECT category_id, SUM(cost) AS cost
+  INTO TEMP temp_all_transaction
+  FROM transaction
+  WHERE date < CAST(DATE_TRUNC('month', @Date + interval '1 month') AS date)
+  GROUP BY category_id;
+
+SELECT category_id, SUM(assigned) AS assigned
+  INTO TEMP temp_budget
+  FROM budget
+  WHERE date < CAST(DATE_TRUNC('month', @Date + interval '1 month') AS date)
+  GROUP BY category_id;
+
+SELECT c.id, c.name, c.sort_order AS SortOrder, c.category_group_id AS CategoryGroupId, COALESCE(SUM(t.cost), 0::money) AS Spent,
 (SUM(b.assigned) + COALESCE(SUM(at.cost), 0::money)) AS Available FROM category c
-LEFT JOIN transaction t ON t.category_id = c.id AND EXTRACT(MONTH FROM @Date) = EXTRACT(MONTH FROM t.date) AND EXTRACT(YEAR FROM @Date) = EXTRACT(YEAR FROM t.date)
-LEFT JOIN
-( 
-SELECT category_id, SUM(cost) as Cost
-FROM transaction
-WHERE date < cast(date_trunc('month', @Date + interval '1 month') as date)
-GROUP BY category_id
-) as at
-ON at.category_id = c.id
-LEFT JOIN
-( 
-SELECT category_id, SUM(assigned) as Assigned
-FROM budget
-WHERE date < cast(date_trunc('month', @Date + interval '1 month') as date)
-GROUP BY category_id
-) as b
-ON b.category_id = c.id
-GROUP BY c.id, c.name, c.category_group_id", new { Date = date });
+  LEFT JOIN temp_transaction t ON t.category_id = c.id
+  LEFT JOIN temp_all_transaction at ON at.category_id = c.id
+  LEFT JOIN temp_budget b ON b.category_id = c.id
+  GROUP BY c.id, c.name, c.category_group_id;", new { Date = date });
     }
   }
 
