@@ -1,79 +1,60 @@
 <template>
-  <div
-    class="modal fade"
-    id="accountDialog"
-    ref="modalRef"
-    tabindex="-1"
-    aria-labelledby="modalTitle"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalTitle">Add Account</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div class="container-fluid">
-            <div class="row gy-3">
-              <div class="col-sm-12">
-                <label for="name" class="form-label">Name</label>
-                <input
-                  id="name"
-                  v-model="v$.name.$model"
-                  v-select-all
-                  type="text"
-                  class="form-control"
-                  :class="{ 'is-invalid': v$.name.$error }"
-                  @blur="v$.name.$touch"
-                  :pattern="`${accountStore.accountNameRegex}`"
-                  required
-                />
-                <div
-                  class="input-errors"
-                  v-for="error of v$.name.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg invalid-feedback d-block">
-                    {{ error.$message }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="close()">
-            Close
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            :disabled="!v$.$dirty || v$.$invalid"
-            @click="save()"
-          >
-            Save
-          </button>
+  <Dialog :open="isVisible" @close="reset()" class="relative z-50">
+    <div class="fixed inset-0 flex items-center justify-center p-4"></div>
+    <DialogPanel class="w-full max-w-sm rounded bg-white">
+      <DialogTitle>
+        <h5 class="modal-title" id="modalTitle">Add Account</h5>
+        <button type="button" class="btn-close"></button>
+      </DialogTitle>
+
+      <label for="name" class="form-label">Name</label>
+      <input
+        id="name"
+        v-model="v$.name.$model"
+        v-select-all
+        type="text"
+        class="form-control"
+        :class="{ 'is-invalid': v$.name.$error }"
+        @blur="v$.name.$touch"
+        :pattern="`${accountStore.accountNameRegex}`"
+        required
+      />
+      <div
+        class="input-errors"
+        v-for="error of v$.name.$errors"
+        :key="error.$uid"
+      >
+        <div class="error-msg invalid-feedback d-block">
+          {{ error.$message }}
         </div>
       </div>
-    </div>
-  </div>
+
+      <button type="button" class="rounded-full" @click="isVisible = false">
+        Close
+      </button>
+      <button
+        type="button"
+        class="rounded-full"
+        :disabled="!v$.$dirty || v$.$invalid"
+        @click="save()"
+      >
+        Save
+      </button>
+    </DialogPanel>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
-import { type Ref, ref, reactive, onMounted, nextTick } from 'vue'
-import { Modal } from 'bootstrap'
+import { type Ref, ref, reactive, nextTick } from 'vue'
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/vue'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 import { useAccountStore } from '@/store'
 
 const accountStore = useAccountStore()
+
+const isVisible: Ref<boolean> = ref(false)
 
 const state = reactive({
   name: '',
@@ -85,20 +66,13 @@ const rules = {
 
 const v$ = useVuelidate(rules, state)
 
-const modalRef = ref()
-const modal: Ref<Modal | null> = ref(null)
-
 defineExpose({
   open,
 })
 
 function open() {
-  modal.value?.show()
   reset()
-}
-
-function close() {
-  modal.value?.hide()
+  isVisible.value = true
 }
 
 function reset() {
@@ -115,8 +89,4 @@ async function save() {
   await accountStore.create(state.name)
   close()
 }
-
-onMounted(() => {
-  modal.value = new Modal(modalRef.value)
-})
 </script>

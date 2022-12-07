@@ -1,4 +1,4 @@
-.editable-cell {
+/* .editable-cell {
   display: flex;
   align-items: center;
   padding: 0 0.75rem;
@@ -71,4 +71,4 @@
 .budget-available-wrapper.budget-under {
   background-color: var(--bs-green);
   color: var(--bs-dark);
-}
+} */

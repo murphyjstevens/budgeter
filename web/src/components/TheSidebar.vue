@@ -1,30 +1,22 @@
 <template>
-  <div class="sidebar-wrapper flex-column sidebar">
-    <router-link to="/" class="sidebar-item">Budget</router-link>
-    <router-link to="/accounts/" class="sidebar-item">All Accounts</router-link>
-    <div class="sidebar-section flex-column">
-      <span class="flex-row mb-1 border-bottom border-top py-1">
-        <h4 class="sidebar-section-header flex-grow-1 align-self-end mb-0 ms-2">
-          Accounts
-        </h4>
-        <button
-          type="button"
-          @click="showAddAccountDialog()"
-          class="btn btn-outline-primary btn-sm me-2"
-        >
-          <i class="bi bi-plus-lg"></i>
-        </button>
-      </span>
-      <router-link
-        v-for="account in accounts"
-        :key="account.id"
-        :to="{ name: 'Account', params: { url: account.url } }"
-        class="sidebar-item"
-        >{{ account.name }}</router-link
-      >
-    </div>
-    <router-link to="/recipients" class="sidebar-item mt-auto"
-      >Recipients</router-link
+  <div class="flex flex-col bg-gray-900 border-gray-100">
+    <button
+      type="button"
+      @click="showAddAccountDialog()"
+      class="inline-flex items-center justify-left rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+    >
+      <i class="bi bi-plus-lg mr-2"></i>
+      Account
+    </button>
+
+    <div class="border-t-2 border-gray-900 my-1"></div>
+
+    <router-link
+      v-for="account in accounts"
+      :key="account.id"
+      :to="{ name: 'Account', params: { url: account.url } }"
+      class="inline-flex items-center justify-left rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+      >{{ account.name }}</router-link
     >
   </div>
 
@@ -55,7 +47,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.sidebar-wrapper {
+/* .sidebar-wrapper {
   position: fixed;
   left: 0;
   top: 0;
@@ -87,5 +79,5 @@ onMounted(() => {
 .sidebar-section-header {
   color: rgba(245, 245, 245, 0.8);
   font-size: 1.5em;
-}
+} */
 </style>
