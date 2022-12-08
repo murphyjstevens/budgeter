@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col text-white h-screen">
     <TheHeader></TheHeader>
-    <div class="flex flex-row">
+    <div class="flex flex-row flex-1">
       <TheSidebar></TheSidebar>
 
       <div class="bg-gray-900 flex-grow">
@@ -12,7 +12,7 @@
             <h4 class="mt-3">Loading...</h4>
           </div>
         </div>
-        <div class="content">
+        <div class="p-5">
           <router-view />
         </div>
       </div>
@@ -33,10 +33,6 @@ const isLoading: ComputedRef<boolean> = computed(() => loadingStore.isLoading)
 </script>
 
 <style scoped>
-.content {
-  padding: 5em;
-}
-
 .loading-overlay {
   display: flex;
   flex-direction: column;

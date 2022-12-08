@@ -1,20 +1,16 @@
 <template>
-  <div class="flex-row category-row">
-    <span
-      class="flex-row budget-category-cell budget-column-category editable-cell"
-    >
-      <input
+  <div class="flex flex-row group">
+    <span class="flex flex-row w-1/2 px-3 py-2">
+      <BInput
         :value="category.name"
-        v-select-all
-        class="form-control margin-bottom-sm editable-cell-input category-name-input me-2"
         :class="{ 'is-invalid': isNameInvalid }"
         @blur="rename($event, category)"
         maxlength="100"
-      />
+      ></BInput>
       <button
         type="button"
         @click="reorderCategory(category, true)"
-        class="btn btn-outline-light btn-sm category-hover-action me-2"
+        class="hidden group-hover:inline-flex mx-1"
         title="Reorder Down"
         :disabled="category.sortOrder === 1"
       >
@@ -23,18 +19,17 @@
       <button
         type="button"
         @click="reorderCategory(category, false)"
-        class="btn btn-outline-light btn-sm category-hover-action me-2"
+        class="hidden group-hover:inline-flex mx-1"
         title="Reorder Down"
         :disabled="category.sortOrder === categoriesLength"
       >
         <i class="bi bi-arrow-down"></i>
       </button>
     </span>
-    <span
-      class="flex-row budget-category-cell budget-column-budget editable-cell"
-    >
+
+    <span class="flex flex-row w-2/12 px-3 py-2">
       <div class="input-group">
-        <div class="input-group-prepend">
+        <!-- <div class="input-group-prepend">
           <button
             class="btn btn-warning"
             type="button"
@@ -42,7 +37,7 @@
           >
             <i class="bi bi-arrow-counterclockwise"></i>
           </button>
-        </div>
+        </div> -->
         <CurrencyInput
           v-model="categoryModel.budget"
           v-select-all
@@ -53,10 +48,10 @@
         />
       </div>
     </span>
-    <span class="flex-row budget-category-cell budget-column-spent">
+    <span class="flex flex-row w-2/12 px-3 py-2">
       <span>{{ toCurrency(category.spent) }}</span>
     </span>
-    <span class="flex-row budget-category-cell budget-column-available">
+    <span class="flex flex-row w-2/12 px-3 py-2">
       <span
         class="budget-available-wrapper"
         :class="{
@@ -66,7 +61,7 @@
         >{{ toCurrency(category.available) }}</span
       >
     </span>
-    <span class="flex-row budget-category-cell budget-column-actions">
+    <span class="flex flex-row w-28 px-3 py-2">
       <button
         type="button"
         @click="confirmDeleteCategory(category)"
@@ -77,7 +72,7 @@
     </span>
   </div>
 
-  <DeleteConfirmation ref="deleteConfirmationModal" />
+  <!-- <DeleteConfirmation ref="deleteConfirmationModal" /> -->
 </template>
 
 <script setup lang="ts">
@@ -86,6 +81,7 @@ import { CurrencyInput, DeleteConfirmation } from '@/components/shared'
 import { toCurrency } from '@/helpers/helpers'
 import type { Budget, Category } from '@/models'
 import { useBudgetStore, useCategoryStore, useDateStore } from '@/store'
+import BInput from '../shared/BInput.vue'
 
 const budgetStore = useBudgetStore()
 const categoryStore = useCategoryStore()

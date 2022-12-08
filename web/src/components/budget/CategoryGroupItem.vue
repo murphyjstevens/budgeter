@@ -1,12 +1,8 @@
 <template>
-  <div class="flex-column group-row-container">
-    <div class="flex-row group-header-row">
-      <span class="budget-group-cell budget-column-category editable-cell">
-        <button
-          type="button"
-          @click="isExpanded = !isExpanded"
-          class="btn link-light"
-        >
+  <div class="flex flex-col bg-slate-800">
+    <div class="flex flex-row group bg-slate-700">
+      <span class="w-1/2 border-b-2 border-white px-3 py-2">
+        <button type="button" @click="isExpanded = !isExpanded" class="mr-2">
           <i
             class="bi"
             :class="{
@@ -15,18 +11,17 @@
             }"
           ></i>
         </button>
-        <input
+        <BInput
           :value="group.name"
-          v-select-all
-          class="form-control margin-bottom-sm editable-cell-input category-name-input me-2"
+          class="mr-2"
           :class="{ 'is-invalid': group.isNameInvalid }"
           @blur="rename($event, group)"
           maxlength="100"
-        />
+        ></BInput>
         <button
           type="button"
           @click="showAddCategoryDialog(group.id)"
-          class="btn btn-primary btn-sm category-hover-action me-2"
+          class="hidden group-hover:inline-flex mr-1"
           title="Add Category"
         >
           <i class="bi bi-plus-lg me-2"></i>
@@ -35,7 +30,7 @@
         <button
           type="button"
           @click="reorderCategoryGroup(group, true)"
-          class="btn btn-outline-light btn-sm category-hover-action me-2"
+          class="hidden group-hover:inline-flex mr-1"
           title="Reorder Down"
           :disabled="group.sortOrder === 1"
         >
@@ -44,27 +39,27 @@
         <button
           type="button"
           @click="reorderCategoryGroup(group, false)"
-          class="btn btn-outline-light btn-sm category-hover-action me-2"
+          class="hidden group-hover:inline-flex mr-1"
           title="Reorder Down"
           :disabled="group.sortOrder === categoryGroups.length"
         >
           <i class="bi bi-arrow-down"></i>
         </button>
       </span>
-      <span class="budget-group-cell budget-column-budget">
+      <span class="w-2/12 border-b-2 border-white px-3 py-2">
         <span class="category-hover-action">{{
           toCurrency(group.budgeted)
         }}</span>
       </span>
-      <span class="budget-group-cell budget-column-spent">
+      <span class="w-2/12 border-b-2 border-white px-3 py-2">
         <span class="category-hover-action">{{ toCurrency(group.spent) }}</span>
       </span>
-      <span class="budget-group-cell budget-column-available">
+      <span class="w-2/12 border-b-2 border-white px-3 py-2">
         <span class="category-hover-action">{{
           toCurrency(group.available)
         }}</span>
       </span>
-      <span class="budget-group-cell budget-column-actions">
+      <span class="w-28 border-b-2 border-white px-3 py-2">
         <button
           type="button"
           @click="confirmDeleteCategoryGroup(group)"
@@ -84,8 +79,8 @@
     </div>
   </div>
 
-  <CategoryDialog ref="categoryDialog" />
-  <DeleteConfirmation ref="deleteConfirmationModal" />
+  <!-- <CategoryDialog ref="categoryDialog" /> -->
+  <!-- <DeleteConfirmation ref="deleteConfirmationModal" /> -->
 </template>
 
 <script setup lang="ts">
@@ -97,6 +92,7 @@ import CategoryDialog from './CategoryDialog.vue'
 import CategoryItem from './CategoryItem.vue'
 import { toCurrency } from '@/helpers/helpers'
 import { useCategoryGroupStore, useCategoryStore } from '@/store'
+import BInput from '../shared/BInput.vue'
 
 const props = defineProps<{
   group: CategoryGroup

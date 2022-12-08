@@ -1,10 +1,12 @@
 <template>
-  <input ref="inputRef" type="text" class="form-control text-right" />
+  <BInput ref="inputRef" type="text" class="form-control text-right" />
 </template>
 
 <script setup lang="ts">
 import { watch } from 'vue'
 import { useCurrencyInput } from 'vue-currency-input'
+
+import BInput from '@/components/shared/BInput.vue'
 
 const props = defineProps<{
   modelValue?: number

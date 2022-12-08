@@ -1,57 +1,54 @@
 <template>
-  <div class="flex-column">
-    <div class="flex-row justify-content-between mb-1">
-      <div class="flex-row align-items-center">
-        <button
-          type="button"
+  <div class="flex flex-col">
+    <div class="flex flex-row justify-between mb-1">
+      <div class="flex flex-row align-items-center w-1/3">
+        <BButton
           @click="changeMonth(false)"
-          class="btn btn-outline-light btn-sm me-2"
+          icon="caret-left-fill"
+          type="default-outline"
           :disabled="!canSelectPreviousMonth"
           title="Previous Month"
-        >
-          <i class="bi bi-caret-left-fill"></i>
-        </button>
-        <h2 class="text-light text-center me-2" width="145">
+        ></BButton>
+
+        <h2 class="text-xl text-center w-36 me-2">
           {{ selectedDateDisplay }}
         </h2>
-        <button
-          type="button"
+
+        <BButton
           @click="changeMonth(true)"
-          class="btn btn-outline-light btn-sm me-2"
+          icon="caret-right-fill"
+          type="default-outline"
           :disabled="!canSelectNextMonth"
           title="Next Month"
-        >
-          <i class="bi bi-caret-right-fill"></i>
-        </button>
+        ></BButton>
       </div>
       <h2
+        class="text-xl text-center w-1/3"
         :class="{
-          'text-success': readyToBudget > 0,
+          'text-green-500': readyToBudget > 0,
           'text-light': !readyToBudget,
-          'text-danger': readyToBudget < 0,
+          'text-red-500': readyToBudget < 0,
         }"
       >
         {{ toCurrency(readyToBudget) }}
       </h2>
-      <button
-        type="button"
-        class="btn btn-primary align-self-center"
-        @click="showAddCategoryGroupDialog()"
-        title="Add Category Group"
-        data-bs-toggle="tooltip"
-        data-bs-placement="top"
-      >
-        <i class="bi bi-plus-lg me-2"></i>
-        <span>Category Group</span>
-      </button>
+      <div class="text-right w-1/3">
+        <BButton
+          @click="showAddCategoryGroupDialog()"
+          text="Category Group"
+          icon="plus-lg"
+          type="primary-outline"
+          title="Add Category Group"
+        ></BButton>
+      </div>
     </div>
-    <div class="flex-column budget-container">
-      <div class="flex-row">
-        <span class="budget-header budget-column-category">Category</span>
-        <span class="budget-header budget-column-budget">Budget</span>
-        <span class="budget-header budget-column-spent">Spent</span>
-        <span class="budget-header budget-column-available">Available</span>
-        <span class="budget-header budget-column-actions"></span>
+    <div class="flex flex-col w-full font-bold">
+      <div class="flex flex-row bg-slate-800">
+        <span class="w-1/2 px-3 py-2">Category</span>
+        <span class="w-2/12 px-3 py-2">Budget</span>
+        <span class="w-2/12 px-3 py-2">Spent</span>
+        <span class="w-2/12 px-3 py-2">Available</span>
+        <span class="w-28 px-3 py-2"></span>
       </div>
       <CategoryGroupItem
         v-for="group in categoryGroupsCombined"
@@ -61,7 +58,7 @@
     </div>
   </div>
 
-  <CategoryGroupDialog ref="categoryGroupDialog" />
+  <!-- <CategoryGroupDialog ref="categoryGroupDialog" /> -->
 </template>
 
 <script setup lang="ts">
@@ -82,6 +79,7 @@ import {
   useCategoryStore,
   useDateStore,
 } from '@/store'
+import BButton from '@/components/shared/BButton.vue'
 
 const route = useRoute()
 const budgetStore = useBudgetStore()
@@ -209,7 +207,7 @@ watch(
 </script>
 
 <style scoped>
-.budget-container {
+/* .budget-container {
   width: 100%;
 }
 
@@ -219,5 +217,5 @@ watch(
   color: white;
   font-weight: 700;
   border-bottom: 1px solid #dee2e6;
-}
+} */
 </style>
