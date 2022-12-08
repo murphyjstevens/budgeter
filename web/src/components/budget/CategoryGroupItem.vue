@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col bg-slate-800">
     <div class="flex flex-row group bg-slate-700">
-      <span class="w-1/2 border-b-2 border-white px-3 py-2">
+      <span class="flex flex-row w-1/2 border-b-2 border-white px-3 py-2">
         <button type="button" @click="isExpanded = !isExpanded" class="mr-2">
           <i
             class="bi"
@@ -46,20 +46,18 @@
           <i class="bi bi-arrow-down"></i>
         </button>
       </span>
-      <span class="w-2/12 border-b-2 border-white px-3 py-2">
-        <span class="category-hover-action">{{
-          toCurrency(group.budgeted)
-        }}</span>
+      <span class="w-2/12 text-right border-b-2 border-white px-3 py-2">
+        {{ toCurrency(group.budgeted) }}
       </span>
-      <span class="w-2/12 border-b-2 border-white px-3 py-2">
-        <span class="category-hover-action">{{ toCurrency(group.spent) }}</span>
+      <span class="w-2/12 text-right border-b-2 border-white px-3 py-2">
+        {{ toCurrency(group.spent) }}
       </span>
-      <span class="w-2/12 border-b-2 border-white px-3 py-2">
-        <span class="category-hover-action">{{
-          toCurrency(group.available)
-        }}</span>
+      <span class="w-2/12 text-right border-b-2 border-white px-3 py-2">
+        {{ toCurrency(group.available) }}
       </span>
-      <span class="w-28 border-b-2 border-white px-3 py-2">
+      <span
+        class="flex flex-row w-28 justify-center border-b-2 border-white px-3 py-2"
+      >
         <button
           type="button"
           @click="confirmDeleteCategoryGroup(group)"

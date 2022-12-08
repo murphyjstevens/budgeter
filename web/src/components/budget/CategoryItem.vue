@@ -48,10 +48,10 @@
         />
       </div>
     </span>
-    <span class="flex flex-row w-2/12 px-3 py-2">
-      <span>{{ toCurrency(category.spent) }}</span>
+    <span class="w-2/12 text-right px-3 py-2">
+      {{ toCurrency(category.spent) }}
     </span>
-    <span class="flex flex-row w-2/12 px-3 py-2">
+    <span class="w-2/12 text-right px-3 py-2">
       <span
         class="budget-available-wrapper"
         :class="{
@@ -61,7 +61,7 @@
         >{{ toCurrency(category.available) }}</span
       >
     </span>
-    <span class="flex flex-row w-28 px-3 py-2">
+    <span class="flex flex-row w-28 justify-center px-3 py-2">
       <button
         type="button"
         @click="confirmDeleteCategory(category)"
