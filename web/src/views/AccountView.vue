@@ -45,10 +45,12 @@ import { toCurrency } from '@/helpers/helpers'
 import TransactionDialog from '../components/account/TransactionDialog.vue'
 import TransactionList from '../components/account/TransactionList.vue'
 import type { Account, Transaction } from '@/models'
-import { useAccountStore, useTransactionStore } from '@/store'
+import { useAccountStore, useCategoryStore, useRecipientStore, useTransactionStore } from '@/store'
 import BButton from '@/components/shared/BButton.vue'
 
 const accountStore = useAccountStore()
+const categoryStore = useCategoryStore()
+const recipientStore = useRecipientStore()
 const transactionStore = useTransactionStore()
 
 const route = useRoute()
@@ -88,6 +90,8 @@ watch(
     } else {
       accountStore.account = null
     }
+    categoryStore.get()
+    recipientStore.get()
   },
   { immediate: true }
 )

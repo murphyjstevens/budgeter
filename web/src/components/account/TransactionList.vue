@@ -21,17 +21,20 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="transaction in transactions" :key="transaction.id">
+      <tr
+        v-for="transaction in transactions"
+        :key="transaction.id"
+        class="h-12 hover:bg-slate-600"
+      >
         <td class="px-3 py-2">
           <div v-if="transaction.isEditing && editTransaction">
-            <input
-              class="form-control"
+            <BInput
               type="date"
               name="date"
               v-model="editTransaction.date"
               placeholder="yyyy/MM/dd"
               required
-            />
+            ></BInput>
           </div>
           <div v-if="!transaction.isEditing">
             {{ toShortDate(new Date(transaction.date)) }}
@@ -79,6 +82,8 @@
               name="category"
               required
             >
+              <option :value="null">Ready to Budget</option>
+
               <option
                 v-for="category in categories"
                 :key="category.id"
@@ -112,6 +117,7 @@
             @click="startEditing(transaction)"
             type="primary-icon-only"
             icon="pencil-fill"
+            class="px-2"
           ></BButton>
 
           <BButton
@@ -119,6 +125,7 @@
             @click="confirmDelete(transaction)"
             type="danger-icon-only"
             icon="trash-fill"
+            class="px-2"
           ></BButton>
 
           <BButton
@@ -126,6 +133,7 @@
             @click="save(editTransaction)"
             type="primary-icon-only"
             icon="check-circle-fill"
+            class="px-2"
           ></BButton>
 
           <BButton
@@ -133,6 +141,7 @@
             @click="cancelEditing(transaction)"
             type="default-icon-only"
             icon="x-circle-fill"
+            class="px-2"
           ></BButton>
         </td>
       </tr>
@@ -143,7 +152,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ComputedRef, computed, ref, type Ref, watch } from 'vue'
+import { type ComputedRef, computed, ref, type Ref } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 
 import { toCurrency, toShortDate } from '@/helpers/helpers'
@@ -156,9 +165,8 @@ import {
   useRecipientStore,
   useTransactionStore,
 } from '@/store'
-import { BButton, BSelect } from '../shared'
+import { BButton, BInput, BSelect } from '../shared'
 
-const route = useRoute()
 const accountStore = useAccountStore()
 const categoryStore = useCategoryStore()
 const loadingStore = useLoadingStore()
@@ -168,7 +176,6 @@ const transactionStore = useTransactionStore()
 const deleteConfirmationModal = ref()
 
 const editTransaction: Ref<Transaction | null> = ref(null)
-const accountUrl: Ref<string | null> = ref(null)
 
 const account: ComputedRef<Account | null> = computed(
   () => accountStore.account
@@ -185,7 +192,7 @@ const transactions: ComputedRef<Array<Transaction>> = computed(
 )
 
 function getCategoryName(id: number | null): string {
-  if (!id) return ''
+  if (!id) return 'Ready to Budget'
 
   const category = categories.value.find((c) => c.id === id)
   return category ? category.name : 'Ready to Budget'
@@ -253,28 +260,4 @@ onBeforeRouteLeave(() => {
     })
   editTransaction.value = null
 })
-
-watch(
-  () => route.params,
-  () => {
-    accountUrl.value = route.params.url as string
-
-    if (accountUrl.value) {
-      accountStore.find(accountUrl.value)
-    } else {
-      accountStore.account = null
-    }
-  }
-)
-
-watch(
-  () => account.value,
-  (newValue: Account | null) => {
-    if (newValue) {
-      transactionStore.getByAccount(newValue.id)
-    } else {
-      transactionStore.get()
-    }
-  }
-)
 </script>

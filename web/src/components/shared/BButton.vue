@@ -13,9 +13,9 @@
         type === 'default-outline',
       'border-2 border-red-600 text-red-500 px-3 py-1 hover:bg-red-600 hover:text-white active:bg-red-800':
         type === 'danger-outline',
-      'p-0 text-white hover:text-gray-200 active:text-gray-500':
+      'text-white hover:text-gray-200 active:text-gray-500':
         type === 'default-icon-only',
-      'p-0 text-indigo-400 hover:text-indigo-300 active:text-indigo-500':
+      'text-indigo-400 hover:text-indigo-300 active:text-indigo-500':
         type === 'primary-icon-only',
       'text-red-400 hover:text-red-300 active:text-red-500':
         type === 'danger-icon-only',
