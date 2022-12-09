@@ -1,8 +1,8 @@
 <template>
-  <div class="modal fade" ref="modalRef" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
+  <BModal v-model:show="show" type="danger" title="Delete Confirmation">
+    <template #dialog-content>
+      <div class="flex flex-col">
+        <!-- <div class="modal-header">
           <h5 class="modal-title">
             <span>Confirm Delete</span>
             <span v-if="name">: {{ name }}</span>
@@ -13,7 +13,7 @@
             data-bs-dismiss="modal"
             aria-label="Close"
           ></button>
-        </div>
+        </div> -->
         <div class="modal-body">
           <span>Are you sure you would like to delete this item?</span>
         </div>
@@ -26,28 +26,22 @@
           </button>
         </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </BModal>
 </template>
 
 <script setup lang="ts">
-import { type Ref, ref, onMounted } from 'vue'
-import { Modal } from 'bootstrap'
+import { type Ref, ref } from 'vue'
+import { BModal } from '.'
 
 let id: number | null = null
 let deleteCallback: ((id: number) => Promise<void>) | null = null
 
-const modalRef = ref()
-const modal: Ref<Modal | null> = ref(null)
-
+const show: Ref<boolean> = ref(false)
 const name: Ref<string> = ref('')
 
 defineExpose({
   open,
-})
-
-onMounted(() => {
-  modal.value = new Modal(modalRef.value)
 })
 
 function open(
@@ -55,14 +49,14 @@ function open(
   newId: number,
   newName: string
 ) {
-  modal.value?.show()
   deleteCallback = newDeleteCallback
   id = newId
   name.value = newName
+  show.value = true
 }
 
 function close() {
-  modal.value?.hide()
+  show.value = false
 }
 
 function callDelete() {

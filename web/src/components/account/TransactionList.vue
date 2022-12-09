@@ -1,28 +1,28 @@
 <template>
-  <table class="table table-dark">
+  <table class="bg-slate-700">
     <colgroup>
-      <col style="width: 15%; min-width: 175px" />
-      <col v-if="!account" style="width: 20%" />
-      <col style="width: 25%" />
-      <col style="width: 20%" />
-      <col style="width: 15%; min-width: 110px" />
-      <col style="width: 25%" />
-      <col style="width: 50px" />
+      <col class="w-2/12 min-w-fit" />
+      <col v-if="!account" class="w-2/12" />
+      <col class="w-3/12" />
+      <col class="w-2/12" />
+      <col class="w-2/12 min-w-fit" />
+      <col class="w-3/12" />
+      <col class="w-28" />
     </colgroup>
-    <thead class="thead-dark">
-      <tr>
-        <th>Date</th>
-        <th v-if="!account">Account</th>
-        <th>Recipient</th>
-        <th>Category</th>
-        <th class="text-align-right">Cost</th>
-        <th>Tags</th>
-        <th></th>
+    <thead class="bg-slate-800">
+      <tr class="text-left">
+        <th class="px-3 py-2">Date</th>
+        <th v-if="!account" class="px-3 py-2">Account</th>
+        <th class="px-3 py-2">Recipient</th>
+        <th class="px-3 py-2">Category</th>
+        <th class="text-right px-3 py-2">Cost</th>
+        <th class="px-3 py-2">Tags</th>
+        <th class="px-3 py-2"></th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="transaction in transactions" :key="transaction.id">
-        <td>
+        <td class="px-3 py-2">
           <div v-if="transaction.isEditing && editTransaction">
             <input
               class="form-control"
@@ -37,49 +37,46 @@
             {{ toShortDate(new Date(transaction.date)) }}
           </div>
         </td>
-        <td v-if="!account">
+        <td v-if="!account" class="px-3 py-2">
           <div v-if="transaction.isEditing && editTransaction">
-            <select
-              id="account"
+            <BSelect
               v-model="editTransaction.accountId"
+              id="account"
               name="account"
-              class="form-select"
               required
             >
               <option v-for="acc in accounts" :key="acc.id" :value="acc.id">
                 {{ acc.name }}
               </option>
-            </select>
+            </BSelect>
           </div>
           <div v-if="!transaction.isEditing">
             {{ getAccountName(transaction.accountId) }}
           </div>
         </td>
-        <td>
+        <td class="px-3 py-2">
           <div v-if="transaction.isEditing && editTransaction">
-            <select
-              id="recipient"
+            <BSelect
               v-model="editTransaction.recipientId"
+              id="recipient"
               name="recipient"
-              class="form-select"
               required
             >
               <option v-for="rec in recipients" :key="rec.id" :value="rec.id">
                 {{ rec.name }}
               </option>
-            </select>
+            </BSelect>
           </div>
           <div v-if="!transaction.isEditing">
             {{ getRecipientName(transaction.recipientId) }}
           </div>
         </td>
-        <td>
+        <td class="px-3 py-2">
           <div v-if="transaction.isEditing && editTransaction">
-            <select
-              id="category"
+            <BSelect
               v-model="editTransaction.categoryId"
+              id="category"
               name="category"
-              class="form-select"
               required
             >
               <option
@@ -89,63 +86,54 @@
               >
                 {{ category.name }}
               </option>
-            </select>
+            </BSelect>
           </div>
           <div v-if="!transaction.isEditing">
             {{ getCategoryName(transaction.categoryId) }}
           </div>
         </td>
-        <td>
+        <td class="px-3 py-2">
           <div v-if="transaction.isEditing && editTransaction">
             <CurrencyInput
               v-model="editTransaction.cost"
-              v-select-all
               name="cost"
               :options="{ currency: 'USD', precision: 2 }"
-              class="text-end"
               required
             />
           </div>
-          <div v-if="!transaction.isEditing" class="text-end">
+          <div v-if="!transaction.isEditing" class="text-right">
             {{ toCurrency(transaction.cost) }}
           </div>
         </td>
-        <td></td>
-        <td class="icons-cell">
-          <div class="icons-container">
-            <button
-              v-if="!transaction.isEditing"
-              type="button"
-              class="btn link-primary"
-              @click="startEditing(transaction)"
-            >
-              <i class="bi bi-pencil-fill"></i>
-            </button>
-            <button
-              v-if="!transaction.isEditing"
-              type="button"
-              class="btn link-danger"
-              @click="confirmDelete(transaction)"
-            >
-              <i class="bi bi-trash-fill"></i>
-            </button>
-            <button
-              v-if="transaction.isEditing"
-              type="button"
-              class="btn link-success"
-              @click="save(editTransaction)"
-            >
-              <i class="bi bi-check-circle-fill"></i>
-            </button>
-            <button
-              v-if="transaction.isEditing"
-              type="button"
-              class="btn link-secondary"
-              @click="cancelEditing(transaction)"
-            >
-              <i class="bi bi-x-circle-fill"></i>
-            </button>
-          </div>
+        <td class="px-3 py-2"></td>
+        <td class="flex flex-row px-3 py-2">
+          <BButton
+            v-if="!transaction.isEditing"
+            @click="startEditing(transaction)"
+            type="primary-icon-only"
+            icon="pencil-fill"
+          ></BButton>
+
+          <BButton
+            v-if="!transaction.isEditing"
+            @click="confirmDelete(transaction)"
+            type="danger-icon-only"
+            icon="trash-fill"
+          ></BButton>
+
+          <BButton
+            v-if="transaction.isEditing"
+            @click="save(editTransaction)"
+            type="primary-icon-only"
+            icon="check-circle-fill"
+          ></BButton>
+
+          <BButton
+            v-if="transaction.isEditing"
+            @click="cancelEditing(transaction)"
+            type="default-icon-only"
+            icon="x-circle-fill"
+          ></BButton>
         </td>
       </tr>
     </tbody>
@@ -168,6 +156,7 @@ import {
   useRecipientStore,
   useTransactionStore,
 } from '@/store'
+import { BButton, BSelect } from '../shared'
 
 const route = useRoute()
 const accountStore = useAccountStore()

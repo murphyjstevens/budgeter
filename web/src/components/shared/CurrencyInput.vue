@@ -1,5 +1,5 @@
 <template>
-  <BInput ref="inputRef" type="text" class="form-control text-right" />
+  <BInput ref="inputRef" type="text" class="text-right" />
 </template>
 
 <script setup lang="ts">

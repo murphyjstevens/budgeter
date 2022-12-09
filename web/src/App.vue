@@ -6,12 +6,12 @@
 
       <div class="bg-gray-900 flex-grow">
         <!-- <ToastList></ToastList> -->
-        <div v-if="isLoading" class="loading-overlay">
+        <!-- <div v-if="isLoading" class="loading-overlay">
           <div class="loading-dialog flex-column">
             <div class="spinner-border" role="status"></div>
             <h4 class="mt-3">Loading...</h4>
           </div>
-        </div>
+        </div> -->
         <div class="p-5">
           <router-view />
         </div>

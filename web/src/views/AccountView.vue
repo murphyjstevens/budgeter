@@ -1,43 +1,40 @@
 <template>
-  <div class="flex-column">
-    <span class="flex-row transaction-header-row">
-      <h2 class="text-light">{{ account ? account.name : 'All Accounts' }}</h2>
+  <div class="flex flex-col">
+    <span class="flex flex-row transaction-header-row">
+      <h2 class="text-2xl">{{ account ? account.name : 'All Accounts' }}</h2>
       <h2
+        class="text-2xl"
         :class="{
-          'text-success': total > 0,
-          'text-light': !total,
-          'text-danger': total < 0,
+          'text-green-500': total > 0,
+          'text-white': !total,
+          'text-red-500': total < 0,
         }"
       >
         {{ toCurrency(total) }}
       </h2>
-      <div class="flex-row align-items-center">
-        <button
-          type="button"
-          class="btn btn-secondary mb-1 ms-2"
+      <div class="flex flex-row items-center">
+        <BButton
           @click="showImportDialog()"
+          type="default-outline"
+          icon="file-earmark-arrow-up"
+          class="mb-1 ml-2"
           title="Import Transactions"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
-        >
-          <i class="bi bi-file-earmark-arrow-up"></i>
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary mb-1 ms-2"
+        ></BButton>
+
+        <BButton
           @click="showAddTransactionDialog()"
+          type="primary-outline"
+          icon="plus-lg"
+          text="Transaction"
+          class="mb-1 ml-2"
           title="Add Transaction"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
-        >
-          <i class="bi bi-plus-lg"></i>
-        </button>
+        ></BButton>
       </div>
     </span>
     <TransactionList />
   </div>
 
-  <TransactionDialog ref="transactionDialog" />
+  <!-- <TransactionDialog ref="transactionDialog" /> -->
 </template>
 
 <script setup lang="ts">
@@ -49,6 +46,7 @@ import TransactionDialog from '../components/account/TransactionDialog.vue'
 import TransactionList from '../components/account/TransactionList.vue'
 import type { Account, Transaction } from '@/models'
 import { useAccountStore, useTransactionStore } from '@/store'
+import BButton from '@/components/shared/BButton.vue'
 
 const accountStore = useAccountStore()
 const transactionStore = useTransactionStore()
