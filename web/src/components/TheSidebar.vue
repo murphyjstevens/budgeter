@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col bg-gray-900 border-gray-100">
+  <div class="flex flex-col bg-gray-900 border-gray-100 w-52">
     <button
       type="button"
       @click="showAddAccountDialog()"
@@ -15,7 +15,8 @@
       v-for="account in accounts"
       :key="account.id"
       :to="{ name: 'Account', params: { url: account.url } }"
-      class="inline-flex items-center justify-left rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+      class="items-center justify-left rounded-md truncate p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+      :title="account.name"
       >{{ account.name }}</router-link
     >
   </div>

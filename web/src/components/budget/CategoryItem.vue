@@ -3,7 +3,7 @@
     <span class="flex flex-row w-1/2 px-3 py-2">
       <BInput
         :value="category.name"
-        class="bg-inherit group-hover:bg-slate-600"
+        class="bg-inherit ml-6 group-hover:bg-slate-600"
         :class="{ 'is-invalid': isNameInvalid }"
         @blur="rename($event, category)"
         maxlength="100"

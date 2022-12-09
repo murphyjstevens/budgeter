@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col">
     <div class="flex flex-row justify-between mb-1">
-      <div class="flex flex-row align-items-center w-1/3">
+      <div class="flex flex-row items-center w-1/3">
         <BButton
           @click="changeMonth(false)"
           icon="caret-left-fill"
