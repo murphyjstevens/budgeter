@@ -1,7 +1,9 @@
 <template>
   <div class="flex flex-col bg-slate-800">
-    <div class="flex flex-row group bg-slate-700">
-      <span class="flex flex-row w-1/2 border-b-2 border-white px-3 py-2">
+    <div
+      class="flex flex-row group h-14 bg-slate-700 border-b-2 border-white items-center"
+    >
+      <span class="flex flex-row w-1/2 px-3 py-2">
         <button type="button" @click="isExpanded = !isExpanded" class="mr-2">
           <i
             class="bi"
@@ -13,58 +15,55 @@
         </button>
         <BInput
           :value="group.name"
-          class="mr-2"
+          class="bg-inherit group-hover:bg-slate-600 mr-2"
           :class="{ 'is-invalid': group.isNameInvalid }"
           @blur="rename($event, group)"
           maxlength="100"
         ></BInput>
-        <button
-          type="button"
+
+        <BButton
           @click="showAddCategoryDialog(group.id)"
-          class="hidden group-hover:inline-flex mr-1"
+          type="primary-outline"
+          text="Category"
+          icon="plus-lg"
           title="Add Category"
-        >
-          <i class="bi bi-plus-lg me-2"></i>
-          <span>Category</span>
-        </button>
-        <button
-          type="button"
+          class="hidden group-hover:inline-flex mr-1"
+        ></BButton>
+
+        <BButton
           @click="reorderCategoryGroup(group, true)"
+          type="default-outline"
+          icon="arrow-up"
           class="hidden group-hover:inline-flex mr-1"
           title="Reorder Down"
           :disabled="group.sortOrder === 1"
-        >
-          <i class="bi bi-arrow-up"></i>
-        </button>
-        <button
-          type="button"
+        ></BButton>
+
+        <BButton
           @click="reorderCategoryGroup(group, false)"
+          type="default-outline"
+          icon="arrow-down"
           class="hidden group-hover:inline-flex mr-1"
           title="Reorder Down"
           :disabled="group.sortOrder === categoryGroups.length"
-        >
-          <i class="bi bi-arrow-down"></i>
-        </button>
+        ></BButton>
       </span>
-      <span class="w-2/12 text-right border-b-2 border-white px-3 py-2">
+      <span class="w-2/12 text-right px-3 py-2">
         {{ toCurrency(group.budgeted) }}
       </span>
-      <span class="w-2/12 text-right border-b-2 border-white px-3 py-2">
+      <span class="w-2/12 text-right px-3 py-2">
         {{ toCurrency(group.spent) }}
       </span>
-      <span class="w-2/12 text-right border-b-2 border-white px-3 py-2">
+      <span class="w-2/12 text-right px-3 py-2">
         {{ toCurrency(group.available) }}
       </span>
-      <span
-        class="flex flex-row w-28 justify-center border-b-2 border-white px-3 py-2"
-      >
-        <button
-          type="button"
+      <span class="flex flex-row w-28 justify-center px-3 py-2">
+        <BButton
           @click="confirmDeleteCategoryGroup(group)"
-          class="btn category-hover-action link-danger"
-        >
-          <i class="bi bi-trash-fill"></i>
-        </button>
+          type="danger-outline"
+          icon="trash-fill"
+          class="hidden group-hover:inline-flex"
+        ></BButton>
       </span>
     </div>
     <div v-if="isExpanded">
@@ -90,6 +89,7 @@ import CategoryDialog from './CategoryDialog.vue'
 import CategoryItem from './CategoryItem.vue'
 import { toCurrency } from '@/helpers/helpers'
 import { useCategoryGroupStore, useCategoryStore } from '@/store'
+import BButton from '../shared/BButton.vue'
 import BInput from '../shared/BInput.vue'
 
 const props = defineProps<{

@@ -23,10 +23,10 @@
         ></BButton>
       </div>
       <h2
-        class="text-xl text-center w-1/3"
+        class="text-2xl text-center w-1/3"
         :class="{
           'text-green-500': readyToBudget > 0,
-          'text-light': !readyToBudget,
+          'text-white': !readyToBudget,
           'text-red-500': readyToBudget < 0,
         }"
       >
@@ -45,9 +45,9 @@
     <div class="flex flex-col w-full font-bold">
       <div class="flex flex-row bg-slate-800">
         <span class="w-1/2 px-3 py-2">Category</span>
-        <span class="w-2/12 px-3 py-2">Budget</span>
-        <span class="w-2/12 px-3 py-2">Spent</span>
-        <span class="w-2/12 px-3 py-2">Available</span>
+        <span class="w-2/12 text-right px-3 py-2">Budget</span>
+        <span class="w-2/12 text-right px-3 py-2">Spent</span>
+        <span class="w-2/12 text-right px-3 py-2">Available</span>
         <span class="w-28 px-3 py-2"></span>
       </div>
       <CategoryGroupItem

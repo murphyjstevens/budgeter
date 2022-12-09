@@ -1,30 +1,31 @@
 <template>
-  <div class="flex flex-row group">
+  <div class="flex flex-row group h-14 items-center">
     <span class="flex flex-row w-1/2 px-3 py-2">
       <BInput
         :value="category.name"
+        class="bg-inherit group-hover:bg-slate-600"
         :class="{ 'is-invalid': isNameInvalid }"
         @blur="rename($event, category)"
         maxlength="100"
       ></BInput>
-      <button
-        type="button"
+
+      <BButton
         @click="reorderCategory(category, true)"
+        type="default-outline"
+        icon="arrow-up"
         class="hidden group-hover:inline-flex mx-1"
         title="Reorder Down"
         :disabled="category.sortOrder === 1"
-      >
-        <i class="bi bi-arrow-up"></i>
-      </button>
-      <button
-        type="button"
+      ></BButton>
+
+      <BButton
         @click="reorderCategory(category, false)"
+        type="default-outline"
+        icon="arrow-down"
         class="hidden group-hover:inline-flex mx-1"
         title="Reorder Down"
         :disabled="category.sortOrder === categoriesLength"
-      >
-        <i class="bi bi-arrow-down"></i>
-      </button>
+      ></BButton>
     </span>
 
     <span class="flex flex-row w-2/12 px-3 py-2">
@@ -43,7 +44,7 @@
           v-select-all
           :options="{ currency: 'USD', precision: 2, autoDecimalDigits: true }"
           @blur="updateBudget($event, category)"
-          class="editable-cell-input text-end"
+          class="bg-inherit group-hover:bg-slate-600"
           required
         />
       </div>
@@ -62,13 +63,12 @@
       >
     </span>
     <span class="flex flex-row w-28 justify-center px-3 py-2">
-      <button
-        type="button"
+      <BButton
         @click="confirmDeleteCategory(category)"
-        class="btn category-hover-action link-danger"
-      >
-        <i class="bi bi-trash-fill"></i>
-      </button>
+        type="danger-outline"
+        icon="trash-fill"
+        class="hidden group-hover:inline-flex"
+      ></BButton>
     </span>
   </div>
 
@@ -77,11 +77,12 @@
 
 <script setup lang="ts">
 import { type ComputedRef, computed, type Ref, ref, watch } from 'vue'
-import { CurrencyInput, DeleteConfirmation } from '@/components/shared'
+import { CurrencyInput } from '@/components/shared'
 import { toCurrency } from '@/helpers/helpers'
 import type { Budget, Category } from '@/models'
 import { useBudgetStore, useCategoryStore, useDateStore } from '@/store'
 import BInput from '../shared/BInput.vue'
+import BButton from '../shared/BButton.vue'
 
 const budgetStore = useBudgetStore()
 const categoryStore = useCategoryStore()
