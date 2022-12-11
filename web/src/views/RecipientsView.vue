@@ -1,87 +1,41 @@
 <template>
-  <div class="flex-column recipients-container">
-    <span class="flex-row justify-content-between">
-      <h2 class="text-light">Recipients</h2>
-      <div class="flex-row align-items-center">
-        <button
-          type="button"
-          class="btn btn-primary mb-1"
-          @click="addRow()"
-          title="Add Recipient"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
-        >
-          <i class="bi bi-plus-lg"></i>
-        </button>
-      </div>
-    </span>
-    <table class="table table-dark recipient-table">
-      <colgroup>
-        <col style="width: 100%" />
-        <col style="width: 50px" />
-      </colgroup>
-      <thead class="thead-dark">
-        <tr>
-          <th>Name</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-show="isAddingRow">
-          <td class="edit-container">
-            <input
-              id="name"
-              ref="nameAddInput"
-              type="text"
-              v-model="v$.name.$model"
-              v-select-all
-              name="name"
-              class="form-control form-control-sm"
-              @keyup.enter="saveNew()"
-              required
-            />
-            <div
-              class="input-errors"
-              v-for="error of v$.name.$errors"
-              :key="error.$uid"
-            >
-              <div class="error-msg invalid-feedback d-block">
-                {{ error.$message }}
-              </div>
-            </div>
-          </td>
-          <td class="icons-cell">
-            <div class="icons-container">
-              <button
-                type="button"
-                class="btn link-success"
-                @click="saveNew()"
-                :disabled="!v$.$dirty || v$.$invalid"
-              >
-                <i class="bi bi-check-circle-fill"></i>
-              </button>
-              <button
-                type="button"
-                class="btn link-secondary"
-                @click="cancelEditing()"
-              >
-                <i class="bi bi-x-circle-fill"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr v-for="recipient in recipients" :key="recipient.id">
-          <td :class="{ 'edit-container': recipient.isEditing }">
-            <div v-if="recipient.isEditing">
+  <div class="flex flex-col items-center">
+    <div class="flex flex-col sm:w-full md:w-2/3 lg:w-1/2 xl:w-1/3">
+      <span class="flex flex-row justify-between mb-2">
+        <h2 class="text-xl self-end">Recipients</h2>
+        <div class="flex flex-row align-center">
+          <BButton
+            @click="addRow()"
+            type="primary-outline"
+            icon="plus-lg"
+            text="Recipient"
+            title="Add Recipient"
+          ></BButton>
+        </div>
+      </span>
+      <table class="bg-slate-700">
+        <colgroup>
+          <col style="width: 100%" />
+          <col style="width: 50px" />
+        </colgroup>
+        <thead class="bg-slate-800">
+          <tr>
+            <th class="text-left px-3 py-2">Name</th>
+            <th class="px-3 py-2"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-show="isAddingRow" class="h-12 hover:bg-slate-600">
+            <td class="px-3 py-2">
               <input
                 id="name"
-                ref="nameInput"
+                ref="nameAddInput"
                 type="text"
                 v-model="v$.name.$model"
                 v-select-all
                 name="name"
                 class="form-control form-control-sm"
-                @keyup.enter="save(recipient)"
+                @keyup.enter="saveNew()"
                 required
               />
               <div
@@ -93,51 +47,99 @@
                   {{ error.$message }}
                 </div>
               </div>
-            </div>
-            <div v-if="!recipient.isEditing">
-              {{ recipient.name }}
-            </div>
-          </td>
-          <td class="icons-cell">
-            <div class="icons-container">
-              <button
-                v-if="!recipient.isEditing"
-                type="button"
-                class="btn link-primary"
-                @click="startEditing(recipient)"
-              >
-                <i class="bi bi-pencil-fill"></i>
-              </button>
-              <button
-                v-if="!recipient.isEditing"
-                type="button"
-                class="btn link-danger"
-                @click="confirmDelete(recipient)"
-              >
-                <i class="bi bi-trash-fill"></i>
-              </button>
-              <button
-                v-if="recipient.isEditing"
-                type="button"
-                class="btn link-success"
-                @click="save(recipient)"
-                :disabled="!v$.$dirty || v$.$invalid"
-              >
-                <i class="bi bi-check-circle-fill"></i>
-              </button>
-              <button
-                v-if="recipient.isEditing"
-                type="button"
-                class="btn link-secondary"
-                @click="cancelEditing(recipient)"
-              >
-                <i class="bi bi-x-circle-fill"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </td>
+            <td class="px-3 py-2">
+              <div class="icons-container">
+                <button
+                  type="button"
+                  class="btn link-success"
+                  @click="saveNew()"
+                  :disabled="!v$.$dirty || v$.$invalid"
+                >
+                  <i class="bi bi-check-circle-fill"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn link-secondary"
+                  @click="cancelEditing()"
+                >
+                  <i class="bi bi-x-circle-fill"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr
+            v-for="recipient in recipients"
+            :key="recipient.id"
+            class="h-12 hover:bg-slate-600"
+          >
+            <td
+              class="px-3 py-2"
+              :class="{ 'edit-container': recipient.isEditing }"
+            >
+              <div v-if="recipient.isEditing">
+                <BInput
+                  id="name"
+                  ref="nameInput"
+                  type="text"
+                  v-model="v$.name.$model"
+                  name="name"
+                  @keyup.enter="save(recipient)"
+                  required
+                ></BInput>
+                <div
+                  class="input-errors"
+                  v-for="error of v$.name.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg invalid-feedback d-block">
+                    {{ error.$message }}
+                  </div>
+                </div>
+              </div>
+              <div v-if="!recipient.isEditing">
+                {{ recipient.name }}
+              </div>
+            </td>
+            <td class="px-3 py-2">
+              <div class="flex flex-row">
+                <BButton
+                  v-if="!recipient.isEditing"
+                  @click="startEditing(recipient)"
+                  type="primary-icon-only"
+                  icon="pencil-fill"
+                  class="px-2"
+                ></BButton>
+
+                <BButton
+                  v-if="!recipient.isEditing"
+                  @click="confirmDelete(recipient)"
+                  type="danger-icon-only"
+                  icon="trash-fill"
+                  class="px-2"
+                ></BButton>
+
+                <BButton
+                  v-if="recipient.isEditing"
+                  @click="save(recipient)"
+                  type="primary-icon-only"
+                  icon="check-circle-fill"
+                  class="px-2"
+                ></BButton>
+
+                <BButton
+                  v-if="recipient.isEditing"
+                  @click="cancelEditing(recipient)"
+                  type="default-icon-only"
+                  icon="x-circle-fill"
+                  class="px-2"
+                ></BButton>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <DeleteConfirmation ref="deleteConfirmationModal" />
@@ -156,7 +158,7 @@ import {
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
-import { DeleteConfirmation } from '@/components/shared'
+import { BButton, BInput, DeleteConfirmation } from '@/components/shared'
 import type { Recipient } from '@/models'
 import { useRecipientStore } from '@/store'
 
@@ -260,22 +262,3 @@ function addRow() {
   })
 }
 </script>
-
-<style scoped>
-.recipient-table tr {
-  height: 41px;
-}
-
-.recipient-table tr td {
-  vertical-align: middle;
-}
-
-.recipients-container {
-  width: 500px;
-  margin: 0 auto;
-}
-
-.edit-container {
-  padding: 0;
-}
-</style>
