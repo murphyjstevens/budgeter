@@ -27,19 +27,17 @@
         <tbody>
           <tr v-show="isAddingRow" class="h-12 hover:bg-slate-600">
             <td class="px-3 py-2">
-              <input
+              <BInput
                 id="name"
                 ref="nameAddInput"
                 type="text"
                 v-model="v$.name.$model"
-                v-select-all
                 name="name"
-                class="form-control form-control-sm"
                 @keyup.enter="saveNew()"
                 required
               />
               <div
-                class="input-errors"
+                class="text-red-400 text-sm"
                 v-for="error of v$.name.$errors"
                 :key="error.$uid"
               >
@@ -50,21 +48,20 @@
             </td>
             <td class="px-3 py-2">
               <div class="icons-container">
-                <button
-                  type="button"
-                  class="btn link-success"
+                <BButton
                   @click="saveNew()"
+                  type="primary-icon-only"
+                  icon="check-circle-fill"
+                  class="px-2"
                   :disabled="!v$.$dirty || v$.$invalid"
-                >
-                  <i class="bi bi-check-circle-fill"></i>
-                </button>
-                <button
-                  type="button"
-                  class="btn link-secondary"
+                ></BButton>
+
+                <BButton
                   @click="cancelEditing()"
-                >
-                  <i class="bi bi-x-circle-fill"></i>
-                </button>
+                  type="default-icon-only"
+                  icon="x-circle-fill"
+                  class="px-2"
+                ></BButton>
               </div>
             </td>
           </tr>
