@@ -45,7 +45,12 @@ import { toCurrency } from '@/helpers/helpers'
 import TransactionDialog from '../components/account/TransactionDialog.vue'
 import TransactionList from '../components/account/TransactionList.vue'
 import type { Account, Transaction } from '@/models'
-import { useAccountStore, useCategoryStore, useRecipientStore, useTransactionStore } from '@/store'
+import {
+  useAccountStore,
+  useCategoryStore,
+  useRecipientStore,
+  useTransactionStore,
+} from '@/store'
 import BButton from '@/components/shared/BButton.vue'
 
 const accountStore = useAccountStore()
@@ -81,7 +86,7 @@ function showAddTransactionDialog(): void {
 function showImportDialog() {}
 
 watch(
-  () => route.params.id,
+  () => route.params,
   () => {
     accountUrl.value = route.params.url as string
 
