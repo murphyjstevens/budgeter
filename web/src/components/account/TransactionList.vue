@@ -153,7 +153,7 @@
 
 <script setup lang="ts">
 import { type ComputedRef, computed, ref, type Ref } from 'vue'
-import { onBeforeRouteLeave, useRoute } from 'vue-router'
+import { onBeforeRouteLeave } from 'vue-router'
 
 import { toCurrency, toShortDate } from '@/helpers/helpers'
 import { CurrencyInput, DeleteConfirmation } from '@/components/shared'

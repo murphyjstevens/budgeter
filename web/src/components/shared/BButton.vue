@@ -7,6 +7,8 @@
         type === 'primary',
       'bg-gray-400 text-gray-900 px-3 py-1 hover:bg-gray-500 active:bg-gray-300':
         type === 'default',
+      'bg-red-600 text-white px-3 py-1 hover:bg-red-500 active:bg-red-700':
+        type === 'danger',
       'border-2 border-indigo-700 text-indigo-400 px-3 py-1 hover:bg-indigo-700 hover:text-white active:bg-indigo-800':
         type === 'primary-outline',
       'border-2 border-gray-400 px-3 py-1 hover:bg-gray-400 hover:text-gray-900 active:bg-gray-300 disabled:bg-transparent disabled:text-white':
