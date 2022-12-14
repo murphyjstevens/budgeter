@@ -1,60 +1,57 @@
 <template>
-  <Dialog :open="isVisible" @close="reset()" class="relative z-50">
-    <div class="fixed inset-0 flex items-center justify-center p-4"></div>
-    <DialogPanel class="w-full max-w-sm rounded bg-white">
-      <DialogTitle>
-        <h5 class="modal-title" id="modalTitle">Add Account</h5>
-        <button type="button" class="btn-close"></button>
-      </DialogTitle>
+  <BModal v-model:show="show" title="Add Account">
+    <template #dialog-content>
+      <div class="flex flex-col">
+        <div class="flex flex-col p-5">
+          <label for="name">Name</label>
+          <BInput
+            id="name"
+            v-model="v$.name.$model"
+            type="text"
+            :pattern="`${accountStore.accountNameRegex}`"
+            required
+          ></BInput>
+          <div
+            class="text-red-500 text-sm"
+            v-for="error of v$.name.$errors"
+            :key="error.$uid"
+          >
+            {{ error.$message }}
+          </div>
+        </div>
 
-      <label for="name" class="form-label">Name</label>
-      <input
-        id="name"
-        v-model="v$.name.$model"
-        v-select-all
-        type="text"
-        class="form-control"
-        :class="{ 'is-invalid': v$.name.$error }"
-        @blur="v$.name.$touch"
-        :pattern="`${accountStore.accountNameRegex}`"
-        required
-      />
-      <div
-        class="input-errors"
-        v-for="error of v$.name.$errors"
-        :key="error.$uid"
-      >
-        <div class="error-msg invalid-feedback d-block">
-          {{ error.$message }}
+        <div class="flex flex-row justify-end px-4 pb-4">
+          <BButton
+            @click="close()"
+            text="Cancel"
+            type="default-outline"
+            class="mr-2"
+          ></BButton>
+
+          <BButton
+            @click="save()"
+            text="Save"
+            type="primary"
+            icon="save-fill"
+            :disabled="!v$.$dirty || v$.$invalid"
+          ></BButton>
         </div>
       </div>
-
-      <button type="button" class="rounded-full" @click="isVisible = false">
-        Close
-      </button>
-      <button
-        type="button"
-        class="rounded-full"
-        :disabled="!v$.$dirty || v$.$invalid"
-        @click="save()"
-      >
-        Save
-      </button>
-    </DialogPanel>
-  </Dialog>
+    </template>
+  </BModal>
 </template>
 
 <script setup lang="ts">
 import { type Ref, ref, reactive, nextTick } from 'vue'
-import { Dialog, DialogPanel, DialogTitle } from '@headlessui/vue'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
+import { BButton, BInput, BModal } from '@/components/shared'
 import { useAccountStore } from '@/store'
 
 const accountStore = useAccountStore()
 
-const isVisible: Ref<boolean> = ref(false)
+const show: Ref<boolean> = ref(false)
 
 const state = reactive({
   name: '',
@@ -72,7 +69,11 @@ defineExpose({
 
 function open() {
   reset()
-  isVisible.value = true
+  show.value = true
+}
+
+function close() {
+  show.value = false
 }
 
 function reset() {

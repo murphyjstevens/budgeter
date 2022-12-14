@@ -3,7 +3,7 @@
     <template #dialog-content>
       <div class="flex flex-col">
         <div class="flex flex-col p-5">
-          <label for="cost" class="form-label">Cost</label>
+          <label for="cost">Cost</label>
           <div class="flex flex-row items-center">
             <Switch
               v-model="isPositive"
@@ -42,9 +42,7 @@
             v-for="error of v$.cost.$errors"
             :key="error.$uid"
           >
-            <div class="error-msg invalid-feedback d-block">
-              {{ error.$message }}
-            </div>
+            {{ error.$message }}
           </div>
 
           <label for="date" class="mt-1">Date</label>
@@ -52,7 +50,6 @@
             v-model="v$.date.$model"
             type="date"
             id="date"
-            :class="{ 'is-invalid': v$.date.$error }"
             placeholder="yyyy/MM/dd"
             required
           ></BInput>
@@ -61,9 +58,7 @@
             v-for="error of v$.date.$errors"
             :key="error.$uid"
           >
-            <div class="error-msg invalid-feedback d-block">
-              {{ error.$message }}
-            </div>
+            {{ error.$message }}
           </div>
 
           <label for="account" class="mt-1">Account</label>
@@ -86,9 +81,7 @@
             v-for="error of v$.accountId.$errors"
             :key="error.$uid"
           >
-            <div class="error-msg invalid-feedback d-block">
-              {{ error.$message }}
-            </div>
+            {{ error.$message }}
           </div>
 
           <label for="category" class="mt-1">Category</label>
@@ -112,9 +105,7 @@
             v-for="error of v$.categoryId.$errors"
             :key="error.$uid"
           >
-            <div class="error-msg invalid-feedback d-block">
-              {{ error.$message }}
-            </div>
+            {{ error.$message }}
           </div>
 
           <label for="recipient" class="mt-1">Recipient</label>
@@ -137,9 +128,7 @@
             v-for="error of v$.recipientId.$errors"
             :key="error.$uid"
           >
-            <div class="error-msg invalid-feedback d-block">
-              {{ error.$message }}
-            </div>
+            {{ error.$message }}
           </div>
         </div>
 
