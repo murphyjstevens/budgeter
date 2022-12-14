@@ -71,17 +71,21 @@
     </span>
   </div>
 
-  <!-- <DeleteConfirmation ref="deleteConfirmationModal" /> -->
+  <DeleteConfirmation ref="deleteConfirmationModal" />
 </template>
 
 <script setup lang="ts">
 import { type ComputedRef, computed, type Ref, ref, watch } from 'vue'
-import { CurrencyInput } from '@/components/shared'
+
 import { toCurrency } from '@/helpers/helpers'
 import type { Budget, Category } from '@/models'
 import { useBudgetStore, useCategoryStore, useDateStore } from '@/store'
-import BInput from '../shared/BInput.vue'
-import BButton from '../shared/BButton.vue'
+import {
+  BButton,
+  BInput,
+  CurrencyInput,
+  DeleteConfirmation,
+} from '@/components/shared/'
 
 const budgetStore = useBudgetStore()
 const categoryStore = useCategoryStore()

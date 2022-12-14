@@ -58,7 +58,7 @@
     </div>
   </div>
 
-  <!-- <CategoryGroupDialog ref="categoryGroupDialog" /> -->
+  <CategoryGroupDialog ref="categoryGroupDialog" />
 </template>
 
 <script setup lang="ts">

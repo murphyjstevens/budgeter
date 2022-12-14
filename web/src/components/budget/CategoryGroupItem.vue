@@ -76,8 +76,8 @@
     </div>
   </div>
 
-  <!-- <CategoryDialog ref="categoryDialog" /> -->
-  <!-- <DeleteConfirmation ref="deleteConfirmationModal" /> -->
+  <CategoryDialog ref="categoryDialog" />
+  <DeleteConfirmation ref="deleteConfirmationModal" />
 </template>
 
 <script setup lang="ts">

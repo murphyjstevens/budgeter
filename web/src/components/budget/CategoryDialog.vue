@@ -1,124 +1,94 @@
 <template>
-  <div
-    class="modal fade"
-    id="exampleModal"
-    ref="modalRef"
-    tabindex="-1"
-    aria-labelledby="modalTitle"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalTitle">Add Category</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div class="container-fluid">
-            <div class="row gy-3">
-              <div class="col-sm-12">
-                <label for="category-group" class="form-label"
-                  >Category Group</label
-                >
-                <select
-                  id="category-group"
-                  v-model="v$.categoryGroupId.$model"
-                  name="category-group"
-                  class="form-control"
-                  @blur="v$.categoryGroupId.$touch"
-                  required
-                >
-                  <option
-                    v-for="group in categoryGroups"
-                    :key="group.id"
-                    :value="group.id"
-                  >
-                    {{ group.name }}
-                  </option>
-                </select>
-                <div
-                  class="input-errors"
-                  v-for="error of v$.categoryGroupId.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg invalid-feedback d-block">
-                    {{ error.$message }}
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-12">
-                <label for="name" class="form-label">Name</label>
-                <input
-                  id="name"
-                  v-model="v$.name.$model"
-                  type="text"
-                  class="form-control"
-                  @blur="v$.name.$touch"
-                  required
-                />
-                <div
-                  class="input-errors"
-                  v-for="error of v$.name.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg invalid-feedback d-block">
-                    {{ error.$message }}
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-12">
-                <label for="budget" class="form-label">Budget</label>
-                <input
-                  id="budget"
-                  v-model.number="v$.budget.$model"
-                  @blur="blurBudget($event)"
-                  @keyup.enter="convertToMoney($event)"
-                  name="budget"
-                  maxLength="15"
-                  class="form-control text-right"
-                  required
-                />
-                <div
-                  class="input-errors"
-                  v-for="error of v$.budget.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg invalid-feedback d-block">
-                    {{ error.$message }}
-                  </div>
-                </div>
-              </div>
-            </div>
+  <BModal v-model:show="show" title="Add Category">
+    <template #dialog-content>
+      <div class="flex flex-col">
+        <div class="flex flex-col p-5">
+          <label for="category-group">Category Group</label>
+          <BSelect
+            id="category-group"
+            v-model="v$.categoryGroupId.$model"
+            name="category-group"
+            class="form-control"
+            @blur="v$.categoryGroupId.$touch"
+            required
+          >
+            <option
+              v-for="group in categoryGroups"
+              :key="group.id"
+              :value="group.id"
+            >
+              {{ group.name }}
+            </option>
+          </BSelect>
+          <div
+            class="text-red-500 text-sm"
+            v-for="error of v$.categoryGroupId.$errors"
+            :key="error.$uid"
+          >
+            {{ error.$message }}
+          </div>
+
+          <label for="name" class="mt-1">Name</label>
+          <BInput
+            id="name"
+            v-model="v$.name.$model"
+            type="text"
+            required
+          ></BInput>
+          <div
+            class="text-red-500 text-sm"
+            v-for="error of v$.name.$errors"
+            :key="error.$uid"
+          >
+            {{ error.$message }}
+          </div>
+
+          <label for="budget" class="mt-1">Budget</label>
+          <CurrencyInput
+            id="budget"
+            name="budget"
+            v-model="v$.budget.$model"
+            :options="{
+              currency: 'USD',
+              precision: 2,
+              autoDecimalDigits: true,
+            }"
+            required
+          />
+          <div
+            class="text-red-500 text-sm"
+            v-for="error of v$.budget.$errors"
+            :key="error.$uid"
+          >
+            {{ error.$message }}
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="close()">
-            Close
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            :disabled="!v$.$dirty || v$.$invalid"
+
+        <div class="flex flex-row justify-end px-4 pb-4">
+          <BButton
+            @click="close()"
+            text="Cancel"
+            type="default-outline"
+            class="mr-2"
+          ></BButton>
+
+          <BButton
             @click="save()"
-          >
-            Save
-          </button>
+            text="Save"
+            type="primary"
+            icon="save-fill"
+            :disabled="!v$.$dirty || v$.$invalid"
+          ></BButton>
         </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </BModal>
 </template>
 
 <script setup lang="ts">
 import {
   computed,
   nextTick,
-  onMounted,
   reactive,
   ref,
   type ComputedRef,
@@ -126,7 +96,7 @@ import {
 } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
-import { Modal } from 'bootstrap'
+
 import type { Budget, Category } from '@/models'
 import {
   useBudgetStore,
@@ -134,6 +104,13 @@ import {
   useCategoryStore,
   useDateStore,
 } from '@/store'
+import {
+  BButton,
+  BInput,
+  BModal,
+  BSelect,
+  CurrencyInput,
+} from '@/components/shared'
 
 const budgetStore = useBudgetStore()
 const categoryGroupStore = useCategoryGroupStore()
@@ -141,9 +118,9 @@ const categoryStore = useCategoryStore()
 const dateStore = useDateStore()
 
 const state = reactive({
-  name: null as string | null,
-  budget: null as number | null,
-  categoryGroupId: null as number | null,
+  name: '' as string,
+  budget: 0.0 as number,
+  categoryGroupId: undefined as number | undefined,
 })
 
 const rules = {
@@ -154,8 +131,7 @@ const rules = {
 
 const v$ = useVuelidate(rules, state)
 
-const modalRef = ref()
-const modal: Ref<Modal | null> = ref(null)
+const show: Ref<boolean> = ref(false)
 
 const categoryGroups: ComputedRef<Array<any>> = computed(
   () => categoryGroupStore.all
@@ -165,20 +141,17 @@ defineExpose({
   open,
 })
 
-onMounted(() => {
-  modal.value = new Modal(modalRef.value)
-})
-
 function open(defaultCategoryGroupId: number) {
-  modal.value?.show()
+  show.value = true
   reset(defaultCategoryGroupId)
 }
 
 function close() {
-  modal.value?.hide()
+  show.value = false
 }
+
 function reset(defaultCategoryGroupId: number) {
-  state.name = null
+  state.name = ''
   state.budget = 0.0
   state.categoryGroupId = defaultCategoryGroupId
   nextTick(() => {
@@ -217,19 +190,5 @@ async function save() {
     }
     close()
   }
-}
-
-function convertToMoney(event: any) {
-  if (!event.target.value) {
-    return
-  }
-
-  const budget = Math.round(event.target.value * 100) / 100
-  state.budget = budget
-}
-
-function blurBudget(event: any) {
-  v$.value.budget.$touch()
-  convertToMoney(event)
 }
 </script>
