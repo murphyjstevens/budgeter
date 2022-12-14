@@ -1,5 +1,10 @@
 <template>
-  <BInput ref="inputRef" type="text" class="text-right" />
+  <BInput
+    ref="inputRef"
+    type="text"
+    :backgroundType="backgroundType"
+    class="text-right"
+  />
 </template>
 
 <script setup lang="ts">
@@ -10,6 +15,7 @@ import BInput from '@/components/shared/BInput.vue'
 
 const props = defineProps<{
   modelValue?: number
+  backgroundType?: string
   options: any
 }>()
 

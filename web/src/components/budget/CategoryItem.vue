@@ -4,7 +4,7 @@
       <BInput
         :value="category.name"
         class="bg-inherit ml-6 group-hover:bg-slate-600"
-        :class="{ 'is-invalid': isNameInvalid }"
+        backgroundType="none"
         @blur="rename($event, category)"
         maxlength="100"
       ></BInput>
@@ -42,6 +42,7 @@
         <CurrencyInput
           v-model="categoryModel.budget"
           :options="{ currency: 'USD', precision: 2, autoDecimalDigits: true }"
+          backgroundType="none"
           @blur="updateBudget($event, category)"
           class="bg-inherit group-hover:bg-slate-600"
           required

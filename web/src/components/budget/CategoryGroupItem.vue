@@ -16,7 +16,7 @@
         <BInput
           :value="group.name"
           class="bg-inherit group-hover:bg-slate-600 mr-2"
-          :class="{ 'is-invalid': group.isNameInvalid }"
+          backgroundType="none"
           @blur="rename($event, group)"
           maxlength="100"
         ></BInput>
