@@ -1,9 +1,11 @@
 <template>
   <div class="flex flex-col">
-    <span class="flex flex-row transaction-header-row">
-      <h2 class="text-2xl">{{ account ? account.name : 'All Accounts' }}</h2>
+    <span class="flex flex-row items-end mb-1">
+      <h2 class="text-2xl w-1/3">
+        {{ account ? account.name : 'All Accounts' }}
+      </h2>
       <h2
-        class="text-2xl"
+        class="flex text-2xl w-1/3 justify-center"
         :class="{
           'text-green-500': total > 0,
           'text-white': !total,
@@ -12,7 +14,7 @@
       >
         {{ toCurrency(total) }}
       </h2>
-      <div class="flex flex-row items-center">
+      <div class="flex flex-row items-center w-1/3 justify-end">
         <BButton
           @click="showImportDialog()"
           type="default-outline"
@@ -34,7 +36,7 @@
     <TransactionList />
   </div>
 
-  <!-- <TransactionDialog ref="transactionDialog" /> -->
+  <TransactionDialog ref="transactionDialog" />
 </template>
 
 <script setup lang="ts">
@@ -42,8 +44,8 @@ import { type ComputedRef, computed, ref, type Ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { toCurrency } from '@/helpers/helpers'
-import TransactionDialog from '../components/account/TransactionDialog.vue'
-import TransactionList from '../components/account/TransactionList.vue'
+import TransactionDialog from '@/components/account/TransactionDialog.vue'
+import TransactionList from '@/components/account/TransactionList.vue'
 import type { Account, Transaction } from '@/models'
 import {
   useAccountStore,
@@ -112,9 +114,3 @@ watch(
   }
 )
 </script>
-
-<style scoped>
-.transaction-header-row {
-  justify-content: space-between;
-}
-</style>

@@ -4,8 +4,8 @@
     @input="
       $emit('update:modelValue', ($event?.target as HTMLInputElement)?.value)
     "
-    class="bg-slate-600 text-white border border-gray-700 rounded-md h-9 px-3 py-1 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
-    @onfocus="onFocus($event)"
+    class="bg-slate-600 text-white border border-gray-700 rounded-md w-full h-9 px-3 py-1 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+    @focus="onFocus($event)"
   />
 </template>
 
@@ -17,6 +17,6 @@ defineProps<{
 defineEmits(['update:modelValue'])
 
 function onFocus(el: any) {
-  el.select()
+  el.target.select()
 }
 </script>

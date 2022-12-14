@@ -102,7 +102,11 @@
             <CurrencyInput
               v-model="editTransaction.cost"
               name="cost"
-              :options="{ currency: 'USD', precision: 2 }"
+              :options="{
+                currency: 'USD',
+                precision: 2,
+                autoDecimalDigits: true,
+              }"
               required
             />
           </div>
@@ -111,38 +115,40 @@
           </div>
         </td>
         <td class="px-3 py-2"></td>
-        <td class="flex flex-row px-3 py-2">
-          <BButton
-            v-if="!transaction.isEditing"
-            @click="startEditing(transaction)"
-            type="primary-icon-only"
-            icon="pencil-fill"
-            class="px-2"
-          ></BButton>
+        <td class="px-3 py-2">
+          <div class="flex flex-row">
+            <BButton
+              v-if="!transaction.isEditing"
+              @click="startEditing(transaction)"
+              type="primary-icon-only"
+              icon="pencil-fill"
+              class="px-2"
+            ></BButton>
 
-          <BButton
-            v-if="!transaction.isEditing"
-            @click="confirmDelete(transaction)"
-            type="danger-icon-only"
-            icon="trash-fill"
-            class="px-2"
-          ></BButton>
+            <BButton
+              v-if="!transaction.isEditing"
+              @click="confirmDelete(transaction)"
+              type="danger-icon-only"
+              icon="trash-fill"
+              class="px-2"
+            ></BButton>
 
-          <BButton
-            v-if="transaction.isEditing"
-            @click="save(editTransaction)"
-            type="primary-icon-only"
-            icon="check-circle-fill"
-            class="px-2"
-          ></BButton>
+            <BButton
+              v-if="transaction.isEditing"
+              @click="save(editTransaction)"
+              type="primary-icon-only"
+              icon="check-circle-fill"
+              class="px-2"
+            ></BButton>
 
-          <BButton
-            v-if="transaction.isEditing"
-            @click="cancelEditing(transaction)"
-            type="default-icon-only"
-            icon="x-circle-fill"
-            class="px-2"
-          ></BButton>
+            <BButton
+              v-if="transaction.isEditing"
+              @click="cancelEditing(transaction)"
+              type="default-icon-only"
+              icon="x-circle-fill"
+              class="px-2"
+            ></BButton>
+          </div>
         </td>
       </tr>
     </tbody>

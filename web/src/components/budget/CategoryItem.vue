@@ -41,7 +41,6 @@
         </div> -->
         <CurrencyInput
           v-model="categoryModel.budget"
-          v-select-all
           :options="{ currency: 'USD', precision: 2, autoDecimalDigits: true }"
           @blur="updateBudget($event, category)"
           class="bg-inherit group-hover:bg-slate-600"

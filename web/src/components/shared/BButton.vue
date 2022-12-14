@@ -3,7 +3,7 @@
     type="button"
     class="rounded-full disabled:opacity-30 disabled:cursor-not-allowed"
     :class="{
-      'bg-indigo-700 px-3 py-1 hover:bg-indigo-600 active:bg-indigo-800':
+      'bg-indigo-700 px-3 py-1 hover:bg-indigo-600 active:bg-indigo-800 disabled:bg-indigo-700':
         type === 'primary',
       'bg-gray-400 text-gray-900 px-3 py-1 hover:bg-gray-500 active:bg-gray-300':
         type === 'default',

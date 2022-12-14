@@ -12,7 +12,7 @@
       >
         <div
           class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-        />
+        ></div>
       </TransitionChild>
 
       <div class="fixed inset-0 z-10 overflow-y-auto">
@@ -35,6 +35,7 @@
                 class="flex flex-row items-center font-bold h-10 px-4 py-2"
                 :class="{
                   'bg-red-700': type === 'danger',
+                  'bg-indigo-700': type === 'default',
                 }"
               >
                 <slot name="dialog-title">
@@ -69,11 +70,16 @@ import {
 } from '@headlessui/vue'
 import { BButton } from '.'
 
-defineProps<{
-  title?: string
-  type: string
-  show: boolean
-}>()
+withDefaults(
+  defineProps<{
+    title?: string
+    type?: string
+    show: boolean
+  }>(),
+  {
+    type: 'default',
+  }
+)
 
 const emit = defineEmits(['update:show', 'onClose'])
 
